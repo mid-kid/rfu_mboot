@@ -29,6 +29,7 @@ DEMO_BIN   =   demo.bin
 default:
 	@$(MAKE) -f MakefileDemo
 	@$(MAKE) -f Makefile $(TARGET_BIN)
+	@$(MAKE) -f Makefile compare
 
 
 $(TARGET_BIN): $(TARGET_ELF)
@@ -45,10 +46,13 @@ $(COMP_BIN): $(DEMO_BIN)
 	agbcomp -b -l $<
 
 
-.PHONY: all clean depend
+.PHONY: all compare clean depend
 
 
 all:    clean default
+
+compare:
+	md5sum -c client.md5
 
 clean:
 	@$(MAKE) -f MakefileDemo clean
