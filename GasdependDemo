@@ -1,0 +1,6 @@
+crt0_demo.o:   crt0_demo.s rom_header.s \
+	$(AGBINC)/AgbDefine.s $(AGBINC)/AgbSyscallDefine.s \
+	$(AGBINC)/AgbMacro.s  $(AGBINC)/AgbMemoryMap.s
+MultiSioAsm.o:	MultiSioAsm.s MultiSioDefine.s \
+	$(AGBINC)/AgbDefine.s $(AGBINC)/AgbSyscallDefine.s \
+	$(AGBINC)/AgbMacro.s  $(AGBINC)/AgbMemoryMap.s
