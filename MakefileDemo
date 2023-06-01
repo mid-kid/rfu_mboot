@@ -13,9 +13,10 @@ ASFLAGS    =          -I$(AGBINC) -mthumb-interwork
 CFLAGS     =   -g -O2 -I$(AGBINC) -mthumb-interwork \
                -nostdlib #-DNDEBUG
 LDFLAGS    +=  -Map $(MAPFILE) -nostartfiles \
-               -Ttext 0x03000100 -Tbss 0x02000000 \
+               -T $(LINKFILE) \
                -L$(AGBLIB) -lagbsyscall -lisagbprn
 
+LINKFILE   =   demo.ld
 DEPENDFILE =   demo.dep
 MAPFILE    =   demo.map
 TARGET_ELF =   demo.elf
