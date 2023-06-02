@@ -3,7 +3,10 @@ AS = thumb-elf-as
 OBJCOPY = thumb-elf-objcopy
 
 .SFILES    =   crt0_demo.s defs.s
-.CFILES    =   baserom_demo_01a0.dump.c
+.CFILES    =   \
+	baserom_demo_02a0.dump.c \
+	lang.c \
+	baserom_demo_4200.dump.c
 .OFILES    =   $(.SFILES:.s=.o) $(.CFILES:.c=.o)
 
 AGBINC	=	$(AGBDIR)/include
