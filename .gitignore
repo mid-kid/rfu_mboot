@@ -1,0 +1,6 @@
+*.dump.c
+*.bin
+*.dep
+*.elf
+*.map
+*.o
