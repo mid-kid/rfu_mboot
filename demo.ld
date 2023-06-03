@@ -40,7 +40,6 @@ SECTIONS {
     VramObjInit_Unk14f0 = 0x030014f1;
     VramObjClear = 0x03001529;
     BgScSet = 0x03001549;
-    BgScFill = 0x0300157d;
     Delay3s = 0x030015c5;
     ScInit = 0x030015dd;
     ScFade = 0x03001615;
@@ -122,7 +121,6 @@ SECTIONS {
     FUN_03003d38 = 0x03003d39;
     FUN_03003e04 = 0x03003e05;
     FUN_03003e44 = 0x03003e45;
-    CpuSet = 0x03003ed1;
     LZ77UnCompVram = 0x03003ed5;
     RegisterRamReset = 0x03003ed9;
     SoftReset = 0x03003edd;
@@ -136,4 +134,6 @@ SECTIONS {
     Proc = 0x03005c90;
     IntrTableBuf = 0x030043c0;
     LangMsg = 0x0300575c;
+    u8_03005754 = 0x03005754;
+    GameList = 0x030056a0;
 }
