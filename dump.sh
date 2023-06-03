@@ -11,7 +11,10 @@ split() {
     off=$(expr $off + $size)
 }
 
-split .text 0x2a0
+split .text 0x2a0  # DemoMain
+split .text 0x3bc
+split .text 0x4a8  # LangSet
+split .text 0x4c4
 split .text 0x3fb8
 split .rodata 0x4200
 split .rodata 0x5684

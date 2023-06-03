@@ -6,9 +6,9 @@ stdout.write("__asm__(\"\n")
 stdout.write(".section %s\n" % argv[1])
 if argv[1] == ".text":
     stdout.write(".type data, function\n")
+    stdout.write(".thumb_func\n")
 else:
     stdout.write(".type data, object\n")
-stdout.write(".thumb_func\n")
 stdout.write("data:\n")
 
 stdout.write(".byte ")
