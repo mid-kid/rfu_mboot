@@ -92,7 +92,7 @@ static const u16 PosJapanese[] = {
     0x20a
 };
 
-const struct LangMsg LangMsgInit[] = {
+const struct LangMsg LangMsgInitial[] = {
     {MsgEnglish, PosEnglish},
     {MsgJapanese, PosJapanese}
 };

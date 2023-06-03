@@ -6,12 +6,12 @@ OBJCOPY = thumb-elf-objcopy
 .CFILES    =   \
 	baserom_demo_02a0.dump.c \
 	baserom_demo_03bc.dump.c \
-	LangSet.c \
+	LangMsgInit.c \
 	baserom_demo_04c4.dump.c \
 	GameListInit.c \
 	baserom_demo_1190.dump.c \
 	baserom_demo_3f38.dump.c \
-	lang.c \
+	LangMsgInitial.c \
 	baserom_demo_4200.dump.c
 .OFILES    =   $(.SFILES:.s=.o) $(.CFILES:.c=.o)
 

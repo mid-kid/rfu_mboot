@@ -16,13 +16,13 @@ struct LangMsg {
     const u16 *pos;
 };
 
-extern const struct LangMsg LangMsgInit[];
+extern const struct LangMsg LangMsgInitial[];
 extern struct LangMsg *LangMsg;
 extern u8 Lang;
 
-void LangSet(void)
+void LangMsgInit(void)
 {
-    LangMsg = LangMsgInit + Lang;
+    LangMsg = LangMsgInitial + Lang;
 }
 
 #endif
