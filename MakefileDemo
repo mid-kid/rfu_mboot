@@ -2,7 +2,7 @@ CC = thumb-elf-gcc
 AS = thumb-elf-as
 OBJCOPY = thumb-elf-objcopy
 
-.SFILES    =   crt0_demo.s defs.s
+.SFILES    =   crt0_demo.s
 .CFILES    =   \
 	baserom_demo_02a0.dump.c \
 	lang.c \
@@ -29,7 +29,7 @@ TARGET_BIN =   demo.bin
 $(TARGET_BIN): $(TARGET_ELF)
 	$(OBJCOPY) -v -O binary $< $@
 
-$(TARGET_ELF): $(.OFILES) Makefile $(DEPENDFILE)
+$(TARGET_ELF): $(.OFILES) Makefile $(LINKFILE) $(DEPENDFILE)
 	@echo > $(MAPFILE)
 	$(CC) -g -o $@ $(.OFILES) -Wl,$(LDFLAGS)
 
