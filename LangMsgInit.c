@@ -6,7 +6,7 @@ struct LangMsg {
 };
 
 extern const struct LangMsg LangMsgInitial[];
-extern struct LangMsg *LangMsg;
+extern const struct LangMsg *LangMsg;
 extern u8 Lang;
 
 void LangMsgInit(void)

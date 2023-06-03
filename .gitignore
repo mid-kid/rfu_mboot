@@ -1,4 +1,4 @@
-*.dump.c
+/dump
 *.bin
 *.dep
 *.elf

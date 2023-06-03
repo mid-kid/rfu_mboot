@@ -230,13 +230,3 @@
 .thumb_set FUN_03003e04, 0x03003e04
 .global FUN_03003e44
 .thumb_set FUN_03003e44, 0x03003e44
-.global CpuSet
-.thumb_set CpuSet, 0x03003ed0
-.global LZ77UnCompVram
-.thumb_set LZ77UnCompVram, 0x03003ed4
-.global RegisterRamReset
-.thumb_set RegisterRamReset, 0x03003ed8
-.global SoftReset
-.thumb_set SoftReset, 0x03003edc
-.global VBlankIntrWait
-.thumb_set VBlankIntrWait, 0x03003ef4
