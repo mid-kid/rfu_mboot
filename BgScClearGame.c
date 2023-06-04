@@ -2,7 +2,7 @@
 
 extern u16 BgBak[32*20];
 
-void BgScClear8(u16 Pos)
+void BgScClearGame(u16 Pos)
 {
     u8 x;
     u16 *bg;

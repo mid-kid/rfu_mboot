@@ -8,7 +8,7 @@ SECTIONS {
         dump/baserom_demo_04c4.o(.text)
         GameListInit.o(.text)
         dump/baserom_demo_1190.o(.text)
-        BgScClear8.o(.text)
+        BgScClearGame.o(.text)
         dump/baserom_demo_148c.o(.text)
         BgScClear.o(.text)
         dump/baserom_demo_15c4.o(.text)
