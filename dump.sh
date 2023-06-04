@@ -32,6 +32,8 @@ split .text 0x1158
 split .text 0x1190 GameListInit
 split .text 0x1464
 split .text 0x148c BgScClearGame
+split .text 0x1528
+split .text 0x1548 VramClearBg2
 split .text 0x157c
 split .text 0x15c4 BgScClear
 split .text 0x3ed0 # Library start

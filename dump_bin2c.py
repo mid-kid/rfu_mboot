@@ -10,6 +10,7 @@ name = "data"
 if len(argv) > 2:
     name = argv[2]
 
+stdout.write("#if 1\n")
 stdout.write("__asm__(\"\n")
 stdout.write(".section %s\n" % section)
 if name != "data":
@@ -32,4 +33,6 @@ while word:
 stdout.write("\n")
 
 stdout.write(".size %s, .-%s\n" % (name, name))
-stdout.write("\");")
+stdout.write("\");\n")
+stdout.write("#else\n")
+stdout.write("#endif\n")
