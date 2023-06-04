@@ -1,12 +1,27 @@
-#if 1
-__asm__("
-.section .text
-@.global WinFade
-.type WinFade, function
-.thumb_func
-WinFade:
-.2byte 0xb570,0x0600,0x0e05,0x2d00,0xd105,0x2280,0x04d2,0x8811,0x4805,0x4008,0x8010,0x2400,0x4e04,0xf002,0xfc61,0x2c10,0xd106,0x2100,0xe007,0x0000,0xfbff,0x0000,0x0052,0x0400,0x200f,0x43a0,0x1c41,0x2d00,0xd003,0x0208,0x4320,0x8030,0xe002,0x0220,0x4301,0x8031,0x1c60,0x0400,0x0c04,0xf002,0xfc47,0x2c10,0xd9e1,0xbc70,0xbc01,0x4700
-.size WinFade, .-WinFade
-");
-#else
-#endif
+#include <Agb.h>
+
+void WinFade(u8 Dir)
+{
+    u16 i;
+    u16 val;
+
+    if (Dir == 0) *(vu16 *)REG_DISPCNT &= 0xfbff; 
+
+    i = 0;
+    while (i <= 0x10) {
+        VBlankIntrWait();
+        if (i == 0x10) {
+            val = 0;
+        } else {
+            //val = 0x10 - i;
+            val = (~i & 0xf) + 1;
+        }
+        if (Dir) {
+            *(vu16 *)REG_BLDALPHA = (val << 8) | i;
+        } else {
+            *(vu16 *)REG_BLDALPHA = val | (i << 8);
+        }
+        i++;
+        VBlankIntrWait();
+    }
+}
