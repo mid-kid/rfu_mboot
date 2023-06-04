@@ -8,6 +8,8 @@ SECTIONS {
         dump/baserom_demo_04c4.o(.text)
         GameListInit.o(.text)
         dump/baserom_demo_1190.o(.text)
+        KeyRead.o(.text)
+        dump/baserom_demo_1410.o(.text)
         BgScClearGame.o(.text)
         VramDrawBg2_MainMenu.o(.text)
         VramDrawBg2_SearchMenu.o(.text)
@@ -43,4 +45,5 @@ SECTIONS {
     u8_03005754 = 0x03005754;
     GameList = 0x030056a0;
     BgBak = 0x03005790;
+    Keys = 0x03005c94;
 }

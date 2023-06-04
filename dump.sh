@@ -30,6 +30,8 @@ split .text 0x04a8
 split .text 0x04c4 LangMsgInit
 split .text 0x1158
 split .text 0x1190 GameListInit
+split .text 0x13f0
+split .text 0x1410 KeyRead
 split .text 0x1464
 split .text 0x148c BgScClearGame
 split .text 0x14f0 VramDrawBg2_MainMenu
