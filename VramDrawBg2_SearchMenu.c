@@ -1,12 +1,17 @@
-#if 1
-__asm__("
-.section .text
-@.global VramDrawBg2_SearchMenu
-.type VramDrawBg2_SearchMenu, function
-.thumb_func
-VramDrawBg2_SearchMenu:
-.2byte 0xb510,0x0600,0x0e04,0xf000,0xf817,0x4a09,0x2100,0x42a1,0xd20b,0x4808,0x1c03,0x1c10,0x3040,0x8003,0x8013,0x3202,0x1c48,0x0600,0x0e01,0x42a1,0xd3f5,0xbc10,0xbc01,0x4700,0x1000,0x0600,0x0113,0x0000
-.size VramDrawBg2_SearchMenu, .-VramDrawBg2_SearchMenu
-");
-#else
-#endif
+#include <Agb.h>
+
+extern void VramClearBg2(void);
+
+void VramDrawBg2_SearchMenu(u8 Size)
+{
+    u8 i;
+    u16 *bg;
+
+    VramClearBg2();
+    bg = (vu16 *)(BG_VRAM + 0x1000);
+    for (i = 0; i < Size; i++) {
+        bg[32*1] = 0x113;
+        bg[32*0] = 0x113;
+        bg++;
+    }
+}
