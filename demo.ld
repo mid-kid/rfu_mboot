@@ -14,7 +14,7 @@ SECTIONS {
         VramDrawBg2_MainMenu.o(.text)
         VramDrawBg2_SearchMenu.o(.text)
         VramClearBg2.o(.text)
-        dump/baserom_demo_1548.o(.text)
+        BgScSet.o(.text)
         BgScClear.o(.text)
         Delay3s.o(.text)
         WinInit.o(.text)
