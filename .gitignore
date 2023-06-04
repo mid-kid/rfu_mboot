@@ -1,6 +1,7 @@
-/dump
 *.bin
 *.dep
 *.elf
 *.map
 *.o
+/__pycache__
+/dump

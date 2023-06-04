@@ -56,8 +56,6 @@
 .thumb_set KeyRead, 0x030013f0
 .global FUN_03001410
 .thumb_set FUN_03001410, 0x03001410
-.global BgScClear8
-.thumb_set BgScClear8, 0x03001464
 .global VramObjInit_Unk148c
 .thumb_set VramObjInit_Unk148c, 0x0300148c
 .global VramObjInit_Unk14f0

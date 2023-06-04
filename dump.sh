@@ -30,6 +30,8 @@ split .text 0x04a8  # LangMsgInit
 split .text 0x04c4
 split .text 0x1158  # GameListInit
 split .text 0x1190
+split .text 0x1464  # BgScClear8
+split .text 0x148c
 split .text 0x157c  # BgScClear
 split .text 0x15c4
 split .text 0x3ed0  # Library start
