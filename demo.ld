@@ -8,6 +8,8 @@ SECTIONS {
         dump/baserom_demo_04c4.o(.text)
         GameListInit.o(.text)
         dump/baserom_demo_1190.o(.text)
+        BgScClear.o(.text)
+        dump/baserom_demo_15c4.o(.text)
         dump/libagbsyscall/AgbSysCpuSet.o(.text)
         dump/libagbsyscall/AgbSysCpuSet.o(.text)
         dump/libagbsyscall/AgbSysLZ77UnCompVram.o(.text)
@@ -20,7 +22,7 @@ SECTIONS {
         LangMsgInitial.o(.rodata)
         dump/baserom_demo_4200.o(.rodata)
     }
-    .bss : { *(.bss) }
+    .bss : { }
 
     /* Discard anything not explicitly listed */
     /DISCARD/ : { *(*) }
@@ -35,4 +37,5 @@ SECTIONS {
     LangMsg = 0x0300575c;
     u8_03005754 = 0x03005754;
     GameList = 0x030056a0;
+    BgBak = 0x03005790;
 }

@@ -11,12 +11,12 @@ else:
     stdout.write(".type data, object\n")
 stdout.write("data:\n")
 
-stdout.write(".byte ")
-byte = stdin.buffer.read(1)
-while byte:
-    stdout.write("0x%02x" % byte[0])
-    byte = stdin.buffer.read(1)
-    if not byte:
+stdout.write(".2byte ")
+word = stdin.buffer.read(2)
+while word:
+    stdout.write("0x%02x%02x" % (word[1], word[0]))
+    word = stdin.buffer.read(2)
+    if not word:
         break
     stdout.write(",")
 stdout.write("\n")

@@ -56,8 +56,8 @@
 .thumb_set KeyRead, 0x030013f0
 .global FUN_03001410
 .thumb_set FUN_03001410, 0x03001410
-.global BgScClear
-.thumb_set BgScClear, 0x03001464
+.global BgScClear8
+.thumb_set BgScClear8, 0x03001464
 .global VramObjInit_Unk148c
 .thumb_set VramObjInit_Unk148c, 0x0300148c
 .global VramObjInit_Unk14f0
@@ -66,8 +66,6 @@
 .thumb_set VramObjClear, 0x03001528
 .global BgScSet
 .thumb_set BgScSet, 0x03001548
-.global BgScFill
-.thumb_set BgScFill, 0x0300157c
 .global Delay3s
 .thumb_set Delay3s, 0x030015c4
 .global ScInit

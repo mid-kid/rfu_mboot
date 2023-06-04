@@ -2,6 +2,7 @@
 set -e
 dd if=baserom.bin bs=1 skip=672 2>/dev/null | ./dump_lz77.py > baserom_demo.bin
 
+rm -rf dump
 mkdir -p dump
 
 # Dump libraries
@@ -29,6 +30,8 @@ split .text 0x04a8  # LangMsgInit
 split .text 0x04c4
 split .text 0x1158  # GameListInit
 split .text 0x1190
+split .text 0x157c  # BgScClear
+split .text 0x15c4
 split .text 0x3ed0  # Library start
 split .text 0x3f38
 split .rodata 0x3fb8  # LangMsgInitial
