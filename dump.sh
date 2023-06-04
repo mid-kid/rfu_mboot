@@ -20,22 +20,22 @@ split() {
     skip=$(expr $off - 256 || true)
     size=$(expr $(printf %d $2) - $off)
     dd if=baserom_demo.bin bs=1 skip=$skip count=$size 2>/dev/null | \
-        ./dump_bin2c.py $1 > dump/baserom_demo_$(printf "%04x" $off).c
+        ./dump_bin2c.py $1 $3 > dump/baserom_demo_$(printf "%04x" $off).c
     off=$(expr $off + $size)
 }
 
-split .text 0x02a0  # DemoMain
-split .text 0x03bc
-split .text 0x04a8  # LangMsgInit
-split .text 0x04c4
-split .text 0x1158  # GameListInit
-split .text 0x1190
-split .text 0x1464  # BgScClear8
-split .text 0x148c
-split .text 0x157c  # BgScClear
-split .text 0x15c4
-split .text 0x3ed0  # Library start
+split .text 0x02a0
+split .text 0x03bc DemoMain
+split .text 0x04a8
+split .text 0x04c4 LangMsgInit
+split .text 0x1158
+split .text 0x1190 GameListInit
+split .text 0x1464
+split .text 0x148c BgScClearGame
+split .text 0x157c
+split .text 0x15c4 BgScClear
+split .text 0x3ed0 # Library start
 split .text 0x3f38
-split .rodata 0x3fb8  # LangMsgInitial
-split .rodata 0x4200
+split .rodata 0x3fb8
+split .rodata 0x4200 LangMsgInitial
 split .rodata 0x5684

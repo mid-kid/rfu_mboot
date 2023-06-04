@@ -2,14 +2,24 @@
 
 from sys import argv, stdin, stdout
 
+section = ".text"
+if len(argv) > 1:
+    section = argv[1]
+
+name = "data"
+if len(argv) > 2:
+    name = argv[2]
+
 stdout.write("__asm__(\"\n")
-stdout.write(".section %s\n" % argv[1])
-if argv[1] == ".text":
-    stdout.write(".type data, function\n")
+stdout.write(".section %s\n" % section)
+if name != "data":
+    stdout.write("@.global %s\n" % name)
+if section == ".text":
+    stdout.write(".type %s, function\n" % name)
     stdout.write(".thumb_func\n")
 else:
-    stdout.write(".type data, object\n")
-stdout.write("data:\n")
+    stdout.write(".type %s, object\n" % name)
+stdout.write("%s:\n" % name)
 
 stdout.write(".2byte ")
 word = stdin.buffer.read(2)
@@ -21,5 +31,5 @@ while word:
     stdout.write(",")
 stdout.write("\n")
 
-stdout.write(".size data, .-data\n")
+stdout.write(".size %s, .-%s\n" % (name, name))
 stdout.write("\");")
