@@ -16,7 +16,7 @@ SECTIONS {
         VramClearBg2.o(.text)
         dump/baserom_demo_1548.o(.text)
         BgScClear.o(.text)
-        dump/baserom_demo_15c4.o(.text)
+        Delay3s.o(.text)
         WinInit.o(.text)
         WinFade.o(.text)
         dump/baserom_demo_1670.o(.text)
