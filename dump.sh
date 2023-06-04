@@ -39,6 +39,9 @@ split .text 0x1528 VramDrawBg2_SearchMenu
 split .text 0x1548 VramClearBg2
 split .text 0x157c
 split .text 0x15c4 BgScClear
+split .text 0x15dc
+split .text 0x1614 WinInit
+split .text 0x1670 WinFade
 split .text 0x3ed0 # Library start
 split .text 0x3f38
 split .rodata 0x3fb8
