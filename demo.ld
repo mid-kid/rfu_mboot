@@ -53,4 +53,5 @@ SECTIONS {
     GameList = 0x030056a0;
     BgBak = 0x03005790;
     Keys = 0x03005c94;
+    Sound = 0x03005780;
 }
