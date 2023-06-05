@@ -17,7 +17,7 @@ extern void WinFade(u8 Dir);
 void MainMenuInit(void)
 {
     u16 i;
-    u16 tile;
+    u16 charNo;
     u16 *bg;
 
     if (MainMenuFadeOut) {
@@ -31,9 +31,9 @@ void MainMenuInit(void)
     BgScSet(0xcb, 0, StringEnglish);
 
     bg = BgBak + (9 * 32 + 13);
-    tile = 0x10f;
+    charNo = 0x10f;
     for (i = 0; i < 3; i++) {
-        *bg++ = tile++;
+        *bg++ = charNo++;
     }
 
     VramDrawBg2_MainMenu();

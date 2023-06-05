@@ -33,6 +33,8 @@ split .text 0x03bc
 split .text 0x04a8 MainMenuInit
 split .text 0x04c4 MenuMsgInit
 split .text 0x0534 MainMenuProc
+split .text 0x0654 SearchMenuInit
+split .text 0x06c0 SearchMenuDrawListTitle
 split .text 0x1158
 split .text 0x1190 GameListInit
 split .text 0x12b8
