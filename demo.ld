@@ -24,6 +24,8 @@ SECTIONS {
         SoundPlaySfx.o(.text)
         SoundStop.o(.text)
         dump/baserom_demo_1768.o(.text)
+        Sio32Init.o(.text)
+        dump/baserom_demo_26d0.o(.text)
         dump/libagbsyscall/AgbSysCpuSet.o(.text)
         dump/libagbsyscall/AgbSysCpuSet.o(.text)
         dump/libagbsyscall/AgbSysLZ77UnCompVram.o(.text)
@@ -55,4 +57,5 @@ SECTIONS {
     Keys = 0x03005c94;
     Sound = 0x03005780;
     SoundSfxTable = 0x030043a4;
+    Sio32 = 0x03005738;
 }

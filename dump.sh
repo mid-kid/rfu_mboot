@@ -46,6 +46,8 @@ split .text 0x16a0 SoundInit
 split .text 0x1728 SoundMain
 split .text 0x1758 SoundPlaySfx
 split .text 0x1768 SoundStop
+split .text 0x2664
+split .text 0x26d0 Sio32Init
 split .text 0x3ed0 # Library start
 split .text 0x3f38
 split .rodata 0x3fb8
