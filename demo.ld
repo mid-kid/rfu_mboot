@@ -62,4 +62,5 @@ SECTIONS {
     Sound = 0x03005780;
     SoundSfxTable = 0x030043a4;
     Sio32 = 0x03005738;
+    FrameCount = 0x03005698;
 }
