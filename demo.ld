@@ -13,7 +13,7 @@ SECTIONS {
         MenuMsgBlink.o(.text)
         GameNameInit.o(.text)
         KeyRead.o(.text)
-        dump/baserom_demo_1410.o(.text)
+        KeyRepeatHold.o(.text)
         BgScClearGame.o(.text)
         VramDrawBg2_MainMenu.o(.text)
         VramDrawBg2_SearchMenu.o(.text)
@@ -65,4 +65,5 @@ SECTIONS {
     FrameCount = 0x03005698;
     GameName = 0x03005770;
     GameNameInitial = 0x03003f70;
+    KeyTimers = 0x03005724;
 }

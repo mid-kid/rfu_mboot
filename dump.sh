@@ -19,13 +19,17 @@ off=256
 split() {
     skip=$(expr $off - 256 || true)
     size=$(expr $(printf %d $2) - $off)
+    name="$3"
+    if [ -z "$name" ]; then
+        name="baserom_demo_$(printf "%04x" $off)"
+    fi
     dd if=baserom_demo.bin bs=1 skip=$skip count=$size 2>/dev/null | \
-        ./dump_bin2c.py $1 $3 > dump/baserom_demo_$(printf "%04x" $off).c
+        ./dump_bin2c.py $1 $3 > dump/"$name.c"
     off=$(expr $off + $size)
 }
 
 split .text 0x02a0
-split .text 0x03bc DemoMain
+split .text 0x03bc
 split .text 0x04a8
 split .text 0x04c4 MenuMsgInit
 split .text 0x1158
@@ -36,7 +40,7 @@ split .text 0x131c FrameCountReset
 split .text 0x1370 MenuMsgBlink
 split .text 0x13f0 GameNameInit
 split .text 0x1410 KeyRead
-split .text 0x1464
+split .text 0x1464 KeyRepeatHold
 split .text 0x148c BgScClearGame
 split .text 0x14f0 VramDrawBg2_MainMenu
 split .text 0x1528 VramDrawBg2_SearchMenu
