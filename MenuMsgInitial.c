@@ -1,6 +1,6 @@
 #include <Agb.h>
 
-struct LangMsg {
+struct MenuMsg {
     const char *const *msg;
     const u16 *pos;
 };
@@ -92,7 +92,7 @@ static const u16 PosJapanese[] = {
     0x20a
 };
 
-const struct LangMsg LangMsgInitial[] = {
+const struct MenuMsg MenuMsgInitial[] = {
     {MsgEnglish, PosEnglish},
     {MsgJapanese, PosJapanese}
 };

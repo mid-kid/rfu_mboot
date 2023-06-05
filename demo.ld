@@ -4,7 +4,7 @@ SECTIONS {
         crt0_demo.o(.text)
         dump/baserom_demo_02a0.o(.text)
         dump/baserom_demo_03bc.o(.text)
-        LangMsgInit.o(.text)
+        MenuMsgInit.o(.text)
         dump/baserom_demo_04c4.o(.text)
         GameListInit.o(.text)
         dump/baserom_demo_1190.o(.text)
@@ -35,7 +35,7 @@ SECTIONS {
         dump/libgcc/_call_via_rX.o(.text)
 
         dump/baserom_demo_3f38.o(.rodata)
-        LangMsgInitial.o(.rodata)
+        MenuMsgInitial.o(.rodata)
         dump/baserom_demo_4200.o(.rodata)
     }
     .bss : { }
@@ -50,7 +50,7 @@ SECTIONS {
     Lang = 0x03005758;
     Proc = 0x03005c90;
     IntrTableBuf = 0x030043c0;
-    LangMsg = 0x0300575c;
+    MenuMsg = 0x0300575c;
     u8_03005754 = 0x03005754;
     GameList = 0x030056a0;
     BgBak = 0x03005790;

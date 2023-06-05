@@ -27,7 +27,7 @@ split() {
 split .text 0x02a0
 split .text 0x03bc DemoMain
 split .text 0x04a8
-split .text 0x04c4 LangMsgInit
+split .text 0x04c4 MenuMsgInit
 split .text 0x1158
 split .text 0x1190 GameListInit
 split .text 0x13f0
@@ -51,5 +51,5 @@ split .text 0x26d0 Sio32Init
 split .text 0x3ed0 # Library start
 split .text 0x3f38
 split .rodata 0x3fb8
-split .rodata 0x4200 LangMsgInitial
+split .rodata 0x4200 MenuMsgInitial
 split .rodata 0x5684
