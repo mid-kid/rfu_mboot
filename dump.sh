@@ -30,7 +30,11 @@ split .text 0x04a8
 split .text 0x04c4 MenuMsgInit
 split .text 0x1158
 split .text 0x1190 GameListInit
-split .text 0x13f0
+split .text 0x12b8
+split .text 0x1310 MenuMsgSet
+split .text 0x131c FrameCountReset
+split .text 0x1370 MenuMsgBlink
+split .text 0x13f0 GameNameInit
 split .text 0x1410 KeyRead
 split .text 0x1464
 split .text 0x148c BgScClearGame
