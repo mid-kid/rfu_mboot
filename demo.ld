@@ -54,4 +54,5 @@ SECTIONS {
     BgBak = 0x03005790;
     Keys = 0x03005c94;
     Sound = 0x03005780;
+    SoundSfxTable = 0x030043a4;
 }
