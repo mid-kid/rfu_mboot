@@ -1,12 +1,44 @@
-#if 1
-__asm__("
-.section .text
-@.global SoundMain
-.type SoundMain, function
-.thumb_func
-SoundMain:
-.2byte 0xb570,0x4809,0x7a01,0x1c05,0x29ff,0xd036,0x2900,0xd131,0x1c2e,0x2100,0x6870,0x8800,0x0a00,0x7230,0x4b03,0x28fe,0xd106,0x6828,0x6068,0xe7f5,0x5780,0x0300,0x0060,0x0400,0x28ff,0xd109,0x2200,0x2100,0x8019,0x3302,0x1c50,0x0600,0x0e02,0x2a02,0xd9f8,0xe018,0x480d,0x8001,0x2200,0x4c0d,0x6861,0x8808,0x8018,0x2a01,0xd802,0x3302,0x1c88,0x6068,0x1c50,0x0600,0x0e02,0x2a02,0xd9f2,0x6871,0x8808,0x8018,0x3102,0x6071,0x7a28,0x3801,0x7228,0xbc70,0xbc01,0x4700,0x0064,0x0400,0x5780,0x0300
-.size SoundMain, .-SoundMain
-");
-#else
-#endif
+#include <Agb.h>
+
+extern struct Sound {
+    u16 *basePtr;
+    u16 *playPtr;
+    u8 time;
+    u8 sfxNum;
+} Sound;
+
+void SoundMain(void)
+{
+    u8 i;
+    vu16 *soundCnt;
+
+    if (Sound.time == (u8)-1) return;
+
+    if (Sound.time == 0) {
+        for (;;) {
+            Sound.time = *Sound.playPtr >> 8;
+            soundCnt = (vu16 *)REG_SOUND1CNT;
+            if (Sound.time == (u8)-2) {
+                Sound.playPtr = Sound.basePtr;
+                continue;
+            }
+            if (Sound.time == (u8)-1) {
+                for (i = 0; i < 3; i++) *soundCnt++ = 0;
+                return;
+            }
+
+            *(vu16 *)REG_SOUND1CNT_X = 0;
+            for (i = 0; i < 3; i++) {
+                *soundCnt = *Sound.playPtr;
+                if (i < 2) {
+                    soundCnt++;
+                    Sound.playPtr++;
+                }
+            }
+            *soundCnt = *Sound.playPtr++;
+            break;
+        }
+
+    }
+    Sound.time = Sound.time - 1;
+}
