@@ -63,4 +63,6 @@ SECTIONS {
     SoundSfxTable = 0x030043a4;
     Sio32 = 0x03005738;
     FrameCount = 0x03005698;
+    GameName = 0x03005770;
+    GameNameInitial = 0x03003f70;
 }

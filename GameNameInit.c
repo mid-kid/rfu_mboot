@@ -1,12 +1,35 @@
-#if 1
-__asm__("
-.section .text
-@.global GameNameInit
-.type GameNameInit, function
-.thumb_func
-GameNameInit:
-.2byte 0xb5f0,0x2419,0x4b0b,0x490c,0x7818,0x1820,0x0600,0x0e04,0x3301,0x428b,0xd1f8,0x43e0,0x3001,0x0600,0x0e04,0x2200,0x4d06,0x4f07,0x2600,0x2a09,0xd80c,0x1950,0x19d1,0x7809,0x7001,0xe009,0x00a0,0x0800,0x00bd,0x0800,0x5770,0x0300,0x3f70,0x0300,0x1950,0x7006,0x1c50,0x0600,0x0e02,0x2a0d,0xd9e9,0x7818,0x42a0,0xd10b,0x4b07,0x220a,0x4c07,0x1911,0x7818,0x7008,0x3301,0x1c50,0x0600,0x0e02,0x2a0d,0xd9f6,0xbcf0,0xbc01,0x4700,0x0000,0x00ac,0x0800,0x5770,0x0300
-.size GameNameInit, .-GameNameInit
-");
-#else
-#endif
+#include <Agb.h>
+
+extern u8 GameName[14];
+extern u8 GameNameInitial[10] = "RFU-MB-DL";
+
+void GameNameInit(void)
+{
+    u8 i;
+    u8 sum;
+    vu8 *cst;
+
+    // Calculate rom checksum
+    sum = 0x19;
+    cst = (vu8 *)(ROM_BANK0 + 0xa0);
+    while (cst != (vu8 *)(ROM_BANK0 + 0xbd)) sum += *cst++;
+    sum = ~sum + 1;
+
+    // Initialize the game name
+    for (i = 0; i < sizeof(GameName); i++) {
+        if (i < sizeof(GameNameInitial)) {
+            GameName[i] = GameNameInitial[i];
+        } else {
+            GameName[i] = 0;
+        }
+    }
+
+    // If a valid game is inserted, append the game code
+    if (*cst == sum) {
+        cst = (vu8 *)(ROM_BANK0 + 0xac);
+        for (i = sizeof(GameNameInitial);
+                i < sizeof(GameName); i++) {
+            GameName[i] = *cst++;
+        }
+    }
+}
