@@ -1,7 +1,7 @@
 #include <Agb.h>
 
 extern u8 GameName[14];
-extern u8 GameNameInitial[10] = "RFU-MB-DL";
+extern u8 GameNameInitial[10];
 
 void GameNameInit(void)
 {

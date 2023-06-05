@@ -3,7 +3,7 @@ SECTIONS {
     .text : {
         crt0_demo.o(.text)
         dump/baserom_demo_02a0.o(.text)
-        dump/baserom_demo_03bc.o(.text)
+        MainMenuInit.o(.text)
         MenuMsgInit.o(.text)
         dump/baserom_demo_04c4.o(.text)
         GameListInit.o(.text)
@@ -66,4 +66,8 @@ SECTIONS {
     GameName = 0x03005770;
     GameNameInitial = 0x03003f70;
     KeyTimers = 0x03005724;
+    MainMenuFadeOut = 0x03005764;
+    StringEnglish = 0x03004200;
+    MenuState = 0x03005760;
+    MenuBusy = 0x03005754;
 }
