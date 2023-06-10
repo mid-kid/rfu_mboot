@@ -43,6 +43,8 @@ SECTIONS {
         dump/libgcc/_call_via_rX.o(.text)
 
         dump/baserom_demo_3f38.o(.rodata)
+        GameNameInit.o(.rodata)
+        dump/baserom_demo_3f7c.o(.rodata)
         MenuMsgInitial.o(.rodata)
         dump/baserom_demo_4200.o(.rodata)
     }

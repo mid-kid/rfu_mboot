@@ -62,6 +62,8 @@ split .text 0x2664
 split .text 0x26d0 Sio32Init
 split .text 0x3ed0 # Library start
 split .text 0x3f38
+split .rodata 0x3f70
+split .rodata 0x3f7c GameNameInitial
 split .rodata 0x3fb8
 split .rodata 0x4200 MenuMsgInitial
 split .rodata 0x5684
