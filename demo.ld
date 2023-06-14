@@ -26,7 +26,7 @@ SECTIONS {
         SearchMenuDrawList.o(.text)
         SearchMenuDrawGame.o(.text)
         SearchMenuProcNextState.o(.text)
-        dump/baserom_demo_1280.o(.text)
+        SearchMenuErrorBeep.o(.text)
         MenuMsgSet.o(.text)
         FrameCountReset.o(.text)
         MenuMsgBlink.o(.text)

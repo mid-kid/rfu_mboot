@@ -53,7 +53,7 @@ split .text 0x1190 GameListInit
 split .text 0x1204 SearchMenuDrawList
 split .text 0x124c SearchMenuDrawGame
 split .text 0x1280 SearchMenuProcNextState
-split .text 0x12b8
+split .text 0x12b8 SearchMenuErrorBeep
 split .text 0x1310 MenuMsgSet
 split .text 0x131c FrameCountReset
 split .text 0x1370 MenuMsgBlink
