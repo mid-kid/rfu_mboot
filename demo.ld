@@ -12,6 +12,8 @@ SECTIONS {
         dump/baserom_demo_0c08.o(.text)
         GameListInit.o(.text)
         dump/baserom_demo_1190.o(.text)
+        SearchMenuDrawGame.o(.text)
+        dump/baserom_demo_124c.o(.text)
         MenuMsgSet.o(.text)
         FrameCountReset.o(.text)
         MenuMsgBlink.o(.text)

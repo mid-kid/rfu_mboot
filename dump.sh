@@ -38,6 +38,8 @@ split .text 0x06c0 SearchMenuDrawListTitle
 split .text 0x0c08 SearchMenuProc
 split .text 0x1158
 split .text 0x1190 GameListInit
+split .text 0x1204
+split .text 0x124c SearchMenuDrawGame
 split .text 0x12b8
 split .text 0x1310 MenuMsgSet
 split .text 0x131c FrameCountReset
