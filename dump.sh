@@ -36,7 +36,8 @@ split .text 0x0534 MainMenuProc
 split .text 0x0654 SearchMenuInit
 split .text 0x06c0 SearchMenuDrawListTitle
 split .text 0x0c08 SearchMenuProc
-split .text 0x1158
+split .text 0x1118
+split .text 0x1158 SearchMenuClearGame
 split .text 0x1190 GameListInit
 split .text 0x1204
 split .text 0x124c SearchMenuDrawGame

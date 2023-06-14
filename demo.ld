@@ -10,6 +10,7 @@ SECTIONS {
         SearchMenuDrawListTitle.o(.text)
         SearchMenuProc.o(.text)
         dump/baserom_demo_0c08.o(.text)
+        SearchMenuClearGame.o(.text)
         GameListInit.o(.text)
         dump/baserom_demo_1190.o(.text)
         SearchMenuDrawGame.o(.text)
@@ -78,4 +79,5 @@ SECTIONS {
     StringEnglish = 0x03004200;
     MenuState = 0x03005760;
     MenuBusy = 0x03005754;
+    SearchMenuCursor = 0x03005691;
 }
