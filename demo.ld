@@ -23,7 +23,7 @@ SECTIONS {
         dump/baserom_demo_0fa0.o(.text)
         SearchMenuClearGame.o(.text)
         GameListInit.o(.text)
-        dump/baserom_demo_1190.o(.text)
+        SearchMenuDrawList.o(.text)
         SearchMenuDrawGame.o(.text)
         dump/baserom_demo_124c.o(.text)
         dump/baserom_demo_1280.o(.text)
@@ -163,4 +163,5 @@ SECTIONS {
     MenuState = 0x03005760;
     MenuBusy = 0x03005754;
     SearchMenuCursor = 0x03005691;
+    GameListBits = 0x03005721;
 }

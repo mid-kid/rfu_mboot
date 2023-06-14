@@ -50,7 +50,7 @@ split .text 0x0fa0
 split .text 0x1118
 split .text 0x1158 SearchMenuClearGame
 split .text 0x1190 GameListInit
-split .text 0x1204
+split .text 0x1204 SearchMenuDrawList
 split .text 0x124c SearchMenuDrawGame
 split .text 0x1280
 split .text 0x12b8
