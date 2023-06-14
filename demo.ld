@@ -25,7 +25,7 @@ SECTIONS {
         GameListInit.o(.text)
         SearchMenuDrawList.o(.text)
         SearchMenuDrawGame.o(.text)
-        dump/baserom_demo_124c.o(.text)
+        SearchMenuProcNextState.o(.text)
         dump/baserom_demo_1280.o(.text)
         MenuMsgSet.o(.text)
         FrameCountReset.o(.text)
@@ -164,4 +164,5 @@ SECTIONS {
     MenuBusy = 0x03005754;
     SearchMenuCursor = 0x03005691;
     GameListBits = 0x03005721;
+    SearchMenuErrorMsg = 0x03005693;
 }
