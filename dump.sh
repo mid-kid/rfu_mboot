@@ -36,11 +36,23 @@ split .text 0x0534 MainMenuProc
 split .text 0x0654 SearchMenuInit
 split .text 0x06c0 SearchMenuDrawListTitle
 split .text 0x0c08 SearchMenuProc
+split .text 0x0c90
+split .text 0x0e10
+split .text 0x0eb0
+split .text 0x0ed0
+split .text 0x0efc
+split .text 0x0f10
+split .text 0x0f28
+split .text 0x0f5c
+split .text 0x0f6c
+split .text 0x0f84
+split .text 0x0fa0
 split .text 0x1118
 split .text 0x1158 SearchMenuClearGame
 split .text 0x1190 GameListInit
 split .text 0x1204
 split .text 0x124c SearchMenuDrawGame
+split .text 0x1280
 split .text 0x12b8
 split .text 0x1310 MenuMsgSet
 split .text 0x131c FrameCountReset
@@ -61,8 +73,79 @@ split .text 0x16a0 SoundInit
 split .text 0x1728 SoundMain
 split .text 0x1758 SoundPlaySfx
 split .text 0x1768 SoundStop
+split .text 0x17a0
+split .text 0x180c
+split .text 0x1b20
+split .text 0x1e20
+split .text 0x1ee0
+split .text 0x1f20
+split .text 0x1f58
+split .text 0x2020
+split .text 0x2060
+split .text 0x20c8
+split .text 0x210c
+split .text 0x2150
+split .text 0x2194
+split .text 0x221c
+split .text 0x2278
+split .text 0x22bc
+split .text 0x2300
+split .text 0x2344
+split .text 0x2390
+split .text 0x23d4
+split .text 0x2418
+split .text 0x2480
+split .text 0x24c4
+split .text 0x2508
+split .text 0x2554
+split .text 0x2598
+split .text 0x25ec
+split .text 0x25fc
 split .text 0x2664
 split .text 0x26d0 Sio32Init
+split .text 0x27a0
+split .text 0x286c
+split .text 0x2894
+split .text 0x292c
+split .text 0x2984
+split .text 0x29a0
+split .text 0x2a40
+split .text 0x2a60
+split .text 0x2a70
+split .text 0x2a8c
+split .text 0x2aa8
+split .text 0x2b70
+split .text 0x2bc4
+split .text 0x2d08
+split .text 0x2d18
+split .text 0x2d34
+split .text 0x2d4c
+split .text 0x2d74
+split .text 0x2eb0
+split .text 0x2f28
+split .text 0x2f58
+split .text 0x2f64
+split .text 0x2fb0
+split .text 0x2fd4
+split .text 0x2fe0
+split .text 0x3044
+split .text 0x3078
+split .text 0x3184
+split .text 0x31c8
+split .text 0x31f4
+split .text 0x3224
+split .text 0x33a8
+split .text 0x3454
+split .text 0x353c
+split .text 0x36ec
+split .text 0x37b8
+split .text 0x3808
+split .text 0x397c
+split .text 0x3b60
+split .text 0x3ce0
+split .text 0x3d38
+split .text 0x3e04
+split .text 0x3e44
 split .text 0x3ed0 # Library start
 split .text 0x3f38
 split .rodata 0x3f70
