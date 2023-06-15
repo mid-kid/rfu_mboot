@@ -12,9 +12,9 @@ extern void MenuMsgBlink(u8 Msg, u8 Rate);
 extern void SoundPlaySfx(u8 Num);
 extern void MenuMsgInit(void);
 extern void SearchMenuInit(void);
-extern void SearchMenuProc(void);
+extern void SearchMenu(void);
 
-void MainMenuProc(void)
+void MainMenu(void)
 {
     MenuMsgBlink(6, 0x40);
 
@@ -28,6 +28,6 @@ void MainMenuProc(void)
         MenuMsgInit();
         SoundPlaySfx(2);
         SearchMenuInit();
-        Proc = SearchMenuProc;
+        Proc = SearchMenu;
     }
 }
