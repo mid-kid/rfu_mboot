@@ -17,7 +17,7 @@ AGBLIB	=	$(AGBDIR)/lib
 
 ASFLAGS    =          -I$(AGBINC) -mthumb-interwork
 CFLAGS     =   -g -O2 -I$(AGBINC) -mthumb-interwork \
-               -nostdlib -Wall #-DNDEBUG
+               -nostdlib -Wall -Werror #-DNDEBUG
 LDFLAGS    +=  -Map $(MAPFILE) -nostartfiles \
                -T $(LINKFILE) \
                -L$(AGBLIB) -lagbsyscall -lisagbprn

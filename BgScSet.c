@@ -2,7 +2,7 @@
 
 extern u16 BgBak[32*20];
 
-u16 *BgScSet(u16 Pos, u16 PlttNo, char *Srcp)
+u16 *BgScSet(u16 Pos, u16 PlttNo, const char *Srcp)
 {
     u16 *bg;
 

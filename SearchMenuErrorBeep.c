@@ -1,5 +1,7 @@
 #include <Agb.h>
 
+extern void SoundPlaySfx(u8 Num);
+
 extern struct Sound {
     u16 *basePtr;
     u16 *playPtr;
