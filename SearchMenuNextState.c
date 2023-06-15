@@ -2,7 +2,7 @@
 extern u8 MenuState;
 extern u8 SearchMenuErrorMsg;
 
-void SearchMenuProcNextState(u16 State)
+void SearchMenuNextState(u16 State)
 {
     if (!State) return;
 

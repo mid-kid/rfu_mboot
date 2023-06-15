@@ -25,7 +25,7 @@ SECTIONS {
         GameListInit.o(.text)
         SearchMenuDrawList.o(.text)
         SearchMenuDrawGame.o(.text)
-        SearchMenuProcNextState.o(.text)
+        SearchMenuNextState.o(.text)
         SearchMenuErrorBeep.o(.text)
         MenuMsgSet.o(.text)
         FrameCountReset.o(.text)

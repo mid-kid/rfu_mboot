@@ -32,10 +32,10 @@ split .text 0x02a0
 split .text 0x03bc
 split .text 0x04a8 MainMenuInit
 split .text 0x04c4 MenuMsgInit
-split .text 0x0534 MainMenuProc
+split .text 0x0534 MainMenu
 split .text 0x0654 SearchMenuInit
 split .text 0x06c0 SearchMenuDrawListTitle
-split .text 0x0c08 SearchMenuProc
+split .text 0x0c08 SearchMenu
 split .text 0x0c90
 split .text 0x0e10
 split .text 0x0eb0
@@ -52,7 +52,7 @@ split .text 0x1158 SearchMenuClearGame
 split .text 0x1190 GameListInit
 split .text 0x1204 SearchMenuDrawList
 split .text 0x124c SearchMenuDrawGame
-split .text 0x1280 SearchMenuProcNextState
+split .text 0x1280 SearchMenuNextState
 split .text 0x12b8 SearchMenuErrorBeep
 split .text 0x1310 MenuMsgSet
 split .text 0x131c FrameCountReset
