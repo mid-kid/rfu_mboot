@@ -9,8 +9,6 @@ SECTIONS {
         SearchMenuInit.o(.text)
         SearchMenuDrawListTitle.o(.text)
         SearchMenu.o(.text)
-        dump/baserom_demo_0c08.o(.text)
-        dump/baserom_demo_0c90.o(.text)
         dump/baserom_demo_0e10.o(.text)
         dump/baserom_demo_0eb0.o(.text)
         dump/baserom_demo_0ed0.o(.text)
@@ -165,4 +163,15 @@ SECTIONS {
     SearchMenuCursor = 0x03005691;
     GameListBits = 0x03005721;
     SearchMenuErrorMsg = 0x03005693;
+    GameLogoInitial = 0x03003f7c;
+    Mboot = 0x030060c0;
+    MbootBeaconID = 0x03005694;
+    MbootPeer = 0x03005692;
+    RfuBuf = 0x03006190;
+    RfuPeers = 0x03005f00;
+    SearchMenuEnd = 0x03005690;
+    SearchMenuErrorTimer = 0x03005750;
+    SearchMenuFoundGames = 0x03005720;
+    SearchMenuTimer = 0x03005696;
+    SearchProcTable = 0x03003f38;
 }

@@ -1,12 +1,444 @@
-#if 1
-__asm__("
-.section .text
-.global SearchMenu
-.type SearchMenu, function
-.thumb_func
-SearchMenu:
-.2byte 0xb5f0,0x2600,0x481e,0x7800,0x2800,0xd118,0xf003,0xfb9a,0x4b1c,0x7818,0x28c6,0xd012,0x4a1b,0x8016,0x491b,0x7808,0x3001,0x7008,0x0600,0x0e00,0x28f0,0xd906,0x2000,0x7008,0x200a,0x7018,0x4916,0x2004,0x7008,0x2001,0x8010,0x4811,0x7800,0x2884,0xd001,0x2892,0xd169,0xf000,0xfe81,0x4811,0x8801,0x20c0,0x4008,0x2800,0xd033,0x2040,0x4008,0x0400,0x0c02,0x2a00,0xd01a,0x480c,0x7801,0x3901,0x7001,0x2280,0x4011,0x1c03,0x2900,0xd01b,0x2003,0x7018,0xe018,0x0000,0x60c0,0x0300,0x5760,0x0300,0x0208,0x0400,0x5750,0x0300,0x5693,0x0300,0x5c94,0x0300,0x5691,0x0300,0x4917,0x7808,0x3001,0x7008,0x0600,0x0e00,0x1c0b,0x2803,0xd900,0x701a,0x4913,0x7818,0x0100,0x3033,0x43c0,0x8008,0x2000,0xf000,0xffd3,0x4810,0x8801,0x2001,0x4008,0x2800,0xd027,0x4d0e,0x4c0a,0x7820,0x0140,0x1940,0x8800,0x2800,0xd01f,0x2000,0xf000,0xfcf6,0x4909,0x7820,0x0140,0x1940,0x8800,0x8008,0x4907,0x7808,0x2884,0xd10d,0x2005,0xe00c,0x5691,0x0300,0x001a,0x0400,0x5c94,0x0300,0x56a0,0x0300,0x5694,0x0300,0x5760,0x0300,0x2006,0x7008,0x2002,0xf000,0xffa5,0x480a,0x8801,0x2002,0x4008,0x2800,0xd02a,0x4d08,0x7829,0x29a0,0xd10e,0xf000,0xfbbb,0x2000,0x7028,0xf000,0xfcad,0x2003,0xf000,0xff92,0xe01c,0x0000,0x5c94,0x0300,0x5760,0x0300,0x4f1c,0x7838,0x2800,0xd113,0x481b,0x7804,0x2c00,0xd10f,0x481a,0x7800,0x28ff,0xd10b,0x290a,0xd009,0x2991,0xd007,0xf000,0xfb9c,0x702c,0x2001,0x7038,0x2003,0xf000,0xff74,0x4c13,0x7821,0x2080,0x4008,0x2800,0xd108,0x4911,0x7820,0x0080,0x1840,0x6800,0xf003,0xfb51,0x0400,0x0c06,0x7820,0x2809,0xd100,0xe18e,0x2809,0xdc26,0x2803,0xd068,0x2803,0xdc12,0x2801,0xd058,0x2801,0xdd00,0xe14d,0x2800,0xd03a,0xe1b3,0x0000,0x5690,0x0300,0x5754,0x0300,0x5693,0x0300,0x5760,0x0300,0x3f38,0x0300,0x2806,0xd100,0xe0d0,0x2806,0xdc03,0x2805,0xd100,0xe07b,0xe19f,0x2807,0xd100,0xe0e5,0x2808,0xd100,0xe104,0xe198,0x2884,0xd051,0x2884,0xdc08,0x280b,0xd100,0xe165,0x280b,0xdb10,0x280c,0xd100,0xe12d,0xe18b,0x28c2,0xdc06,0x28c1,0xdb00,0xe15d,0x2892,0xd100,0xe082,0xe182,0x28c5,0xd100,0xe156,0xe17e,0x2e00,0xd000,0xe17b,0x7026,0xe179,0x2e00,0xd000,0xe176,0x4904,0x20ff,0x7008,0x4804,0x7800,0x2800,0xd006,0x200b,0x7020,0xe16c,0x5693,0x0300,0x5690,0x0300,0x2001,0x7020,0x206b,0x2101,0x2208,0xf000,0xfe2b,0xe160,0x2e00,0xd000,0xe15d,0x2003,0x7020,0xf000,0xfced,0x4801,0x7006,0xe156,0x5720,0x0300,0x2e00,0xd000,0xe151,0x2084,0x7020,0x4803,0x8006,0x4903,0x203c,0x8008,0xe149,0x0000,0x5694,0x0300,0x5696,0x0300,0x4804,0x7800,0x2800,0xd007,0x2009,0x2100,0xf000,0xfca4,0xe006,0x0000,0x5720,0x0300,0x2008,0x2140,0xf000,0xfcce,0x4905,0x8808,0x3801,0x8008,0x0400,0x2800,0xd000,0xe12c,0x4902,0x2005,0x7008,0xe128,0x5696,0x0300,0x5760,0x0300,0x2e00,0xd000,0xe121,0x4d07,0x8828,0x2833,0xd803,0xf000,0xfaf7,0x4905,0x7008,0x4805,0x8800,0x2800,0xd008,0x2006,0x7020,0xe112,0x5696,0x0300,0x5720,0x0300,0x5694,0x0300,0x2092,0x7020,0x2196,0x0049,0x1c08,0x8028,0x4801,0x7006,0xe103,0x0000,0x5698,0x0300,0x4807,0x7800,0x2800,0xd013,0x2009,0x2100,0xf000,0xfc60,0x4804,0x8800,0x28b4,0xd907,0x2001,0xf000,0xfbc5,0xe00b,0x5720,0x0300,0x5696,0x0300,0x2000,0xf000,0xfbbd,0xe003,0x2008,0x2140,0xf000,0xfc7e,0x4905,0x8808,0x3801,0x8008,0x0400,0x2800,0xd000,0xe0dc,0x4902,0x2003,0x7008,0xe0d8,0x5696,0x0300,0x5760,0x0300,0x2e00,0xd10d,0x2080,0x0080,0x2102,0x2220,0xf000,0xfd96,0x4902,0x2078,0x8008,0x2007,0x7020,0xe0c6,0x5696,0x0300,0x2090,0x0100,0x4286,0xd000,0xe0bf,0x2600,0x4802,0x7006,0x20c1,0x7020,0xe0b9,0x0000,0x5693,0x0300,0x2e00,0xd102,0x2008,0x7020,0xe0b1,0x480c,0x8801,0x3901,0x8001,0x2180,0x0209,0x4031,0x1c02,0x2900,0xd006,0x20ff,0x4006,0x2e02,0xd101,0x2000,0x8010,0x2600,0x8810,0x2800,0xd000,0xe09c,0x4902,0x2008,0x7008,0xe098,0x5696,0x0300,0x5760,0x0300,0x2e00,0xd000,0xe091,0x480d,0x8800,0x2800,0xd01e,0x480c,0x6800,0x79c0,0x2800,0xd119,0xf000,0xfb1e,0x4809,0xf002,0xfa3b,0x4809,0x7801,0x2280,0x0492,0x2380,0x02db,0x2020,0xf002,0xfb48,0x2002,0x7020,0xe077,0x0000,0x5696,0x0300,0x6190,0x0300,0x0e11,0x0300,0x5692,0x0300,0x4901,0x2000,0x7008,0xe02d,0x5693,0x0300,0x2e00,0xd166,0x4802,0x211e,0x8001,0x200c,0x7020,0xe060,0x5696,0x0300,0x2e00,0xd115,0x4907,0x4808,0x7800,0x6809,0x1840,0x7900,0x2800,0xd00d,0x2009,0x7020,0x4a04,0x206b,0x2102,0xf000,0xfcfd,0xe04c,0x6190,0x0300,0x5692,0x0300,0x6169,0x0300,0x4906,0x8808,0x3801,0x8008,0x0400,0x0c01,0x2900,0xd13e,0x4803,0x7001,0x4903,0x20c1,0x7008,0xe038,0x5696,0x0300,0x5693,0x0300,0x5760,0x0300,0x2e00,0xd130,0xf000,0xfbc2,0x2090,0x7020,0xe02b,0x2e00,0xd129,0xe023,0x480a,0x7800,0x2101,0xf000,0xfb8b,0xf000,0xfb6d,0x4808,0x2101,0x2218,0xf000,0xfce6,0xf000,0xfad2,0x4905,0x7808,0x28c1,0xd109,0x2000,0x7008,0xe013,0x0000,0x5693,0x0300,0x0243,0x0000,0x5760,0x0300,0x28c5,0xd102,0x200a,0x7008,0xe007,0x2003,0xf000,0xfda4,0xf7ff,0xfbec,0x4906,0x4807,0x6008,0xf000,0xf80d,0xf000,0xf84f,0x1c30,0xf000,0xfb2a,0xbcf0,0xbc01,0x4700,0x0000,0x5c90,0x0300,0x04c5,0x0300
-.size SearchMenu, .-SearchMenu
-");
-#else
-#endif
+#include <Agb.h>
+
+#include "Mboot.h"
+extern void FUN_03003e04(void);
+extern void KeyRepeatHold(void);
+extern void SoundPlaySfx(u8 Num);
+extern void SearchMenuDrawList(u8 Blink);
+extern void RfuDataWait(void);
+extern void GameListInit(void);
+extern void BgScClear(u16 Pos, u8 Height, u8 Width);
+extern void FrameCountReset(void);
+extern u8 SearchMenuCheckGames(void);
+extern void SearchMenuClearGame(void);
+extern void Sio32IntrProcSet(void *Func);
+extern void Sio32IntrProc_Unk0e10(void);
+extern u32 RfuMbootCfg(u32 param_1, u8 Client, void *Dest, u32 Size);
+extern void MainMenuInit(void);
+extern struct Mboot Mboot;
+extern void MainMenu(void);
+extern u16 *BgScSet(u16 Pos, u16 PlttNo, char *Srcp);
+extern void MenuMsgBlink(u8 Msg, u8 Rate);
+extern void MenuMsgSet(u8 Msg, u16 PlttNo);
+extern void SearchMenuErrorBeep(void);
+extern void SearchMenuErrorCheck(u16 State);
+void SearchMenuMbootStart(void);
+void SearchMenuMbootDL(void);
+extern u8 MenuState;
+extern u8 SearchMenuErrorTimer;
+extern u8 SearchMenuErrorMsg;
+extern u8 SearchMenuCursor;
+extern struct GameInfo GameList[4];
+extern u16 MbootBeaconID;
+extern u8 SearchMenuEnd;
+extern u8 MenuBusy;
+extern u16 (*SearchProcTable[])(void);
+extern u8 SearchMenuFoundGames;
+extern u16 SearchMenuTimer;
+extern u8 FrameCount;
+extern struct RfuBuf {
+    u8 *recv;
+    u8 *send;
+} RfuBuf;
+extern u8 MbootPeer;
+extern void (*Proc)();
+
+extern struct Keys {
+    u16 trg;
+    u16 cont;
+} Keys;
+
+enum SearchMenuState {
+    // Correspond to entries in SearchProcTable
+    SEARCH_START,
+    SEARCH_RADIOCFG,
+    SEARCH_SETGAMEINFO,
+    SEARCH_DISCOSTART,
+    SEARCH_0x1d,
+    SEARCH_DISCORES,
+    SEARCH_CONNECT,
+    SEARCH_CONNCHECK,
+    SEARCH_CONNREADY,
+    SEARCH_WAITDATA,
+    SEARCH_BOOT,
+    SEARCH_END,
+    SEARCH_STATUS,
+    SEARCH_0x13,
+
+    // Standalone states
+    SEARCH_SELECT_DISCO = 0x84,
+    SEARCH_MBOOT_START = 0x90,
+    SEARCH_MBOOT_START_CHECK = 0x91,
+    SEARCH_SELECT = 0x92,
+    SEARCH_MBOOT_DL_START = 0xa0,
+    SEARCH_MBOOT_DL = 0xa1,
+    SEARCH_ERROR_RESTART = 0xc1,
+    SEARCH_ERROR_END = 0xc2,
+    SEARCH_ERROR_REBOOT = 0xc5,
+    SEARCH_MBOOT_DL_COMPLETE = 0xc6,
+    SEARCH_MBOOT_EXEC = 0xc7
+};
+
+void SearchMenu(void)
+{
+    u16 procRes = 0;
+
+    if (Mboot.mode == 0) {
+        FUN_03003e04();
+
+        if (MenuState != SEARCH_MBOOT_DL_COMPLETE) {
+            *(vu16 *)REG_IME = 0;
+            SearchMenuErrorTimer++;
+            if (SearchMenuErrorTimer > 4 * 60) {
+                SearchMenuErrorTimer = 0;
+                MenuState = SEARCH_BOOT;
+                SearchMenuErrorMsg = 4;  // ERROR OCCURRED!
+            }
+            *(vu16 *)REG_IME = 1;
+        }
+    }
+
+    if (MenuState == SEARCH_SELECT_DISCO || MenuState == SEARCH_SELECT) {
+        KeyRepeatHold();
+
+        // Move the cursor
+        if (Keys.trg & (U_KEY | D_KEY)) {
+            if (Keys.trg & U_KEY) {
+                SearchMenuCursor--;
+                if (SearchMenuCursor & 0x80) SearchMenuCursor = 3;
+            } else {
+                SearchMenuCursor++;
+                if (SearchMenuCursor > 3) SearchMenuCursor = 0;
+            }
+            *(vu16 *)REG_BG2VOFS = ~(SearchMenuCursor * 16 + 51);
+            SoundPlaySfx(0);
+        }
+
+        // Select game
+        if (Keys.trg & A_BUTTON && GameList[SearchMenuCursor].beaconID) {
+            SearchMenuDrawList(FALSE);
+            MbootBeaconID = GameList[SearchMenuCursor].beaconID;
+            if (MenuState == SEARCH_SELECT_DISCO) {
+                MenuState = SEARCH_DISCORES;
+            } else {
+                MenuState = SEARCH_CONNECT;
+            }
+            SoundPlaySfx(2);
+        }
+    }
+
+    if (Keys.trg & B_BUTTON) {
+        if (MenuState == SEARCH_MBOOT_DL_START) {
+            RfuDataWait();
+            MenuState = SEARCH_START;
+            GameListInit();
+            SoundPlaySfx(3);
+        } else if (!SearchMenuEnd &&
+                !MenuBusy &&
+                SearchMenuErrorMsg == (u8)-1 &&
+                MenuState != SEARCH_BOOT &&
+                MenuState != SEARCH_MBOOT_START_CHECK) {
+            RfuDataWait();
+            MenuState = SEARCH_START;
+            SearchMenuEnd = TRUE;
+            SoundPlaySfx(3);
+        }
+    }
+
+    if (!(MenuState & 0x80)) procRes = SearchProcTable[MenuState]();
+
+    switch (MenuState) {
+    case SEARCH_BOOT:
+        // Resets and boots the adapter
+        if (procRes == 0) MenuState = SEARCH_START;
+        break;
+
+    case SEARCH_START:
+        if (procRes == 0) {
+            SearchMenuErrorMsg = -1;
+            if (SearchMenuEnd != FALSE) {
+                MenuState = SEARCH_END;
+            } else {
+                MenuState = SEARCH_RADIOCFG;
+                BgScClear(0x6b, 1, 8);
+            }
+        }
+        break;
+
+    case SEARCH_RADIOCFG:
+        if (procRes == 0) {
+            MenuState = SEARCH_DISCOSTART;
+            FrameCountReset();
+            SearchMenuFoundGames = 0;
+        }
+        break;
+
+    case SEARCH_DISCOSTART:
+        // Starts game discovery
+        if (procRes == 0) {
+            MenuState = SEARCH_SELECT_DISCO;
+            MbootBeaconID = 0;
+            SearchMenuTimer = 1 * 60;
+        }
+        break;
+
+    case SEARCH_SELECT_DISCO:
+        // Wait one second for discovery to finish
+        if (SearchMenuFoundGames) {
+            MenuMsgSet(9, 0);  // SELECT A GAME
+        } else {
+            MenuMsgBlink(8, 0x40);  // NOW SEARCHING...
+        }
+
+        SearchMenuTimer--;
+        if (SearchMenuTimer == 0) MenuState = SEARCH_DISCORES;
+        break;
+
+    case SEARCH_DISCORES:
+        // Get discovery results
+        if (procRes == 0) {
+            if (SearchMenuTimer < 60 - 8) {
+                SearchMenuFoundGames = SearchMenuCheckGames();
+            }
+
+            if (MbootBeaconID) {
+                MenuState = SEARCH_CONNECT;
+            } else {
+                MenuState = SEARCH_SELECT;
+                SearchMenuTimer = 5 * 60;
+                FrameCount = 0;
+            }
+        }
+        break;
+
+    case SEARCH_SELECT:
+        // Allow the player to select a game
+        // Restart discovery after 5 seconds
+        if (SearchMenuFoundGames != 0) {
+            MenuMsgSet(9, 0);  // SELECT A GAME
+            if (SearchMenuTimer > 3 * 60) {
+                SearchMenuDrawList(TRUE);
+            } else {
+                SearchMenuDrawList(FALSE);
+            }
+        } else {
+            MenuMsgBlink(8, 0x40);  // NOW SEARCHING...
+        }
+
+        SearchMenuTimer--;
+        if (SearchMenuTimer == 0) MenuState = SEARCH_DISCOSTART;
+        break;
+
+    case SEARCH_CONNECT:
+        // Start connecting to a game
+        if (procRes == 0) {
+            BgScClear(0x200, 2, 0x20);
+            SearchMenuTimer = 2 * 60;
+            MenuState = SEARCH_CONNCHECK;
+        } else if (procRes == 0x900) {
+            procRes = 0;
+            SearchMenuErrorMsg = 0;  // CONNECTION ATTEMPT FAILED!
+            MenuState = SEARCH_ERROR_RESTART;
+        }
+        break;
+
+    case SEARCH_CONNCHECK:
+        // Wait a maximum of two seconds for the connection to complete
+        if (procRes == 0) {
+            MenuState = SEARCH_CONNREADY;
+            break;
+        }
+
+        SearchMenuTimer--;
+        if (procRes & 0x8000) {
+            if ((procRes & 0xff) == 2) SearchMenuTimer = 0;
+            procRes = 0;
+        }
+        if (SearchMenuTimer == 0) MenuState = SEARCH_CONNREADY;
+        break;
+
+    case SEARCH_CONNREADY:
+        // Initialize multiboot download
+        if (procRes == 0) {
+            if (SearchMenuTimer > 0 && RfuBuf.recv[7] == 0) {
+                SearchMenuClearGame();
+                Sio32IntrProcSet(Sio32IntrProc_Unk0e10);
+                RfuMbootCfg(0x20, MbootPeer, (void *)EX_WRAM, EX_WRAM_SIZE);
+                MenuState = SEARCH_SETGAMEINFO;
+            } else {
+                SearchMenuErrorMsg = 0;  // CONNECTION ATTEMPT FAILED!
+                MenuState = SEARCH_ERROR_RESTART;
+            }
+        }
+        break;
+
+    case SEARCH_SETGAMEINFO:
+        // Set the timer for the next step
+        if (procRes == 0) {
+            SearchMenuTimer = 0.5 * 60;
+            MenuState = SEARCH_STATUS;
+        }
+        break;
+
+    case SEARCH_STATUS:
+        // Check if peer is still connected
+        if (procRes == 0) {
+            if (RfuBuf.recv[4 + MbootPeer]) {
+                MenuState = SEARCH_WAITDATA;
+                BgScSet(0x6b, 2, Mboot.curGame.userName);
+                break;
+            }
+        }
+
+        SearchMenuTimer--;
+        if (SearchMenuTimer == 0) {
+            SearchMenuErrorMsg = 0;  // CONNECTION ATTEMPT FAILED!
+            MenuState = SEARCH_ERROR_RESTART;
+        }
+        break;
+
+    case SEARCH_WAITDATA:
+        if (procRes == 0) {
+            FrameCountReset();
+            MenuState = SEARCH_MBOOT_START;
+        }
+        break;
+
+    case SEARCH_END:
+        // Return to main menu
+        if (procRes == 0) {
+            MainMenuInit();
+            Proc = MainMenu + 1;
+        }
+        break;
+
+    case SEARCH_ERROR_RESTART:
+    case SEARCH_ERROR_END:
+    case SEARCH_ERROR_REBOOT:
+        MenuMsgSet(SearchMenuErrorMsg, 1);
+        SearchMenuErrorBeep();
+
+        BgScClear(0x243, 1, 0x18);
+        GameListInit();
+
+        if (MenuState == SEARCH_ERROR_RESTART) {
+            MenuState = SEARCH_START;
+        } else if (MenuState == SEARCH_ERROR_REBOOT) {
+            MenuState = SEARCH_BOOT;
+        } else {
+            // MenuState == SEARCH_ERROR_END
+            SoundPlaySfx(3);
+            MainMenuInit();
+            Proc = MainMenu + 1;
+        }
+        break;
+    }
+
+    SearchMenuMbootStart();
+    SearchMenuMbootDL();
+    SearchMenuErrorCheck(procRes);
+}
+
+struct RfuPeer {
+    u16 sub[2][0x1a];
+    void *mbootDest;
+    u32 mbootSize;
+};
+
+extern u32 FUN_03003078(u8 param_1, u8 Peer);
+extern u16 MbootDLStart(u8 Peer, u16 param_2);
+extern struct RfuPeer RfuPeers[4];
+
+void SearchMenuMbootStart(void)
+{
+    switch (MenuState) {
+    case SEARCH_MBOOT_START:
+        MbootDLStart(MbootPeer, 8);
+        MenuState = SEARCH_MBOOT_START_CHECK;
+        break;
+
+    case SEARCH_MBOOT_START_CHECK:
+        if (RfuPeers[MbootPeer].sub[0][0] == 0x27) {
+            MenuState = SEARCH_MBOOT_DL_START;
+            FUN_03003078(4, MbootPeer);
+        }
+        if (RfuPeers[MbootPeer].sub[0][1] > 0xfa) {
+            SearchMenuErrorMsg = 0;  // CONNECTION ATTEMPT FAILED!
+            MenuState = SEARCH_ERROR_REBOOT;
+            FUN_03003078(4, MbootPeer);
+        }
+
+        if (MenuState != SEARCH_MBOOT_START_CHECK) FrameCountReset();
+    }
+}
+
+extern u8 RfuStrcmp(const char *Str1, const char *Str2);
+extern const u8 GameLogoInitial[10];
+
+void SearchMenuMbootDL(void)
+{
+    u16 *data;
+
+    data = RfuPeers[MbootPeer].sub[1];
+
+    switch (MenuState) {
+    case SEARCH_MBOOT_DL_START:
+        MenuMsgBlink(10, 0x40);  // WAITING FOR DATA...
+        if ((data[0] & 0x8000) != 0) {
+            SoundPlaySfx(4);
+            FrameCountReset();
+            MenuState = SEARCH_MBOOT_DL;
+            MenuBusy = TRUE;
+        } else if (data[0] == 0x49) {
+            SearchMenuErrorMsg = 1;  // DOWNLOAD FAILED!
+            MenuState = SEARCH_ERROR_REBOOT;
+        }
+        break;
+
+    case SEARCH_MBOOT_DL:
+        MenuMsgBlink(0xb, 0x20);  // DOWNLOADING...
+        if (data[0] == 0x47) {
+            if (RfuStrcmp(GameLogoInitial, (void *)0x02000004) == 0) {
+                SoundPlaySfx(5);
+                SearchMenuTimer = 0x78;
+                MenuMsgSet(0xc, 2);  // DOWNLOAD COMPLETED!
+                MenuState = SEARCH_MBOOT_DL_COMPLETE;
+            } else {
+                SearchMenuErrorMsg = 2;  // INVALID DATA RECEIVED!
+                MenuState = SEARCH_ERROR_RESTART;
+            }
+            FUN_03003078(0xc, MbootPeer);
+            RfuDataWait();
+        } else if (data[1] > 0xfa || data[0] == 0x49) {
+            SearchMenuErrorMsg = 1;  // DOWNLOAD FAILED!
+            MenuState = SEARCH_ERROR_REBOOT;
+        }
+        break;
+
+    case SEARCH_MBOOT_DL_COMPLETE:
+        SearchMenuTimer--;
+        if (SearchMenuTimer == 0) MenuState = SEARCH_MBOOT_EXEC;
+        break;
+    }
+
+    if (MenuState == SEARCH_MBOOT_EXEC) {
+        u16 x;
+        u16 sum;
+        u16 *ptr;
+
+        CpuCopy(&Mboot, 0x03000000, sizeof(Mboot), 16);
+        CpuCopy(GameLogoInitial, 0x030000f0, sizeof(GameLogoInitial), 16);
+
+        ptr = (void *)0x03000000;
+        sum = 0;
+        for (x = 0; x < 0x5a; x++) {
+            sum += *ptr++;
+        }
+
+        *(u16 *)0x030000fa = sum;
+        *(vu16 *)REG_IME = 0;
+
+        *(vu8 *)SOFT_RESET_DIRECT_BUF = 1;
+        SoftReset(0xdc);
+    }
+}
