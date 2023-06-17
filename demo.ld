@@ -74,7 +74,7 @@ SECTIONS {
         dump/baserom_demo_25ec.o(.text)
         dump/baserom_demo_25fc.o(.text)
         Sio32Init.o(.text)
-        dump/baserom_demo_26d0.o(.text)
+        Sio32InitUpdate.o(.text)
         dump/baserom_demo_27a0.o(.text)
         dump/baserom_demo_286c.o(.text)
         dump/baserom_demo_2894.o(.text)

@@ -36,8 +36,8 @@ split .text 0x0534 MainMenu
 split .text 0x0654 SearchMenuInit
 split .text 0x06c0 SearchMenuDrawListTitle
 split .text 0x0c08 SearchMenu
-split .text 0x0c90
-split .text 0x0e10
+split .text 0x0c90 SearchMenuMbootStart
+split .text 0x0e10 SearchMenuMbootDL
 split .text 0x0eb0
 split .text 0x0ed0
 split .text 0x0efc
@@ -103,7 +103,7 @@ split .text 0x25ec
 split .text 0x25fc
 split .text 0x2664
 split .text 0x26d0 Sio32Init
-split .text 0x27a0
+split .text 0x27a0 Sio32InitUpdate
 split .text 0x286c
 split .text 0x2894
 split .text 0x292c
