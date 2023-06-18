@@ -175,4 +175,5 @@ SECTIONS {
     SearchMenuTimer = 0x03005696;
     SearchProcTable = 0x03003f38;
     LZ_450c = 0x0300450c;
+    Rfu = 0x03005ca0;
 }
