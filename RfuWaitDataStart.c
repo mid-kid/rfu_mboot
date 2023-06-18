@@ -1,7 +1,7 @@
 #if 1
 __asm__("
 .section .text
-@.global RfuWaitDataStart
+.global RfuWaitDataStart
 .type RfuWaitDataStart, function
 .thumb_func
 RfuWaitDataStart:
