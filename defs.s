@@ -13,3 +13,4 @@ tdef SearchMenuCheckGames, 0x03000fa0
 tdef Sio32IntrProcSet, 0x03002f58
 tdef Sio32IntrProc_Unk0e10, 0x03000e10
 tdef MbootInit, 0x03002fe0
+tdef RfuCmd_WaitData, 0x030024c4
