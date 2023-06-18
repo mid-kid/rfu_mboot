@@ -174,4 +174,5 @@ SECTIONS {
     SearchMenuFoundGames = 0x03005720;
     SearchMenuTimer = 0x03005696;
     SearchProcTable = 0x03003f38;
+    LZ_450c = 0x0300450c;
 }
