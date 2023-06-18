@@ -45,7 +45,7 @@ split .text 0x0f10
 split .text 0x0f28
 split .text 0x0f5c
 split .text 0x0f6c
-split .text 0x0f84
+split .text 0x0f84 RfuWaitData
 split .text 0x0fa0
 split .text 0x1118
 split .text 0x1158 SearchMenuClearGame
@@ -125,9 +125,9 @@ split .text 0x2eb0
 split .text 0x2f28
 split .text 0x2f58
 split .text 0x2f64
-split .text 0x2fb0
-split .text 0x2fd4
-split .text 0x2fe0
+split .text 0x2fb0 RfuWaitDataStart
+split .text 0x2fd4 RfuWaitDataStartForce
+split .text 0x2fe0 RfuWaitDataDone
 split .text 0x3044
 split .text 0x3078
 split .text 0x3184

@@ -1,0 +1,12 @@
+#if 1
+__asm__("
+.section .text
+@.global RfuWaitDataStartForce
+.type RfuWaitDataStartForce, function
+.thumb_func
+RfuWaitDataStartForce:
+.2byte 0xb500,0x2100,0x4a04,0x7850,0x2800,0xd107,0xf7ff,0xfa82,0x0400,0x0c01,0xe003,0x0000,0x6180,0x0300,0x7051,0x1c08,0xbc02,0x4708
+.size RfuWaitDataStartForce, .-RfuWaitDataStartForce
+");
+#else
+#endif

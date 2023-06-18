@@ -5,7 +5,7 @@ extern void FUN_03003e04(void);
 extern void KeyRepeatHold(void);
 extern void SoundPlaySfx(u8 Num);
 extern void SearchMenuDrawList(u8 Blink);
-extern void RfuDataWait(void);
+extern void RfuWaitData(void);
 extern void GameListInit(void);
 extern void BgScClear(u16 Pos, u8 Height, u8 Width);
 extern void FrameCountReset(void);
@@ -129,7 +129,7 @@ void SearchMenu(void)
 
     if (Keys.trg & B_BUTTON) {
         if (MenuState == SEARCH_MBOOT_DL_START) {
-            RfuDataWait();
+            RfuWaitData();
             MenuState = SEARCH_START;
             GameListInit();
             SoundPlaySfx(3);
@@ -138,7 +138,7 @@ void SearchMenu(void)
                 SearchMenuErrorMsg == (u8)-1 &&
                 MenuState != SEARCH_BOOT &&
                 MenuState != SEARCH_MBOOT_START_CHECK) {
-            RfuDataWait();
+            RfuWaitData();
             MenuState = SEARCH_START;
             SearchMenuEnd = TRUE;
             SoundPlaySfx(3);
@@ -408,7 +408,7 @@ void SearchMenuMbootDL(void)
                 MenuState = SEARCH_ERROR_RESTART;
             }
             FUN_03003078(0xc, MbootPeer);
-            RfuDataWait();
+            RfuWaitData();
         } else if (data[1] > 0xfa || data[0] == 0x49) {
             SearchMenuErrorMsg = 1;  // DOWNLOAD FAILED!
             MenuState = SEARCH_ERROR_REBOOT;

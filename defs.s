@@ -4,7 +4,6 @@
 .endm
 
 tdef DemoMain, 0x030002a0
-tdef RfuDataWait, 0x03000f6c
 tdef FUN_03003078, 0x03003078
 tdef MbootDLStart, 0x030031f4
 tdef FUN_03003e04, 0x03003e04
