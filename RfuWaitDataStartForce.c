@@ -1,12 +1,21 @@
-#if 1
-__asm__("
-.section .text
-@.global RfuWaitDataStartForce
-.type RfuWaitDataStartForce, function
-.thumb_func
-RfuWaitDataStartForce:
-.2byte 0xb500,0x2100,0x4a04,0x7850,0x2800,0xd107,0xf7ff,0xfa82,0x0400,0x0c01,0xe003,0x0000,0x6180,0x0300,0x7051,0x1c08,0xbc02,0x4708
-.size RfuWaitDataStartForce, .-RfuWaitDataStartForce
-");
-#else
-#endif
+#include <Agb.h>
+
+extern u16 RfuCmd_WaitData(void);
+
+extern struct {
+    u8 _;
+    u8 field1_0x1;
+} struct_unk_6180;
+
+u16 RfuWaitDataStartForce(void)
+{
+    u16 ret = 0;
+
+    if (struct_unk_6180.field1_0x1 == 0) {
+        ret = RfuCmd_WaitData();
+    } else {
+        struct_unk_6180.field1_0x1 = 0;
+    }
+
+    return ret;
+}
