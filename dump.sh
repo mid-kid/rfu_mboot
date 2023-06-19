@@ -47,7 +47,7 @@ split .text 0x0f5c
 split .text 0x0f6c
 split .text 0x0f84 RfuWaitData
 split .text 0x0fa0
-split .text 0x1118
+split .text 0x1118 SearchMenuUpdateGames
 split .text 0x1158 SearchMenuClearGame
 split .text 0x1190 GameListInit
 split .text 0x1204 SearchMenuDrawList

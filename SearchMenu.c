@@ -9,7 +9,7 @@ extern void RfuWaitData(void);
 extern void GameListInit(void);
 extern void BgScClear(u16 Pos, u8 Height, u8 Width);
 extern void FrameCountReset(void);
-extern u8 SearchMenuCheckGames(void);
+extern u8 SearchMenuUpdateGames(void);
 extern void SearchMenuClearGame(void);
 extern void Sio32IntrProcSet(void *Func);
 extern void Sio32IntrProc_Unk0e10(void);
@@ -33,7 +33,7 @@ extern u16 MbootBeaconID;
 extern u8 SearchMenuEnd;
 extern u8 MenuBusy;
 extern u16 (*SearchProcTable[])(void);
-extern u8 SearchMenuFoundGames;
+extern u8 GameListBits;
 extern u16 SearchMenuTimer;
 extern u8 FrameCount;
 extern struct RfuBuf {
@@ -169,7 +169,7 @@ void SearchMenu(void)
         if (procRes == 0) {
             MenuState = SEARCH_DISCOSTART;
             FrameCountReset();
-            SearchMenuFoundGames = 0;
+            GameListBits = 0;
         }
         break;
 
@@ -184,7 +184,7 @@ void SearchMenu(void)
 
     case SEARCH_SELECT_DISCO:
         // Wait one second for discovery to finish
-        if (SearchMenuFoundGames) {
+        if (GameListBits) {
             MenuMsgSet(9, 0);  // SELECT A GAME
         } else {
             MenuMsgBlink(8, 0x40);  // NOW SEARCHING...
@@ -198,7 +198,7 @@ void SearchMenu(void)
         // Get discovery results
         if (procRes == 0) {
             if (SearchMenuTimer < 60 - 8) {
-                SearchMenuFoundGames = SearchMenuCheckGames();
+                GameListBits = SearchMenuUpdateGames();
             }
 
             if (MbootBeaconID) {
@@ -214,7 +214,7 @@ void SearchMenu(void)
     case SEARCH_SELECT:
         // Allow the player to select a game
         // Restart discovery after 5 seconds
-        if (SearchMenuFoundGames != 0) {
+        if (GameListBits != 0) {
             MenuMsgSet(9, 0);  // SELECT A GAME
             if (SearchMenuTimer > 3 * 60) {
                 SearchMenuDrawList(TRUE);

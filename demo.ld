@@ -18,7 +18,7 @@ SECTIONS {
         dump/baserom_demo_0f5c.o(.text)
         RfuWaitData.o(.text)
         dump/baserom_demo_0f84.o(.text)
-        dump/baserom_demo_0fa0.o(.text)
+        SearchMenuUpdateGames.o(.text)
         SearchMenuClearGame.o(.text)
         GameListInit.o(.text)
         SearchMenuDrawList.o(.text)
@@ -161,7 +161,7 @@ SECTIONS {
     MenuState = 0x03005760;
     MenuBusy = 0x03005754;
     SearchMenuCursor = 0x03005691;
-    GameListBits = 0x03005721;
+    GameListBitsNew = 0x03005721;
     SearchMenuErrorMsg = 0x03005693;
     GameLogoInitial = 0x03003f7c;
     Mboot = 0x030060c0;
@@ -171,7 +171,7 @@ SECTIONS {
     RfuPeers = 0x03005f00;
     SearchMenuEnd = 0x03005690;
     SearchMenuErrorTimer = 0x03005750;
-    SearchMenuFoundGames = 0x03005720;
+    GameListBits = 0x03005720;
     SearchMenuTimer = 0x03005696;
     SearchProcTable = 0x03003f38;
     LZ_450c = 0x0300450c;
