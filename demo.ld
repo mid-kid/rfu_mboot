@@ -95,7 +95,7 @@ SECTIONS {
         dump/baserom_demo_2d74.o(.text)
         dump/baserom_demo_2eb0.o(.text)
         dump/baserom_demo_2f28.o(.text)
-        dump/baserom_demo_2f58.o(.text)
+        Sio32IntrProcSet.o(.text)
         RfuWaitDataStart.o(.text)
         RfuWaitDataStartForce.o(.text)
         RfuWaitDataDone.o(.text)
@@ -177,4 +177,5 @@ SECTIONS {
     LZ_450c = 0x0300450c;
     Rfu = 0x03005ca0;
     struct_unk_6180 = 0x03006180;
+    Sio32IntrProc = 0x03005c98;
 }

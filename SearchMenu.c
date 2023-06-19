@@ -11,7 +11,7 @@ extern void BgScClear(u16 Pos, u8 Height, u8 Width);
 extern void FrameCountReset(void);
 extern u8 SearchMenuUpdateGames(void);
 extern void SearchMenuClearGame(void);
-extern void Sio32IntrProcSet(void *Func);
+extern void Sio32IntrProcSet(void (*Func)());
 extern void Sio32IntrProc_Unk0e10(void);
 extern u32 RfuMbootCfg(u32 param_1, u8 Client, void *Dest, u32 Size);
 extern void MainMenuInit(void);
