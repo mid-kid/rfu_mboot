@@ -39,7 +39,7 @@ split .text 0x0c08 SearchMenu
 split .text 0x0c90 SearchMenuMbootStart
 split .text 0x0e10 SearchMenuMbootDL
 split .text 0x0eb0
-split .text 0x0ed0
+split .text 0x0ed0 RfuStrcmp
 split .text 0x0efc
 split .text 0x0f10
 split .text 0x0f28

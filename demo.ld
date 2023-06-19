@@ -10,7 +10,7 @@ SECTIONS {
         SearchMenuDrawListTitle.o(.text)
         SearchMenu.o(.text)
         dump/baserom_demo_0e10.o(.text)
-        dump/baserom_demo_0eb0.o(.text)
+        RfuStrcmp.o(.text)
         dump/baserom_demo_0ed0.o(.text)
         dump/baserom_demo_0efc.o(.text)
         dump/baserom_demo_0f10.o(.text)
