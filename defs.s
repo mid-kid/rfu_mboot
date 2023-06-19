@@ -5,7 +5,6 @@
 
 tdef DemoMain, 0x030002a0
 tdef FUN_03003078, 0x03003078
-tdef MbootDLStart, 0x030031f4
 tdef FUN_03003e04, 0x03003e04
 tdef RfuMbootCfg, 0x03003184
 tdef RfuStrcmp, 0x03000eb0

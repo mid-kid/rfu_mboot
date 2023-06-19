@@ -133,8 +133,8 @@ split .text 0x3078
 split .text 0x3184
 split .text 0x31c8
 split .text 0x31f4
-split .text 0x3224
-split .text 0x33a8
+split .text 0x3224 MbootDLStart
+split .text 0x33a8 RfuMbootDLStart
 split .text 0x3454
 split .text 0x353c
 split .text 0x36ec
