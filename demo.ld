@@ -102,7 +102,7 @@ SECTIONS {
         dump/baserom_demo_2fe0.o(.text)
         dump/baserom_demo_3044.o(.text)
         dump/baserom_demo_3078.o(.text)
-        dump/baserom_demo_3184.o(.text)
+        RfuMbootCfg.o(.text)
         dump/baserom_demo_31c8.o(.text)
         MbootDLStart.o(.text)
         RfuMbootDLStart.o(.text)
