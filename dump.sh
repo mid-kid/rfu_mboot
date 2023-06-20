@@ -96,7 +96,7 @@ split .text 0x23d4
 split .text 0x2418
 split .text 0x2480
 split .text 0x24c4
-split .text 0x2508
+split .text 0x2508 RfuCmd_WaitData
 split .text 0x2554
 split .text 0x2598
 split .text 0x25ec

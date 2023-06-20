@@ -67,7 +67,7 @@ SECTIONS {
         dump/baserom_demo_23d4.o(.text)
         dump/baserom_demo_2418.o(.text)
         dump/baserom_demo_2480.o(.text)
-        dump/baserom_demo_24c4.o(.text)
+        RfuCmd_WaitData.o(.text)
         dump/baserom_demo_2508.o(.text)
         dump/baserom_demo_2554.o(.text)
         dump/baserom_demo_2598.o(.text)
@@ -179,4 +179,5 @@ SECTIONS {
     struct_unk_6180 = 0x03006180;
     Sio32IntrProc = 0x03005c98;
     MbootTmp = 0x03006180;
+    RfuBufSend = 0x03005cc0;
 }
