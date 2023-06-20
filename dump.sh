@@ -83,22 +83,22 @@ split .text 0x1f58
 split .text 0x2020
 split .text 0x2060
 split .text 0x20c8
-split .text 0x210c
-split .text 0x2150
-split .text 0x2194
-split .text 0x221c
-split .text 0x2278
-split .text 0x22bc
-split .text 0x2300
-split .text 0x2344
-split .text 0x2390
-split .text 0x23d4
-split .text 0x2418
-split .text 0x2480
-split .text 0x24c4
+split .text 0x210c RfuCmd_Start
+split .text 0x2150 RfuCmd_Status
+split .text 0x2194 RfuCmd_0x13
+split .text 0x221c RfuCmd_GameInfoSet
+split .text 0x2278 RfuCmd_RadioCfg
+split .text 0x22bc RfuCmd_DiscoveryStart
+split .text 0x2300 RfuCmd_GameInfoGet
+split .text 0x2344 RfuCmd_DiscoveryResults
+split .text 0x2390 RfuCmd_Connect
+split .text 0x23d4 RfuCmd_ConnectCheck
+split .text 0x2418 RfuCmd_ConnectReady
+split .text 0x2480 RfuCmd_DataSend
+split .text 0x24c4 RfuCmd_DataRecv
 split .text 0x2508 RfuCmd_WaitData
-split .text 0x2554
-split .text 0x2598
+split .text 0x2554 RfuCmd_0x30
+split .text 0x2598 RfuCmd_End
 split .text 0x25ec
 split .text 0x25fc
 split .text 0x2664
