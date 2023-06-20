@@ -128,7 +128,7 @@ split .text 0x2f64 Sio32IntrProcSet
 split .text 0x2fb0 RfuWaitDataStart
 split .text 0x2fd4 RfuWaitDataStartForce
 split .text 0x2fe0 RfuWaitDataDone
-split .text 0x3044
+split .text 0x3044 MbootInit
 split .text 0x3078
 split .text 0x3184
 split .text 0x31c8 RfuMbootCfg

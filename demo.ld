@@ -99,7 +99,7 @@ SECTIONS {
         RfuWaitDataStart.o(.text)
         RfuWaitDataStartForce.o(.text)
         RfuWaitDataDone.o(.text)
-        dump/baserom_demo_2fe0.o(.text)
+        MbootInit.o(.text)
         dump/baserom_demo_3044.o(.text)
         dump/baserom_demo_3078.o(.text)
         RfuMbootCfg.o(.text)
@@ -178,4 +178,5 @@ SECTIONS {
     Rfu = 0x03005ca0;
     struct_unk_6180 = 0x03006180;
     Sio32IntrProc = 0x03005c98;
+    MbootTmp = 0x03006180;
 }
