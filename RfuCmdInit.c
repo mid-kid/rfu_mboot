@@ -1,12 +1,22 @@
-#if 1
-__asm__("
-.section .text
-.global RfuCmdInit
-.type RfuCmdInit, function
-.thumb_func
-RfuCmdInit:
-.2byte 0x490c,0x2280,0x0052,0x1c10,0x8008,0x390c,0x4a0a,0x1c10,0x8008,0x480a,0x2100,0x2201,0x6001,0x6041,0x7201,0x7241,0x7281,0x72c2,0x7301,0x7341,0x22ff,0x73c2,0x7401,0x2000,0x4770,0x0000,0x0134,0x0400,0x5003,0x0000,0x5ca0,0x0300
-.size RfuCmdInit, .-RfuCmdInit
-");
-#else
-#endif
+#include <Agb.h>
+
+#include "Rfu.h"
+extern struct Rfu Rfu;
+
+u32 RfuCmdInit(void)
+{
+    *(vu16 *)REG_RCNT = 0x100;
+    *(vu16 *)REG_SIOCNT = 0x5003;
+    Rfu.modeMaster = TRUE;
+    Rfu.field0_0x0 = 0;
+    Rfu.cmdHeader = 0;
+    Rfu.cmdSize = 0;
+    Rfu.field3_0x9 = 0;
+    Rfu.field4_0xa = 0;
+    Rfu.modeMaster = TRUE;
+    Rfu.unk_07 = 0;
+    Rfu.unk_08 = 0;
+    Rfu.unk_10 = 0xff;
+    Rfu.unk_11 = 0;
+    return 0;
+}
