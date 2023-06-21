@@ -1,7 +1,7 @@
 #if 1
 __asm__("
 .section .text
-@.global RfuCmd_GameInfoSet
+.global RfuCmd_GameInfoSet
 .type RfuCmd_GameInfoSet, function
 .thumb_func
 RfuCmd_GameInfoSet:
@@ -54,4 +54,5 @@ u16 RfuCmd_GameInfoSet(char *GameData, char *UserName)
         return RfuCmdRecv(0x99660096, FALSE);
     }
 }
+
 #endif
