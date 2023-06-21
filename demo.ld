@@ -2,7 +2,7 @@ SECTIONS {
     . = 0x03000100;
     .text : {
         crt0_demo.o(.text)
-        dump/baserom_demo_02a0.o(.text)
+        DemoMain.o(.text)
         MainMenuInit.o(.text)
         MenuMsgInit.o(.text)
         MainMenu.o(.text)
@@ -49,10 +49,10 @@ SECTIONS {
         dump/baserom_demo_180c.o(.text)
         dump/baserom_demo_1b20.o(.text)
         dump/baserom_demo_1e20.o(.text)
-        dump/baserom_demo_1ee0.o(.text)
+        RfuCmdInit.o(.text)
         dump/baserom_demo_1f20.o(.text)
-        dump/baserom_demo_1f58.o(.text)
-        dump/baserom_demo_2020.o(.text)
+        RfuCmdSend.o(.text)
+        RfuCmdRecv.o(.text)
         dump/baserom_demo_2060.o(.text)
         RfuCmd_Start.o(.text)
         RfuCmd_Status.o(.text)

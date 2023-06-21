@@ -29,7 +29,7 @@ split() {
 }
 
 split .text 0x02a0
-split .text 0x03bc
+split .text 0x03bc DemoMain
 split .text 0x04a8 MainMenuInit
 split .text 0x04c4 MenuMsgInit
 split .text 0x0534 MainMenu
@@ -78,10 +78,10 @@ split .text 0x180c
 split .text 0x1b20
 split .text 0x1e20
 split .text 0x1ee0
-split .text 0x1f20
+split .text 0x1f20 RfuCmdInit
 split .text 0x1f58
-split .text 0x2020
-split .text 0x2060
+split .text 0x2020 RfuCmdSend
+split .text 0x2060 RfuCmdRecv
 split .text 0x20c8
 split .text 0x210c RfuCmd_Start
 split .text 0x2150 RfuCmd_Status
