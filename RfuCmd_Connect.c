@@ -12,7 +12,7 @@ u16 RfuCmd_Connect(u16 BeaconID)
     RfuCmdInit();
     *(u32 *)(RfuBufSend + 0) = 0x9966011f;
     *(u32 *)(RfuBufSend + 4) = BeaconID;
-    Rfu.field2_0x8 = 1;
+    Rfu.cmdSize = 1;
 
     if (RfuCmdSend() == 1) {
         return 5;

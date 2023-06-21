@@ -14,7 +14,7 @@ u16 RfuCmd_RadioCfg(u16 param_1, u8 param_2, u8 param_3)
     *(u8 *)(RfuBufSend + 4) = param_3;
     *(u8 *)(RfuBufSend + 5) = param_2;
     *(u16 *)(RfuBufSend + 6) = param_1;
-    Rfu.field2_0x8 = 1;
+    Rfu.cmdSize = 1;
 
     if (RfuCmdSend() == 1) {
         return 5;

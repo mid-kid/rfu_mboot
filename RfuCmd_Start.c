@@ -11,7 +11,7 @@ u16 RfuCmd_Start(void)
 {
     RfuCmdInit();
     *(u32 *)(RfuBufSend + 0) = 0x99660010;
-    Rfu.field2_0x8 = 0;
+    Rfu.cmdSize = 0;
 
     if (RfuCmdSend() == 1) {
         return 5;

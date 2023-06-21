@@ -47,7 +47,7 @@ u16 RfuCmd_GameInfoSet(char *GameData, char *UserName)
         x++;
     }
 
-    Rfu.field2_0x8 = 6;
+    Rfu.cmdSize = 6;
     if (RfuCmdSend() == 1) {
         return 5;
     } else {
