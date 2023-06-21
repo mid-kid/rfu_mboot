@@ -12,7 +12,7 @@ u32 RfuCmdInit(void)
     Rfu.cmdHeader = 0;
     Rfu.cmdSize = 0;
     Rfu.field3_0x9 = 0;
-    Rfu.field4_0xa = 0;
+    Rfu.error = 0;
     Rfu.modeMaster = TRUE;
     Rfu.unk_07 = 0;
     Rfu.unk_08 = 0;

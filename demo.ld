@@ -180,4 +180,5 @@ SECTIONS {
     Sio32IntrProc = 0x03005c98;
     MbootTmp = 0x03006180;
     RfuBufSend = 0x03005cc0;
+    RfuBufRecv = 0x03005de0;
 }

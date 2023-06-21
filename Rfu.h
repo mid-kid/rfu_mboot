@@ -6,7 +6,7 @@ struct Rfu {
     u32 cmdHeader;
     u8 cmdSize;
     u8 field3_0x9;
-    u8 field4_0xa;
+    u8 error;
     u8 modeMaster;
     u8 unk_07;
     u8 unk_08;

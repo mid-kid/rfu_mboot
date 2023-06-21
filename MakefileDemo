@@ -54,6 +54,7 @@ $(DEPENDFILE):
 
 # Matching hacks
 SoundPlaySfx.o: CC := ThumbPatch-thumb-elf-gcc
+RfuCmdRecv.o: CC := ThumbPatch-thumb-elf-gcc
 
 include GasdependDemo
 include $(DEPENDFILE)

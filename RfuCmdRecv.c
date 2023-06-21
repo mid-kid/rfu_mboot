@@ -1,12 +1,21 @@
-#if 1
-__asm__("
-.section .text
-.global RfuCmdRecv
-.type RfuCmdRecv, function
-.thumb_func
-RfuCmdRecv:
-.2byte 0x1c03,0x0609,0x0e09,0x4a05,0x7a90,0x2800,0xd117,0x4804,0x6802,0x4804,0x4282,0xd107,0x2004,0xe010,0x5ca0,0x0300,0x5de0,0x0300,0x01ee,0x9966,0x2901,0xd101,0x4802,0x4002,0x429a,0xd003,0x2006,0xe002,0x00ff,0xffff,0x2000,0x4770
-.size RfuCmdRecv, .-RfuCmdRecv
-");
-#else
-#endif
+#include <Agb.h>
+
+#include "Rfu.h"
+extern struct Rfu Rfu;
+extern u8 RfuBufRecv[0x120];
+
+u16 RfuCmdRecv(u32 Cmd, u8 VarSize)
+{
+    u32 Head;
+
+    // An error happened locally
+    if (Rfu.error != 0) return Rfu.error;
+
+    // An error has been received
+    if (*(u32 *)RfuBufRecv == 0x996601ee) return 4;
+
+    Head = *(u32 *)RfuBufRecv;
+    if (VarSize == TRUE) Head = Head & 0xffff00ff;
+    if (Head == Cmd) return 0;
+    return 6;
+}
