@@ -1,12 +1,22 @@
-#if 1
-__asm__("
-.section .text
-@.global RfuCmd_Connect
-.type RfuCmd_Connect, function
-.thumb_func
-RfuCmd_Connect:
-.2byte 0xb510,0x1c04,0x0424,0x0c24,0xf7ff,0xfdc8,0x4909,0x480a,0x6008,0x604c,0x4909,0x2001,0x7208,0xf7ff,0xfdfb,0x0400,0x0c00,0x2801,0xd00e,0x4806,0x2100,0xf7ff,0xfe57,0x0400,0x0c00,0xe008,0x5cc0,0x0300,0x011f,0x9966,0x5ca0,0x0300,0x009f,0x9966,0x2005,0xbc10,0xbc02,0x4708
-.size RfuCmd_Connect, .-RfuCmd_Connect
-");
-#else
-#endif
+#include <Agb.h>
+
+#include "Rfu.h"
+extern u32 RfuCmdInit(void);
+extern u16 RfuCmdSend(void);
+extern u16 RfuCmdRecv(u32 Cmd, u8 VarSize);
+extern u8 RfuBufSend[0x120];
+extern struct Rfu Rfu;
+
+u16 RfuCmd_Connect(u16 BeaconID)
+{
+    RfuCmdInit();
+    *(u32 *)(RfuBufSend + 0) = 0x9966011f;
+    *(u32 *)(RfuBufSend + 4) = BeaconID;
+    Rfu.field2_0x8 = 1;
+
+    if (RfuCmdSend() == 1) {
+        return 5;
+    } else {
+        return RfuCmdRecv(0x9966009f, FALSE);
+    }
+}
