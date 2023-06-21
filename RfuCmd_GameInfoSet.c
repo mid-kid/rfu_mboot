@@ -16,7 +16,7 @@ RfuCmd_GameInfoSet:
 extern u32 RfuCmdInit(void);
 extern u16 RfuCmdSend(void);
 extern u16 RfuCmdRecv(u32 Cmd, u8 VarSize);
-extern u32 RfuBufSend[0x48];
+extern u8 RfuBufSend[0x120];
 extern struct Rfu Rfu;
 
 u16 RfuCmd_GameInfoSet(char *GameData, char *UserName)
@@ -26,7 +26,7 @@ u16 RfuCmd_GameInfoSet(char *GameData, char *UserName)
 
     RfuCmdInit();
 
-    dst = (u8 *)RfuBufSend;
+    dst = RfuBufSend;
     *((u32 *)dst)++ = 0x99660616;
     *((u16 *)dst)++ = *((u16 *)GameData)++;
 

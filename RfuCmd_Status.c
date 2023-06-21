@@ -4,13 +4,13 @@
 extern u32 RfuCmdInit(void);
 extern u16 RfuCmdSend(void);
 extern u16 RfuCmdRecv(u32 Cmd, u8 VarSize);
-extern u32 RfuBufSend[0x48];
+extern u8 RfuBufSend[0x120];
 extern struct Rfu Rfu;
 
 u16 RfuCmd_Status(void)
 {
     RfuCmdInit();
-    RfuBufSend[0] = 0x99660011;
+    *(u32 *)(RfuBufSend + 0) = 0x99660011;
     Rfu.field2_0x8 = 0;
 
     if (RfuCmdSend() == 1) {
