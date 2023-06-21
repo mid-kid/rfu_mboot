@@ -1,12 +1,24 @@
-#if 1
-__asm__("
-.section .text
-@.global RfuCmd_RadioCfg
-.type RfuCmd_RadioCfg, function
-.thumb_func
-RfuCmd_RadioCfg:
-.2byte 0xb570,0x1c06,0x1c0d,0x1c14,0x0436,0x0c36,0x062d,0x0e2d,0x0624,0x0e24,0xf7ff,0xfe56,0x480a,0x490b,0x6001,0x7104,0x7145,0x80c6,0x4909,0x2001,0x7208,0xf7ff,0xfe87,0x0400,0x0c00,0x2801,0xd00e,0x4806,0x2100,0xf7ff,0xfee3,0x0400,0x0c00,0xe008,0x5cc0,0x0300,0x0117,0x9966,0x5ca0,0x0300,0x0097,0x9966,0x2005,0xbc70,0xbc02,0x4708
-.size RfuCmd_RadioCfg, .-RfuCmd_RadioCfg
-");
-#else
-#endif
+#include <Agb.h>
+
+#include "Rfu.h"
+extern u32 RfuCmdInit(void);
+extern u16 RfuCmdSend(void);
+extern u16 RfuCmdRecv(u32 Cmd, u8 VarSize);
+extern u8 RfuBufSend[0x120];
+extern struct Rfu Rfu;
+
+u16 RfuCmd_RadioCfg(u16 param_1, u8 param_2, u8 param_3)
+{
+    RfuCmdInit();
+    *(u32 *)(RfuBufSend + 0) = 0x99660117;
+    *(u8 *)(RfuBufSend + 4) = param_3;
+    *(u8 *)(RfuBufSend + 5) = param_2;
+    *(u16 *)(RfuBufSend + 6) = param_1;
+    Rfu.field2_0x8 = 1;
+
+    if (RfuCmdSend() == 1) {
+        return 5;
+    } else {
+        return RfuCmdRecv(0x99660097, FALSE);
+    }
+}
