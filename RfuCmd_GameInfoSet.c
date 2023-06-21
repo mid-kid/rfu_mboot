@@ -9,4 +9,49 @@ RfuCmd_GameInfoSet:
 .size RfuCmd_GameInfoSet, .-RfuCmd_GameInfoSet
 ");
 #else
+
+#include <Agb.h>
+
+#include "Rfu.h"
+extern u32 RfuCmdInit(void);
+extern u16 RfuCmdSend(void);
+extern u16 RfuCmdRecv(u32 Cmd, u8 VarSize);
+extern u32 RfuBufSend[0x48];
+extern struct Rfu Rfu;
+
+u16 RfuCmd_GameInfoSet(char *GameData, char *UserName)
+{
+    u8 *dst;
+    int x;
+
+    RfuCmdInit();
+
+    dst = (u8 *)RfuBufSend;
+    *((u32 *)dst)++ = 0x99660616;
+    *((u16 *)dst)++ = *((u16 *)GameData)++;
+
+    for (x = 13; x >= 0; x--) *dst++ = *GameData++;
+
+    x = 0;
+    for (;;) {
+        if (!*UserName) {
+            for (;;) {
+                if (x < 8) break;
+                *dst++ = '\0';
+                x++;
+            }
+            break;
+        }
+        if (x >= 8) break;
+        *dst++ = *UserName++;
+        x++;
+    }
+
+    Rfu.field2_0x8 = 6;
+    if (RfuCmdSend() == 1) {
+        return 5;
+    } else {
+        return RfuCmdRecv(0x99660096, FALSE);
+    }
+}
 #endif
