@@ -133,6 +133,8 @@ SECTIONS {
         dump/baserom_demo_4200.o(.rodata)
     }
     .bss : { }
+    bss_start = 0x03005684;
+    bss_end = 0x03006310;
 
     /* Discard anything not explicitly listed */
     /DISCARD/ : { *(*) }
