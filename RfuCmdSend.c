@@ -9,4 +9,55 @@ RfuCmdSend:
 .size RfuCmdSend, .-RfuCmdSend
 ");
 #else
+
+#include <Agb.h>
+
+#include "Rfu.h"
+extern u32 RfuCmdInit(void);
+extern struct Rfu Rfu;
+extern u8 RfuBufSend[0x120];
+
+u16 RfuCmdSend(void)
+{
+    int x;
+    u8 tmp;
+    u8 *ptr8;
+    u16 val;
+
+    if (!Rfu.modeMaster) return 1;
+
+retry:
+    *(vu32 *)REG_SIODATA32 = *(u32 *)RfuBufSend;
+    Rfu.cmdHeader = *(u32 *)RfuBufSend;
+    Rfu.field3_0x9 = 1;
+    *(vu16 *)REG_SIOCNT = 0x5083;
+
+    ptr8 = &Rfu.unk_07;
+wait:
+    if (*ptr8 == 0) goto wait;
+
+    if ((u8)(Rfu.unk_08 - 1) <= 1) {
+        for (x = 0; x < Rfu.unk_09; x++) VBlankIntrWait();
+
+        tmp = Rfu.unk_08;
+        RfuCmdInit();
+        Rfu.unk_08 = tmp;
+        Rfu.error = 2;
+        goto retry;
+    }
+
+    if (Rfu.unk_08 != 3) return 0;
+
+    *(vu16 *)REG_RCNT = 0x8000;
+    val = 0x80ff;
+    for (x = 1000; x; x--) *(u16 *)REG_RCNT = val;
+    *(vu16 *)REG_RCNT = 0x8000;
+    val = 0;
+
+    *(vu16 *)REG_RCNT = 0;
+    *(vu16 *)REG_SIOCNT = 0x5003;
+
+    return 0;
+}
+
 #endif
