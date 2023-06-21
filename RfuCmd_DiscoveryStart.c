@@ -1,12 +1,21 @@
-#if 1
-__asm__("
-.section .text
-@.global RfuCmd_DiscoveryStart
-.type RfuCmd_DiscoveryStart, function
-.thumb_func
-RfuCmd_DiscoveryStart:
-.2byte 0xb500,0xf7ff,0xfe31,0x4909,0x4809,0x6008,0x4909,0x2000,0x7208,0xf7ff,0xfe65,0x0400,0x0c00,0x2801,0xd00e,0x4806,0x2100,0xf7ff,0xfec1,0x0400,0x0c00,0xe008,0x5cc0,0x0300,0x001c,0x9966,0x5ca0,0x0300,0x009c,0x9966,0x2005,0xbc02,0x4708,0x0000
-.size RfuCmd_DiscoveryStart, .-RfuCmd_DiscoveryStart
-");
-#else
-#endif
+#include <Agb.h>
+
+#include "Rfu.h"
+extern u32 RfuCmdInit(void);
+extern u16 RfuCmdSend(void);
+extern u16 RfuCmdRecv(u32 Cmd, u8 VarSize);
+extern u8 RfuBufSend[0x120];
+extern struct Rfu Rfu;
+
+u16 RfuCmd_DiscoveryStart(void)
+{
+    RfuCmdInit();
+    *(u32 *)(RfuBufSend + 0) = 0x9966001c;
+    Rfu.field2_0x8 = 0;
+
+    if (RfuCmdSend() == 1) {
+        return 5;
+    } else {
+        return RfuCmdRecv(0x9966009c, FALSE);
+    }
+}
