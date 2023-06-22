@@ -1,12 +1,13 @@
-#if 1
-__asm__("
-.section .text
-@.global RfuStart
-.type RfuStart, function
-.thumb_func
-RfuStart:
-.2byte 0xb510,0xf7ff,0xfb9f,0x0400,0x0c00,0x1c04,0x2c00,0xd101,0xf7ff,0xffca,0x1c20,0xbc10,0xbc02,0x4708
-.size RfuStart, .-RfuStart
-");
-#else
-#endif
+#include <Agb.h>
+
+extern u16 RfuCmd_Start(void);
+extern void Init_Unk292c(void);
+
+u16 RfuStart(void)
+{
+    u16 ret;
+
+    ret = RfuCmd_Start();
+    if (ret == 0) Init_Unk292c();
+    return ret;
+}
