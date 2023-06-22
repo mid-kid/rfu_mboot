@@ -40,13 +40,13 @@ split .text 0x0c90 SearchMenuMbootStart
 split .text 0x0e10 SearchMenuMbootDL
 split .text 0x0eb0
 split .text 0x0ed0 RfuStrcmp
-split .text 0x0efc
-split .text 0x0f10
-split .text 0x0f28
-split .text 0x0f5c
-split .text 0x0f6c
+split .text 0x0efc SearchProc_SetGameInfo
+split .text 0x0f10 SearchProc_RadioCfg
+split .text 0x0f28 SearchProc_Connect
+split .text 0x0f5c SearchProc_ConnectCheck
+split .text 0x0f6c SearchProc_WaitData
 split .text 0x0f84 RfuWaitData
-split .text 0x0fa0
+split .text 0x0fa0 SearchProc_Boot
 split .text 0x1118 SearchMenuUpdateGames
 split .text 0x1158 SearchMenuClearGame
 split .text 0x1190 GameListInit
@@ -108,16 +108,16 @@ split .text 0x286c
 split .text 0x2894
 split .text 0x292c
 split .text 0x2984
-split .text 0x29a0
+split .text 0x29a0 RfuStart
 split .text 0x2a40
 split .text 0x2a60
-split .text 0x2a70
-split .text 0x2a8c
-split .text 0x2aa8
+split .text 0x2a70 RfuDiscoveryStart
+split .text 0x2a8c RfuGameInfoGet
+split .text 0x2aa8 RfuDiscoveryResults
 split .text 0x2b70
 split .text 0x2bc4
 split .text 0x2d08
-split .text 0x2d18
+split .text 0x2d18 RfuConnectReady
 split .text 0x2d34
 split .text 0x2d4c
 split .text 0x2d74
