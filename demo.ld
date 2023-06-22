@@ -88,7 +88,7 @@ SECTIONS {
         dump/baserom_demo_2aa8.o(.text)
         dump/baserom_demo_2b70.o(.text)
         dump/baserom_demo_2bc4.o(.text)
-        dump/RfuConnectReady.o(.text)
+        RfuConnectReady.o(.text)
         dump/baserom_demo_2d18.o(.text)
         dump/baserom_demo_2d34.o(.text)
         dump/baserom_demo_2d4c.o(.text)
