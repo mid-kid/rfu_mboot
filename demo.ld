@@ -71,7 +71,7 @@ SECTIONS {
         RfuCmd_0x30.o(.text)
         RfuCmd_End.o(.text)
         dump/baserom_demo_2598.o(.text)
-        dump/baserom_demo_25ec.o(.text)
+        RfuBoot.o(.text)
         dump/baserom_demo_25fc.o(.text)
         Sio32Init.o(.text)
         Sio32InitUpdate.o(.text)
