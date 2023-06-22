@@ -84,7 +84,7 @@ SECTIONS {
         dump/baserom_demo_2a40.o(.text)
         RfuDiscoveryStart.o(.text)
         RfuGameInfoGet.o(.text)
-        dump/RfuDiscoveryResults.o(.text)
+        RfuDiscoveryResults.o(.text)
         dump/baserom_demo_2aa8.o(.text)
         dump/baserom_demo_2b70.o(.text)
         dump/baserom_demo_2bc4.o(.text)
