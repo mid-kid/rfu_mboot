@@ -11,13 +11,13 @@ SECTIONS {
         SearchMenu.o(.text)
         dump/baserom_demo_0e10.o(.text)
         RfuStrcmp.o(.text)
-        dump/SearchProc_SetGameInfo.o(.text)
+        SearchProc_SetGameInfo.o(.text)
         SearchProc_RadioCfg.o(.text)
-        dump/SearchProc_Connect.o(.text)
-        dump/SearchProc_ConnectCheck.o(.text)
-        dump/SearchProc_WaitData.o(.text)
+        SearchProc_Connect.o(.text)
+        SearchProc_ConnectCheck.o(.text)
+        SearchProc_WaitData.o(.text)
         RfuWaitData.o(.text)
-        dump/SearchProc_Boot.o(.text)
+        SearchProc_Boot.o(.text)
         SearchMenuUpdateGames.o(.text)
         SearchMenuClearGame.o(.text)
         GameListInit.o(.text)
@@ -183,4 +183,5 @@ SECTIONS {
     MbootTmp = 0x03006180;
     RfuBufSend = 0x03005cc0;
     RfuBufRecv = 0x03005de0;
+    UserNames = 0x03005674;
 }
