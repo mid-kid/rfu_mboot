@@ -9,7 +9,6 @@ tdef Sio32IntrProc_Unk0e10, 0x03000e10
 tdef Init_Unk2894, 0x03002894
 tdef Init_Unk2d34, 0x03002d34
 tdef Init_Unk292c, 0x0300292c
-tdef RfuRadioCfg, 0x03002a40
 tdef RfuBoot, 0x030025ec
 tdef RfuConnect, 0x03002b70
 tdef RfuConnectCheck, 0x03002bc4

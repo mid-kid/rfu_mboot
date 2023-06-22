@@ -110,7 +110,7 @@ split .text 0x292c
 split .text 0x2984
 split .text 0x29a0 RfuStart
 split .text 0x2a40
-split .text 0x2a60
+split .text 0x2a60 RfuRadioCfg
 split .text 0x2a70 RfuDiscoveryStart
 split .text 0x2a8c RfuGameInfoGet
 split .text 0x2aa8 RfuDiscoveryResults
