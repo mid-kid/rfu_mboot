@@ -148,7 +148,7 @@ split .text 0x3e04
 split .text 0x3e44
 split .text 0x3ed0 # Library start
 split .text 0x3f38
-split .rodata 0x3f70
+split .rodata 0x3f70 SearchProcTable
 split .rodata 0x3f7c GameNameInitial
 split .rodata 0x3fb8
 split .rodata 0x4200 MenuMsgInitial

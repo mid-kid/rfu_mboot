@@ -126,7 +126,7 @@ SECTIONS {
         dump/libagbsyscall/AgbSysVBlankIntrWait.o(.text)
         dump/libgcc/_call_via_rX.o(.text)
 
-        dump/baserom_demo_3f38.o(.rodata)
+        SearchProcTable.o(.rodata)
         GameNameInit.o(.rodata)
         dump/baserom_demo_3f7c.o(.rodata)
         MenuMsgInitial.o(.rodata)
