@@ -86,7 +86,7 @@ SECTIONS {
         RfuGameInfoGet.o(.text)
         RfuDiscoveryResults.o(.text)
         dump/baserom_demo_2aa8.o(.text)
-        dump/baserom_demo_2b70.o(.text)
+        RfuConnect.o(.text)
         dump/baserom_demo_2bc4.o(.text)
         RfuConnectReady.o(.text)
         dump/baserom_demo_2d18.o(.text)
