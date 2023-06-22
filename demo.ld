@@ -12,7 +12,7 @@ SECTIONS {
         dump/baserom_demo_0e10.o(.text)
         RfuStrcmp.o(.text)
         dump/SearchProc_SetGameInfo.o(.text)
-        dump/SearchProc_RadioCfg.o(.text)
+        SearchProc_RadioCfg.o(.text)
         dump/SearchProc_Connect.o(.text)
         dump/SearchProc_ConnectCheck.o(.text)
         dump/SearchProc_WaitData.o(.text)
