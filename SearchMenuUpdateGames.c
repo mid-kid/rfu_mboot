@@ -23,7 +23,7 @@ u8 SearchMenuUpdateGames(void)
     for (x = 0; x < Mboot.gamesCount; x++) {
         if (Mboot.games[x].beaconID &&
                 Mboot.games[x].isMultiboot &&
-                Mboot.games[x].gameIndex < 4) {
+                Mboot.games[x].playerNum < 4) {
 
             for (y = 0; y < 4; y++) {
                 if (GameList[y].beaconID != Mboot.games[x].beaconID) continue;

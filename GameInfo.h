@@ -5,7 +5,7 @@
 
 struct GameInfo {
     u16 beaconID;
-    u8 gameIndex;
+    u8 playerNum;
     u8 isMultiboot;
     u16 gameID;
     char gameName[14 + 1];
