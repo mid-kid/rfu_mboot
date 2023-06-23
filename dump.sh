@@ -40,7 +40,7 @@ split .text 0x0c90 SearchMenuMbootStart
 split .text 0x0e10 SearchMenuMbootDL
 split .text 0x0eb0
 split .text 0x0ed0 RfuStrcmp
-split .text 0x0efc SearchProc_SetGameInfo
+split .text 0x0efc SearchProc_GameInfoSet
 split .text 0x0f10 SearchProc_RadioCfg
 split .text 0x0f28 SearchProc_Connect
 split .text 0x0f5c SearchProc_ConnectCheck
@@ -109,7 +109,7 @@ split .text 0x2894
 split .text 0x292c
 split .text 0x2984
 split .text 0x29a0 RfuStart
-split .text 0x2a40 RfuSetGameInfo
+split .text 0x2a40 RfuGameInfoSet
 split .text 0x2a60 RfuRadioCfg
 split .text 0x2a70 RfuDiscoveryStart
 split .text 0x2a8c RfuGameInfoGet

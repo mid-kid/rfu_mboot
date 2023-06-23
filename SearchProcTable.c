@@ -2,7 +2,7 @@
 
 extern u16 RfuStart(void);
 extern u16 SearchProc_RadioCfg(void);
-extern u16 SearchProc_SetGameInfo(void);
+extern u16 SearchProc_GameInfoSet(void);
 extern u16 RfuDiscoveryStart(void);
 extern u16 RfuGameInfoGet(void);
 extern u16 RfuDiscoveryResults(void);
@@ -18,7 +18,7 @@ extern u16 RfuCmd_0x13(void);
 u16 (*const SearchProcTable[])(void) = {
     RfuStart,
     SearchProc_RadioCfg,
-    SearchProc_SetGameInfo,
+    SearchProc_GameInfoSet,
     RfuDiscoveryStart,
     RfuGameInfoGet,
     RfuDiscoveryResults,

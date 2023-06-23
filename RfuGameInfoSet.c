@@ -4,7 +4,7 @@
 extern u16 RfuCmd_GameInfoSet(char *GameData, char *UserName);
 extern struct Mboot Mboot;
 
-u16 RfuSetGameInfo(u8 IsMultiboot, u16 GameID, char *GameName, char *UserName)
+u16 RfuGameInfoSet(u8 IsMultiboot, u16 GameID, char *GameName, char *UserName)
 {
     u16 ret;
     u8 x;
