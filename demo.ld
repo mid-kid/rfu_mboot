@@ -80,7 +80,7 @@ SECTIONS {
         dump/baserom_demo_2894.o(.text)
         dump/baserom_demo_292c.o(.text)
         RfuStart.o(.text)
-        dump/baserom_demo_29a0.o(.text)
+        RfuSetGameInfo.o(.text)
         RfuRadioCfg.o(.text)
         RfuDiscoveryStart.o(.text)
         RfuGameInfoGet.o(.text)
