@@ -114,7 +114,7 @@ split .text 0x2a60 RfuRadioCfg
 split .text 0x2a70 RfuDiscoveryStart
 split .text 0x2a8c RfuGameInfoGet
 split .text 0x2aa8 RfuDiscoveryResults
-split .text 0x2b70
+split .text 0x2b70 RfuCmd_GameInfoGet_Parse
 split .text 0x2bc4 RfuConnect
 split .text 0x2d08 RfuConnectCheck
 split .text 0x2d18 RfuConnectReady

@@ -9,7 +9,6 @@ tdef Sio32IntrProc_Unk0e10, 0x03000e10
 tdef Init_Unk2894, 0x03002894
 tdef Init_Unk2d34, 0x03002d34
 tdef Init_Unk292c, 0x0300292c
-tdef RfuCmd_GameInfoGet_Parse, 0x03002aa8
 tdef RfuHandshake, 0x030025fc
 tdef RfuResetAdapter, 0x03002598
 tdef RfuCmd_ConnectCheck_Parse, 0x03002d18
