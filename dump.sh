@@ -99,7 +99,7 @@ split .text 0x24c4 RfuCmd_DataRecv
 split .text 0x2508 RfuCmd_WaitData
 split .text 0x2554 RfuCmd_0x30
 split .text 0x2598 RfuCmd_End
-split .text 0x25ec
+split .text 0x25ec RfuResetAdapter
 split .text 0x25fc RfuBoot
 split .text 0x2664 RfuHandshake
 split .text 0x26d0 Sio32Init

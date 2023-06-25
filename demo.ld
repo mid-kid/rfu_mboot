@@ -70,7 +70,7 @@ SECTIONS {
         RfuCmd_WaitData.o(.text)
         RfuCmd_0x30.o(.text)
         RfuCmd_End.o(.text)
-        dump/baserom_demo_2598.o(.text)
+        RfuResetAdapter.o(.text)
         RfuBoot.o(.text)
         RfuHandshake.o(.text)
         Sio32Init.o(.text)
