@@ -56,6 +56,7 @@ $(DEPENDFILE):
 SoundPlaySfx.o: CC := ThumbPatch-thumb-elf-gcc
 RfuCmdRecv.o: CC := ThumbPatch-thumb-elf-gcc
 RfuConnectCheck.o: CC := ThumbPatch-thumb-elf-gcc
+RfuHandshake.o: CFLAGS += -Wno-uninitialized
 
 include GasdependDemo
 include $(DEPENDFILE)

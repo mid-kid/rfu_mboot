@@ -72,7 +72,7 @@ SECTIONS {
         RfuCmd_End.o(.text)
         dump/baserom_demo_2598.o(.text)
         RfuBoot.o(.text)
-        dump/baserom_demo_25fc.o(.text)
+        RfuHandshake.o(.text)
         Sio32Init.o(.text)
         Sio32InitUpdate.o(.text)
         dump/baserom_demo_27a0.o(.text)
@@ -184,4 +184,5 @@ SECTIONS {
     RfuBufSend = 0x03005cc0;
     RfuBufRecv = 0x03005de0;
     UserNames = 0x03005674;
+    u8_03005efc = 0x03005efc;
 }
