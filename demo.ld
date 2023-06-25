@@ -89,7 +89,7 @@ SECTIONS {
         RfuConnect.o(.text)
         RfuConnectCheck.o(.text)
         RfuConnectReady.o(.text)
-        dump/baserom_demo_2d18.o(.text)
+        RfuCmd_ConnectCheck_Parse.o(.text)
         dump/baserom_demo_2d34.o(.text)
         dump/baserom_demo_2d4c.o(.text)
         dump/baserom_demo_2d74.o(.text)
