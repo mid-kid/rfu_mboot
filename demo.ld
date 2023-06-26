@@ -131,6 +131,8 @@ SECTIONS {
         dump/baserom_demo_3f7c.o(.rodata)
         MenuMsgInitial.o(.rodata)
         dump/baserom_demo_4200.o(.rodata)
+        IntrTableBuf.o(.rodata)
+        dump/baserom_demo_43c8.o(.rodata)
     }
     .bss : { }
     bss_start = 0x03005684;
@@ -145,7 +147,6 @@ SECTIONS {
     u8_03005764 = 0x03005764;
     Lang = 0x03005758;
     Proc = 0x03005c90;
-    IntrTableBuf = 0x030043c0;
     MenuMsg = 0x0300575c;
     u8_03005754 = 0x03005754;
     GameList = 0x030056a0;

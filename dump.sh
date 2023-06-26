@@ -152,4 +152,6 @@ split .rodata 0x3f70 SearchProcTable
 split .rodata 0x3f7c GameNameInitial
 split .rodata 0x3fb8
 split .rodata 0x4200 MenuMsgInitial
+split .rodata 0x43c0
+split .rodata 0x43c8 IntrTableBuf
 split .rodata 0x5684

@@ -12,7 +12,7 @@ extern void FrameCountReset(void);
 extern u8 SearchMenuUpdateGames(void);
 extern void SearchMenuClearGame(void);
 extern void Sio32IntrProcSet(void (*Func)());
-extern void Sio32IntrProc_Unk0e10(void);
+extern void RfuIntrDataTransfer(void);
 extern u32 RfuMbootCfg(u32 param_1, u8 Client, void *Dest, u32 Size);
 extern void MainMenuInit(void);
 extern struct Mboot Mboot;
@@ -262,7 +262,7 @@ void SearchMenu(void)
         if (procRes == 0) {
             if (SearchMenuTimer > 0 && RfuBuf.recv[7] == 0) {
                 SearchMenuClearGame();
-                Sio32IntrProcSet(Sio32IntrProc_Unk0e10);
+                Sio32IntrProcSet(RfuIntrDataTransfer);
                 RfuMbootCfg(0x20, MbootPeer, (void *)EX_WRAM, EX_WRAM_SIZE);
                 MenuState = SEARCH_SETGAMEINFO;
             } else {
