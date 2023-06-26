@@ -9,9 +9,11 @@
 
 tdef FUN_03003078, 0x03003078
 tdef FUN_03003e04, 0x03003e04
-tdef RfuIntrDataTransfer, 0x03000e10
 tdef Init_Unk2894, 0x03002894
 tdef Init_Unk2d34, 0x03002d34
 tdef Init_Unk292c, 0x0300292c
 adef Sio32Intr, 0x030017a0
 tdef FUN_03002d4c, 0x03002d4c
+tdef RfuCmd_0x11_Call_Unk2d74, 0x03002d74
+tdef RfuDataRecv, 0x030036ec
+tdef RfuDataSend, 0x030033a8

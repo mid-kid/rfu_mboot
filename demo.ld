@@ -9,7 +9,7 @@ SECTIONS {
         SearchMenuInit.o(.text)
         SearchMenuDrawListTitle.o(.text)
         SearchMenu.o(.text)
-        dump/baserom_demo_0e10.o(.text)
+        RfuIntrDataTransfer.o(.text)
         RfuStrcmp.o(.text)
         SearchProc_GameInfoSet.o(.text)
         SearchProc_RadioCfg.o(.text)
