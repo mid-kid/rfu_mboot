@@ -73,7 +73,7 @@ split .text 0x16a0 SoundInit
 split .text 0x1728 SoundMain
 split .text 0x1758 SoundPlaySfx
 split .text 0x1768 SoundStop
-split .text 0x17a0
+split .text 0x17a0 VBlankIntr
 split .text 0x180c
 split .text 0x1b20
 split .text 0x1e20

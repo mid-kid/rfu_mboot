@@ -14,4 +14,4 @@ tdef Init_Unk2894, 0x03002894
 tdef Init_Unk2d34, 0x03002d34
 tdef Init_Unk292c, 0x0300292c
 adef Sio32Intr, 0x030017a0
-tdef VBlankIntr, 0x03001768
+tdef FUN_03002d4c, 0x03002d4c

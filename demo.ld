@@ -44,7 +44,7 @@ SECTIONS {
         SoundMain.o(.text)
         SoundPlaySfx.o(.text)
         SoundStop.o(.text)
-        dump/baserom_demo_1768.o(.text)
+        VBlankIntr.o(.text)
         dump/baserom_demo_17a0.o(.text)
         dump/baserom_demo_180c.o(.text)
         dump/baserom_demo_1b20.o(.text)
