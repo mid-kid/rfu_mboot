@@ -104,7 +104,7 @@ split .text 0x25fc RfuBoot
 split .text 0x2664 RfuHandshake
 split .text 0x26d0 Sio32Init
 split .text 0x27a0 Sio32InitUpdate
-split .text 0x286c
+split .text 0x286c RfuIntrHandshake
 split .text 0x2894
 split .text 0x292c
 split .text 0x2984

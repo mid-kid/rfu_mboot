@@ -19,10 +19,10 @@ u32 Sio32InitUpdate(void)
         break;
 
     case 1:
-        if (Sio32.field6_0xa == 0) {
-            if (Sio32.field3_0x4 == 0x8001) break;
+        if (Sio32.deviceID == 0) {
+            if (Sio32.dataLo == 0x8001) break;
             if (Sio32.slave) break;
-            if (Sio32.field2_0x2 != 0) break;
+            if (Sio32.handshakeStep != 0) break;
 
             *(vu16 *)REG_IME = FALSE;
             *(vu16 *)REG_IE &= ~SIO_INTR_FLAG;
@@ -42,7 +42,7 @@ u32 Sio32InitUpdate(void)
         Sio32.state = 2;
 
     default:
-        return Sio32.field6_0xa;
+        return Sio32.deviceID;
     }
 
     return 0;

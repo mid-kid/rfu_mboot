@@ -75,7 +75,7 @@ SECTIONS {
         RfuHandshake.o(.text)
         Sio32Init.o(.text)
         Sio32InitUpdate.o(.text)
-        dump/baserom_demo_27a0.o(.text)
+        RfuIntrHandshake.o(.text)
         dump/baserom_demo_286c.o(.text)
         dump/baserom_demo_2894.o(.text)
         dump/baserom_demo_292c.o(.text)
@@ -185,4 +185,5 @@ SECTIONS {
     RfuBufRecv = 0x03005de0;
     UserNames = 0x03005674;
     u8_03005efc = 0x03005efc;
+    HandshakeString = 0x03005630;
 }
