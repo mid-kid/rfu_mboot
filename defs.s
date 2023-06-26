@@ -15,5 +15,6 @@ tdef Init_Unk292c, 0x0300292c
 adef Sio32Intr, 0x030017a0
 tdef FUN_03002d4c, 0x03002d4c
 tdef RfuCmd_0x11_Call_Unk2d74, 0x03002d74
-tdef RfuDataRecv, 0x030036ec
-tdef RfuDataSend, 0x030033a8
+tdef RfuCmd_DataRecv_Parse, 0x030037b8
+tdef FUN_03003044, 0x03003044
+tdef RfuDataSendPrepare, 0x03003454

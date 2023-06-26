@@ -14,8 +14,8 @@ RfuIntrDataTransfer:
 
 #include "RfuPeer.h"
 extern u32 RfuCmd_0x11_Call_Unk2d74(u8 *param_1, u8 *param_2, u8 *param_3);
-extern u32 RfuDataRecv(void);
-extern u32 RfuDataSend(void);
+extern u16 RfuDataRecv(void);
+extern u16 RfuDataSend(void);
 extern u16 RfuWaitDataStartForce(void);
 extern u8 SearchMenuErrorTimer;
 extern u8 MenuState;

@@ -135,10 +135,10 @@ split .text 0x31c8 RfuMbootCfg
 split .text 0x31f4
 split .text 0x3224 MbootDLStart
 split .text 0x33a8 RfuMbootDLStart
-split .text 0x3454
+split .text 0x3454 RfuDataSend
 split .text 0x353c
 split .text 0x36ec
-split .text 0x37b8
+split .text 0x37b8 RfuDataRecv
 split .text 0x3808
 split .text 0x397c
 split .text 0x3b60

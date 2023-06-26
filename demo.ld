@@ -106,10 +106,10 @@ SECTIONS {
         dump/baserom_demo_31c8.o(.text)
         MbootDLStart.o(.text)
         RfuMbootDLStart.o(.text)
-        dump/baserom_demo_33a8.o(.text)
+        RfuDataSend.o(.text)
         dump/baserom_demo_3454.o(.text)
         dump/baserom_demo_353c.o(.text)
-        dump/baserom_demo_36ec.o(.text)
+        RfuDataRecv.o(.text)
         dump/baserom_demo_37b8.o(.text)
         dump/baserom_demo_3808.o(.text)
         dump/baserom_demo_397c.o(.text)
@@ -187,4 +187,5 @@ SECTIONS {
     UserNames = 0x03005674;
     u8_03005efc = 0x03005efc;
     HandshakeString = 0x03005630;
+    RfuDataSendBuf = 0x030061f8;
 }
