@@ -107,7 +107,7 @@ SECTIONS {
         MbootDLStart.o(.text)
         RfuMbootDLStart.o(.text)
         RfuDataSend.o(.text)
-        dump/baserom_demo_3454.o(.text)
+        RfuDataSendPrepare.o(.text)
         dump/baserom_demo_353c.o(.text)
         RfuDataRecv.o(.text)
         dump/baserom_demo_37b8.o(.text)
