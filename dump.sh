@@ -139,7 +139,7 @@ split .text 0x3454 RfuDataSend
 split .text 0x353c RfuDataSendPrepare
 split .text 0x36ec RfuDataSendPreparePeer
 split .text 0x37b8 RfuDataRecv
-split .text 0x3808
+split .text 0x3808 RfuCmd_DataRecv_Parse
 split .text 0x397c
 split .text 0x3b60
 split .text 0x3ce0

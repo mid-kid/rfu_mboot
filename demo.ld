@@ -110,7 +110,7 @@ SECTIONS {
         RfuDataSendPrepare.o(.text)
         RfuDataSendPreparePeer.o(.text)
         RfuDataRecv.o(.text)
-        dump/baserom_demo_37b8.o(.text)
+        RfuCmd_DataRecv_Parse.o(.text)
         dump/baserom_demo_3808.o(.text)
         dump/baserom_demo_397c.o(.text)
         dump/baserom_demo_3b60.o(.text)
