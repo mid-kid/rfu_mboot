@@ -45,7 +45,7 @@ SECTIONS {
         SoundPlaySfx.o(.text)
         SoundStop.o(.text)
         VBlankIntr.o(.text)
-        Sio32Asm.o(.text)
+        Sio32.o(.text)
         RfuCmdInit.o(.text)
         dump/baserom_demo_1f20.o(.text)
         RfuCmdSend.o(.text)
@@ -186,4 +186,7 @@ SECTIONS {
     HandshakeString = 0x03005630;
     RfuDataSendBuf = 0x030061f8;
     RfuEncTable = 0x03005648;
+    u8_03005728 = 0x03005728;
+    u8_03005729 = 0x03005729;
+    u8_0300572a = 0x0300572a;
 }

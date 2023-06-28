@@ -2,7 +2,7 @@ CC = thumb-elf-gcc
 AS = thumb-elf-as
 OBJCOPY = thumb-elf-objcopy
 
-.SFILES    =   crt0_demo.s defs.s Sio32Asm.s
+.SFILES    =   crt0_demo.s defs.s
 .CFILES    =   \
 	$(wildcard *.c) \
 	$(wildcard dump/*.c)
