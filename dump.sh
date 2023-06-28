@@ -74,10 +74,10 @@ split .text 0x1728 SoundMain
 split .text 0x1758 SoundPlaySfx
 split .text 0x1768 SoundStop
 split .text 0x17a0 VBlankIntr
-split .text 0x180c
-split .text 0x1b20
-split .text 0x1e20
-split .text 0x1ee0
+split .text 0x180c Sio32Intr
+split .text 0x1b20 Sio32_Unk1
+split .text 0x1e20 Sio32_Unk2
+split .text 0x1ee0 Sio32WaitSIState
 split .text 0x1f20 RfuCmdInit
 split .text 0x1f58
 split .text 0x2020 RfuCmdSend
@@ -140,7 +140,7 @@ split .text 0x353c RfuDataSendPrepare
 split .text 0x36ec RfuDataSendPreparePeer
 split .text 0x37b8 RfuDataRecv
 split .text 0x3808 RfuCmd_DataRecv_Parse
-split .text 0x397c
+split .text 0x397c RfuDataRecvParse
 split .text 0x3b60
 split .text 0x3ce0
 split .text 0x3d38

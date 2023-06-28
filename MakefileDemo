@@ -2,7 +2,7 @@ CC = thumb-elf-gcc
 AS = thumb-elf-as
 OBJCOPY = thumb-elf-objcopy
 
-.SFILES    =   crt0_demo.s defs.s
+.SFILES    =   crt0_demo.s defs.s Sio32Asm.s
 .CFILES    =   \
 	$(wildcard *.c) \
 	$(wildcard dump/*.c)
@@ -57,6 +57,7 @@ SoundPlaySfx.o: CC := ThumbPatch-thumb-elf-gcc
 RfuCmdRecv.o: CC := ThumbPatch-thumb-elf-gcc
 RfuConnectCheck.o: CC := ThumbPatch-thumb-elf-gcc
 RfuHandshake.o: CFLAGS += -Wno-uninitialized
+RfuDataRecvParse.o: CFLAGS += -Wno-uninitialized
 
 include GasdependDemo
 include $(DEPENDFILE)
