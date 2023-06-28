@@ -108,7 +108,7 @@ SECTIONS {
         RfuMbootDLStart.o(.text)
         RfuDataSend.o(.text)
         RfuDataSendPrepare.o(.text)
-        dump/baserom_demo_353c.o(.text)
+        RfuDataSendPreparePeer.o(.text)
         RfuDataRecv.o(.text)
         dump/baserom_demo_37b8.o(.text)
         dump/baserom_demo_3808.o(.text)
@@ -188,4 +188,5 @@ SECTIONS {
     u8_03005efc = 0x03005efc;
     HandshakeString = 0x03005630;
     RfuDataSendBuf = 0x030061f8;
+    RfuEncTable = 0x03005648;
 }

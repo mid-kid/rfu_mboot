@@ -13,7 +13,7 @@ struct MbootTmp {
     u8 unk_09;
     u8 unk_10;
     u8 unk_11;
-    u8 unk_12;
+    volatile u8 unk_12;
     u16 beaconID;
     u8 unk_13;
     u8 unk_14;

@@ -14,7 +14,7 @@ struct RfuPeerSub {
     u8 unk_15;
     u8 unk_16;
     u8 unk_17;
-    u16 *unk_18;
+    u8 *unk_18;
     u8 unk_19;
     u8 unk_20;
     u16 unk_21;
