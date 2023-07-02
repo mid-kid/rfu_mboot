@@ -2,7 +2,7 @@
 #define Rfu_h
 
 struct Rfu {
-    u32 field0_0x0;
+    u32 state;
     u32 cmdHeader;
     u8 cmdSize;
     u8 field3_0x9;
