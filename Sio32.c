@@ -25,30 +25,253 @@ void Sio32Intr(void)
     }
 }
 
-#if 1
-__asm__("
-.section .text
-.type Sio32IntrMaster, function
-Sio32IntrMaster:
-.2byte 0xc00d,0xe1a0,0xd870,0xe92d,0x32bc,0xe59f,0xb004,0xe24c,0xee12,0xe3a0,0xe301,0xe28e,0x0000,0xe593,0x4003,0xe1a0,0xc000,0xe59e,0x0003,0xe350,0x0016,0x1a00,0x229c,0xe59f,0x129c,0xe59f,0x029c,0xe59f,0x3000,0xe5d2,0xc103,0xe781,0x3000,0xe5d2,0x1000,0xe5d0,0x3001,0xe283,0x3000,0xe5c2,0x30ff,0xe201,0x0000,0xe353,0x300a,0x05c4,0x3004,0x03a0,0x3000,0x0584,0x0058,0x0a00,0x3001,0xe241,0x3000,0xe5c0,0x2004,0xe594,0x3102,0xe3a0,0x3000,0xe58e,0x200c,0xe082,0x2004,0xe584,0x0050,0xea00,0x0000,0xe350,0x0018,0x1a00,0x0102,0xe35c,0x0005,0x0a00,0x300d,0xe5d4,0x2001,0xe3a0,0x200c,0xe5c4,0x3002,0xe083,0x300d,0xe5c4,0x0096,0xea00,0x3008,0xe5d4,0x0009,0xe5d4,0x3001,0xe283,0x0000,0xe153,0x0014,0xda00,0xc210,0xe59f,0x0100,0xe1a0,0x3000,0xe79c,0x3000,0xe58e,0x2004,0xe594,0x3009,0xe5d4,0x1000,0xe79c,0x3001,0xe283,0x3009,0xe5c4,0x2001,0xe082,0x2004,0xe584,0x0035,0xea00,0x0001,0xe350,0x000a,0x1a00,0x0102,0xe35c,0x0004,0x0a00,0x300d,0xe5d4,0x000c,0xe5c4,0x3001,0xe283,0x300d,0xe5c4,0x007b,0xea00,0x3002,0xe3a0,0x3000,0xe584,0xc000,0xe58e,0x0028,0xea00,0x0002,0xe350,0x0026,0x1a00,0xc004,0xe584,0x3c99,0xe3a0,0x2194,0xe59f,0x0000,0xe3a0,0xc000,0xe782,0x3066,0xe283,0x2180,0xe59f,0x1001,0xe280,0x1000,0xe5c2,0x082c,0xe153,0x0012,0x1a00,0x3cff,0xe20c,0x1170,0xe59f,0x3423,0xe1a0,0x3000,0xe5c1,0x0045,0xe353,0x3045,0x83a0,0x3000,0x85c1,0x3000,0xe5d1,0x20ff,0xe203,0x0000,0xe352,0x200a,0x05c4,0x3004,0x03a0,0x3000,0x0584,0x0009,0x0a00,0x3001,0xe243,0x3000,0xe5c1,0x2003,0xe3a0,0x2000,0xe584,0x0004,0xea00,0x300d,0xe5d4,0x100c,0xe5c4,0x3001,0xe283,0x300d,0xe5c4,0x0053,0xea00,0x3e12,0xe3a0,0x3301,0xe283,0x2102,0xe3a0,0x2000,0xe583,0x0001,0xe3a0,0x010f,0xeb00,0x0800,0xe1a0,0x0801,0xe350,0x0049,0x0a00,0x5f4a,0xe3a0,0x5301,0xe285,0x6a05,0xe3a0,0x300b,0xe286,0x30b0,0xe1c5,0x0000,0xe3a0,0x0105,0xeb00,0x0800,0xe1a0,0x0801,0xe350,0x003f,0x0a00,0x3000,0xe594,0x0004,0xe353,0x0032,0x1a00,0x30a7,0xe3a0,0x3499,0xe283,0x3866,0xe283,0x20a5,0xe3a0,0x10a8,0xe59f,0x2499,0xe282,0x1000,0xe591,0x2866,0xe282,0x0002,0xe151,0x0003,0x1151,0x0009,0x0a00,0x30b5,0xe3a0,0x3499,0xe283,0x3866,0xe283,0x0003,0xe151,0x0004,0x0a00,0x30b7,0xe3a0,0x3499,0xe283,0x3866,0xe283,0x0003,0xe151,0x000f,0x1a00,0x0e12,0xe3a0,0x0301,0xe280,0xcf4a,0xe3a0,0xc301,0xe28c,0x3000,0xe3a0,0x300b,0xe5c4,0x1005,0xe3a0,0x1000,0xe584,0x2102,0xe3a0,0x2000,0xe580,0x3a05,0xe283,0x2002,0xe283,0x20b0,0xe1cc,0x3082,0xe283,0x30b0,0xe1cc,0x0001,0xea00,0x3003,0xe286,0x30b0,0xe1c5,0x3000,0xe3a0,0x300d,0xe5c4,0x20ff,0xe3a0,0x200f,0xe5c4,0x3001,0xe283,0x300c,0xe5c4,0x0006,0xea00,0x5ca0,0x0300,0x5729,0x0300,0x5de0,0x0300,0x5728,0x0300,0x5cc0,0x0300,0x3003,0xe286,0x30b0,0xe1c5,0x300c,0xe5d4,0x0000,0xe353,0x0004,0x1a00,0x2f4a,0xe3a0,0x2301,0xe282,0x3a05,0xe3a0,0x3083,0xe283,0x30b0,0xe1c2,0x0000,0xe3a0,0x6870,0xe91b,0xff1e,0xe12f
-.size Sio32IntrMaster, .-Sio32IntrMaster
-");
-#else
-
 extern u8 RfuBufRecv[0x120];
 extern u8 u8_03005729;
 extern u8 u8_03005728;
 extern u8 RfuBufSend[0x120];
 
 #define BufWrite(Buf, Offs, Data, Bit) \
-{ \
-    u8 *buf = (u8 *)(Buf); \
+({ \
+    u8 *buf = (u8 *)&Buf; \
     *(u##Bit *)(buf + (Offs)) = (Data); \
-}
+})
 
 #define BufRead(Buf, Offs, Bit) \
-    *(u##Bit *)((Buf) + (Offs))
+({ \
+    u8 *buf = (u8 *)&Buf[Offs]; \
+    *(u##Bit *)(buf); \
+})
 
+#if 1
+__asm__("
+    .text
+	.global	Sio32IntrMaster
+	.type	 Sio32IntrMaster,function
+Sio32IntrMaster:
+	@ args = 0, pretend = 0, frame = 0
+	@ frame_needed = 1, current_function_anonymous_args = 0
+	mov	ip, sp
+	stmfd	sp!, {r4, r5, r6, fp, ip, lr, pc}
+	ldr	r3, .LL36
+	sub	fp, ip, #4
+	mov	lr, #288
+	add	lr, lr, #67108864
+	ldr	r0, [r3, #0]
+	mov	r4, r3
+	ldr	ip, [lr, #0]
+	cmp	r0, #3
+	bne	.LL9
+	ldr	r2, .LL36+4
+	ldr	r1, .LL36+8
+	ldr	r0, .LL36+12
+	ldrb	r3, [r2, #0]	@ zero_extendqisi2
+	str	ip, [r1, r3, asl #2]
+	ldrb	r3, [r2, #0]
+	ldrb	r1, [r0, #0]
+	add	r3, r3, #1
+	strb	r3, [r2, #0]
+	and	r3, r1, #255
+	cmp	r3, #0
+	streqb	r3, [r4, #10]
+	moveq	r3, #4
+	streq	r3, [r4, #0]
+	beq	.LL12
+.LL10:
+	sub	r3, r1, #1
+	strb	r3, [r0, #0]
+	ldr	r2, [r4, #4]
+	mov	r3, #-2147483648
+	str	r3, [lr, #0]
+	add	r2, r2, ip
+	str	r2, [r4, #4]
+	b	.LL12
+.LL9:
+	cmp	r0, #0
+	bne	.LL13
+	cmp	ip, #-2147483648
+	beq	.LL14
+	ldrb	r3, [r4, #13]
+	mov	r2, #1
+	strb	r2, [r4, #12]
+	add	r3, r3, r2
+	strb	r3, [r4, #13]
+	b	.LL35
+.LL14:
+	ldrb	r3, [r4, #8]	@ zero_extendqisi2
+	ldrb	r0, [r4, #9]	@ zero_extendqisi2
+	add	r3, r3, #1
+	cmp	r3, r0
+	ble	.LL19
+	ldr	ip, .LL36+16
+	mov	r0, r0, asl #2
+	ldr	r3, [ip, r0]
+	str	r3, [lr, #0]
+	ldr	r2, [r4, #4]
+	ldrb	r3, [r4, #9]
+	ldr	r1, [ip, r0]
+	add	r3, r3, #1
+	strb	r3, [r4, #9]
+	add	r2, r2, r1
+	str	r2, [r4, #4]
+	b	.LL12
+.LL13:
+	cmp	r0, #1
+	bne	.LL18
+	cmp	ip, #-2147483648
+	beq	.LL19
+	ldrb	r3, [r4, #13]
+	strb	r0, [r4, #12]
+	add	r3, r3, #1
+	strb	r3, [r4, #13]
+	b	.LL34
+.LL19:
+	mov	r3, #2
+	str	r3, [r4, #0]
+	str	ip, [lr, #0]
+	b	.LL12
+.LL18:
+	cmp	r0, #2
+	bne	.LL12
+	str	ip, [r4, #4]
+	mov	r3, #39168
+	ldr	r2, .LL36+8
+	mov	r0, #0
+	str	ip, [r2, r0]
+	add	r3, r3, #102
+	ldr	r2, .LL36+4
+	add	r1, r0, #1
+	strb	r1, [r2, #0]
+	cmp	r3, ip, lsr #16
+	bne	.LL22
+	and	r3, ip, #65280
+	ldr	r1, .LL36+12
+	mov	r3, r3, lsr #8
+	strb	r3, [r1, #0]
+	cmp	r3, #69
+	movhi	r3, #69
+	strhib	r3, [r1, #0]
+.LL23:
+	ldrb	r3, [r1, #0]
+	and	r2, r3, #255
+	cmp	r2, #0
+	streqb	r2, [r4, #10]
+	moveq	r3, #4
+	streq	r3, [r4, #0]
+	beq	.LL26
+.LL24:
+	sub	r3, r3, #1
+	strb	r3, [r1, #0]
+	mov	r2, #3
+	str	r2, [r4, #0]
+	b	.LL26
+.LL22:
+	ldrb	r3, [r4, #13]
+	strb	r1, [r4, #12]
+	add	r3, r3, #1
+	strb	r3, [r4, #13]
+	b	.LL35
+.LL26:
+	mov	r3, #288
+	add	r3, r3, #67108864
+	mov	r2, #-2147483648
+	str	r2, [r3, #0]
+.LL12:
+	mov	r0, #1
+	bl	Sio32WaitSIState
+	mov	r0, r0, asl #16
+	cmp	r0, #65536
+	beq	.LL34
+	mov	r5, #296
+	add	r5, r5, #67108864
+	mov	r6, #20480
+	add	r3, r6, #11
+	strh	r3, [r5, #0]	@ movhi   ;; CYGNUS LOCAL nickc
+	mov	r0, #0
+	bl	Sio32WaitSIState
+	mov	r0, r0, asl #16
+	cmp	r0, #65536
+	beq	.LL34
+	ldr	r3, [r4, #0]
+	cmp	r3, #4
+	bne	.LL29
+	mov	r3, #167
+	add	r3, r3, #-1728053248
+	add	r3, r3, #6684672
+	mov	r2, #165
+	ldr	r1, .LL36+8
+	add	r2, r2, #-1728053248
+	ldr	r1, [r1, #0]
+	add	r2, r2, #6684672
+	cmp	r1, r2
+	cmpne	r1, r3
+	beq	.LL31
+	mov	r3, #181
+	add	r3, r3, #-1728053248
+	add	r3, r3, #6684672
+	cmp	r1, r3
+	beq	.LL31
+	mov	r3, #183
+	add	r3, r3, #-1728053248
+	add	r3, r3, #6684672
+	cmp	r1, r3
+	bne	.LL30
+.LL31:
+	mov	r0, #288
+	add	r0, r0, #67108864
+	mov	ip, #296
+	add	ip, ip, #67108864
+	mov	r3, #0
+	strb	r3, [r4, #11]
+	mov	r1, #5
+	str	r1, [r4, #0]
+    mov	r2, #-2147483648
+	str	r2, [r0, #0]
+    add	r3, r3, #20480
+	add	r2, r3, #2
+	strh	r2, [ip, #0]	@ movhi   ;; CYGNUS LOCAL nickc
+	add	r3, r3, #130
+	strh	r3, [ip, #0]	@ movhi   ;; CYGNUS LOCAL nickc
+	b	.LL32
+.LL30:
+	add	r3, r6, #3
+	strh	r3, [r5, #0]	@ movhi   ;; CYGNUS LOCAL nickc
+.LL32:
+	mov	r3, #0
+	strb	r3, [r4, #13]
+	mov	r2, #255
+	strb	r2, [r4, #15]
+	add	r3, r3, #1
+	strb	r3, [r4, #12]
+	b	.LL33
+.LL37:
+	.align	0
+.LL36:
+	.word	Rfu
+	.word	u8_03005729
+	.word	RfuBufRecv
+	.word	u8_03005728
+	.word	RfuBufSend
+.LL29:
+	add	r3, r6, #3
+	strh	r3, [r5, #0]	@ movhi   ;; CYGNUS LOCAL nickc
+.LL33:
+	ldrb	r3, [r4, #12]	@ zero_extendqisi2
+	cmp	r3, #0
+	bne	.LL34
+	mov	r2, #296
+	add	r2, r2, #67108864
+	mov	r3, #20480
+	add	r3, r3, #131
+	strh	r3, [r2, #0]	@ movhi   ;; CYGNUS LOCAL nickc
+.LL34:
+	mov	r0, #0
+.LL35:
+	ldmea	fp, {r4, r5, r6, fp, sp, lr}
+	bx	lr
+.LLfe2:
+	.size	 Sio32IntrMaster,.LLfe2-Sio32IntrMaster
+");
+#else
 u32 Sio32IntrMaster(void)
 {
     u32 data;
@@ -151,15 +374,346 @@ u32 Sio32IntrMaster(void)
 }
 #endif
 
+extern u8 RfuIntrCmd;
+extern u8 RfuIntrSize;
+
 #if 1
 __asm__("
-.section .text
-.type Sio32IntrSlave, function
+	.text
+	.global	Sio32IntrSlave
+	.type	 Sio32IntrSlave,function
 Sio32IntrSlave:
-.2byte 0xc00d,0xe1a0,0xd8f0,0xe92d,0x0000,0xe3a0,0xb004,0xe24c,0x00ba,0xeb00,0x0800,0xe1a0,0x0801,0xe350,0x00b4,0x0a00,0x1f4a,0xe3a0,0x1301,0xe281,0x2a05,0xe3a0,0x200a,0xe282,0x0294,0xe59f,0x3e12,0xe3a0,0x20b0,0xe1c1,0x3301,0xe283,0xe000,0xe590,0x4000,0xe1a0,0xc000,0xe593,0x0005,0xe35e,0x002e,0x1a00,0x3000,0xe3a0,0x5001,0xe283,0x5009,0xe5c4,0xc004,0xe584,0x2c99,0xe3a0,0x1260,0xe59f,0x2066,0xe282,0xc003,0xe781,0x082c,0xe152,0x0022,0x1a00,0x3cff,0xe20c,0x3423,0xe1a0,0x3008,0xe5c4,0x0244,0xe59f,0x2244,0xe59f,0x3000,0xe5c0,0xc000,0xe5c2,0x10ff,0xe213,0x0014,0x1a00,0x2000,0xe5d2,0x3027,0xe242,0x0036,0xe352,0x0002,0x1353,0x0007,0x8a00,0x1008,0xe5c4,0x3080,0xe282,0x2218,0xe59f,0x3499,0xe283,0x1000,0xe5c0,0x3866,0xe283,0x3000,0xe582,0x002f,0xea00,0x5008,0xe5c4,0x31fc,0xe59f,0x21fc,0xe59f,0x5000,0xe5c0,0x2000,0xe583,0x1003,0xe1a0,0x5004,0xe583,0x0028,0xea00,0x3001,0xe243,0x3000,0xe5c0,0x2006,0xe3a0,0x2000,0xe584,0x004a,0xea00,0xe000,0xe584,0x0048,0xea00,0x0006,0xe35e,0x002e,0x1a00,0x21b0,0xe59f,0x3009,0xe5d4,0x01ac,0xe59f,0xc103,0xe782,0x3009,0xe5d4,0x2000,0xe5d0,0x3001,0xe283,0x10ff,0xe202,0x3009,0xe5c4,0x0000,0xe351,0x001d,0x1a00,0x318c,0xe59f,0x3000,0xe5d3,0x2028,0xe243,0x0036,0xe353,0x0001,0x1352,0x0007,0x8a00,0x1008,0xe5c4,0x3080,0xe283,0x2170,0xe59f,0x3499,0xe283,0x1000,0xe5c0,0x3866,0xe283,0x3000,0xe582,0x0005,0xea00,0x3001,0xe3a0,0x3008,0xe5c4,0x2150,0xe59f,0x1150,0xe59f,0x3000,0xe5c0,0x000a,0xe882,0x1002,0xe1a0,0x2000,0xe3a0,0x2009,0xe5c4,0x3007,0xe3a0,0x3000,0xe584,0x1002,0xe791,0x1004,0xe584,0x2001,0xe282,0x2009,0xe5c4,0x001e,0xea00,0x3004,0xe594,0x2001,0xe242,0x2000,0xe5c0,0x300c,0xe083,0x3004,0xe584,0x0017,0xea00,0x0007,0xe35e,0x0015,0x1a00,0x20f0,0xe59f,0x3000,0xe5d2,0x0000,0xe353,0x000b,0x0a00,0x3001,0xe243,0x3000,0xe5c2,0x10e0,0xe59f,0x2009,0xe5d4,0x3009,0xe5d4,0x1102,0xe791,0x2004,0xe594,0x3001,0xe283,0x3009,0xe5c4,0x2001,0xe082,0x2004,0xe584,0x0006,0xea00,0x3009,0xe3a0,0x3000,0xe584,0x10b0,0xe59f,0x2009,0xe5d4,0x3004,0xe594,0x3102,0xe781,0x1102,0xe3a0,0x6e12,0xe3a0,0x6301,0xe286,0x1000,0xe586,0x0001,0xe3a0,0x002c,0xeb00,0x0800,0xe1a0,0x0801,0xe350,0x0026,0x0a00,0x5f4a,0xe3a0,0x5301,0xe285,0x7a05,0xe3a0,0x2000,0xe594,0x3002,0xe287,0x30b0,0xe1c5,0x0009,0xe352,0x001b,0x1a00,0x0000,0xe3a0,0x001f,0xeb00,0x0800,0xe1a0,0x0801,0xe350,0x0019,0x0a00,0x1000,0xe3a0,0x1000,0xe586,0x1000,0xe584,0x3001,0xe3a0,0x300b,0xe5c4,0x20ff,0xe3a0,0x200f,0xe5c4,0x3001,0xe1a0,0x300d,0xe5c4,0x10b0,0xe1c5,0x3028,0xe59f,0x0000,0xe593,0x2003,0xe287,0x20b0,0xe1c5,0x003c,0xeb00,0x0009,0xea00,0x5ca0,0x0300,0x5de0,0x0300,0x572a,0x0300,0x5730,0x0300,0x5cc0,0x0300,0x01ee,0x9966,0x5c98,0x0300,0x3a05,0xe3a0,0x3082,0xe283,0x30b0,0xe1c5,0x0000,0xe3a0,0x68f0,0xe91b,0xff1e,0xe12f
-.size Sio32IntrSlave, .-Sio32IntrSlave
+	@ args = 0, pretend = 0, frame = 0
+	@ frame_needed = 1, current_function_anonymous_args = 0
+	mov	ip, sp
+	stmfd	sp!, {r4, r5, r6, r7, fp, ip, lr, pc}
+	mov	r0, #0
+	sub	fp, ip, #4
+	bl	Sio32WaitSIState
+	mov	r0, r0, asl #16
+	cmp	r0, #65536
+	beq	.L31
+	mov	r1, #296
+	add	r1, r1, #67108864
+	mov	r2, #20480
+	add	r2, r2, #10
+	ldr	r0, .L34
+	mov	r3, #288
+	strh	r2, [r1, #0]	@ movhi   ;; CYGNUS LOCAL nickc
+	add	r3, r3, #67108864
+	ldr	lr, [r0, #0]
+	mov	r4, r0
+	ldr	ip, [r3, #0]
+	cmp	lr, #5
+	bne	.L10
+	mov	r3, #0
+	add	r5, r3, #1
+	strb	r5, [r4, #9]
+	str	ip, [r4, #4]
+	mov	r2, #39168
+	ldr	r1, .L34+4
+	add	r2, r2, #102
+	str	ip, [r1, r3]
+	cmp	r2, ip, lsr #16
+	bne	.L11
+	and	r3, ip, #65280
+	mov	r3, r3, lsr #8
+	strb	r3, [r4, #8]
+	ldr	r0, .L34+8
+	ldr	r2, .L34+12
+	strb	r3, [r0, #0]
+	strb	ip, [r2, #0]
+    ands	r1, r3, #255
+	bne	.L12
+	ldrb	r2, [r2, #0]	@ zero_extendqisi2
+	sub	r3, r2, #39
+	cmp	r2, #54
+	cmpne	r3, #2
+	bhi	.L13
+	strb	r1, [r4, #8]
+	add	r3, r2, #128
+	ldr	r2, .L34+16
+	add	r3, r3, #-1728053248
+	strb	r1, [r0, #0]
+	add	r3, r3, #6684672
+	str	r3, [r2, #0]
+	b	.L33
+.L13:
+	strb	r5, [r4, #8]
+	ldr	r3, .L34+16
+	ldr	r2, .L34+20
+	strb	r5, [r0, #0]
+	str	r2, [r3, #0]
+	mov	r1, r3
+	str	r5, [r3, #4]
+	b	.L21
+.L12:
+	sub	r3, r3, #1
+	strb	r3, [r0, #0]
+	mov	r2, #6
+	str	r2, [r4, #0]
+	b	.L24
+.L11:
+	str	lr, [r4, #0]
+	b	.L24
+.L10:
+	cmp	lr, #6
+	bne	.L18
+	ldr	r2, .L34+4
+	ldrb	r3, [r4, #9]	@ zero_extendqisi2
+	ldr	r0, .L34+8
+	str	ip, [r2, r3, asl #2]
+	ldrb	r3, [r4, #9]
+	ldrb	r2, [r0, #0]
+	add	r3, r3, #1
+	and	r1, r2, #255
+	strb	r3, [r4, #9]
+	cmp	r1, #0
+	bne	.L19
+	ldr	r3, .L34+12
+	ldrb	r3, [r3, #0]	@ zero_extendqisi2
+	sub	r2, r3, #40
+	cmp	r3, #54
+	cmpne	r2, #1
+	bhi	.L20
+	strb	r1, [r4, #8]
+    add	r3, r3, #128
+	ldr	r2, .L34+16
+	add	r3, r3, #-1728053248
+	strb	r1, [r0, #0]
+	add	r3, r3, #6684672
+	str	r3, [r2, #0]
+	b	.L33
+.L20:
+	mov	r3, #1
+	strb	r3, [r4, #8]
+	ldr	r2, .L34+16
+	ldr	r1, .L34+20
+	strb	r3, [r0, #0]
+	stmia	r2, {r1, r3}	@ phole stm
+.L33:
+	mov	r1, r2
+.L21:
+	mov	r2, #0
+	strb	r2, [r4, #9]
+	mov	r3, #7
+	str	r3, [r4, #0]
+	ldr	r1, [r1, r2]
+	str	r1, [r4, #4]
+	add	r2, r2, #1
+	strb	r2, [r4, #9]
+	b	.L17
+.L19:
+	ldr	r3, [r4, #4]
+	sub	r2, r2, #1
+	strb	r2, [r0, #0]
+	add	r3, r3, ip
+	str	r3, [r4, #4]
+	b	.L24
+.L18:
+	cmp	lr, #7
+	bne	.L24
+	ldr	r2, .L34+8
+	ldrb	r3, [r2, #0]
+	cmp	r3, #0
+	beq	.L25
+	sub	r3, r3, #1
+	strb	r3, [r2, #0]
+	ldr	r1, .L34+16
+	ldrb	r2, [r4, #9]
+    ldrb	r3, [r4, #9]
+	ldr	r1, [r1, r2, asl #2]
+	ldr	r2, [r4, #4]
+	add	r3, r3, #1
+	strb	r3, [r4, #9]
+	add	r2, r2, r1
+	str	r2, [r4, #4]
+	b	.L17
+.L25:
+	mov	r3, #9
+	str	r3, [r4, #0]
+	ldr	r1, .L34+16
+	ldrb	r2, [r4, #9]	@ zero_extendqisi2
+	ldr	r3, [r4, #4]
+	str	r3, [r1, r2, asl #2]
+.L24:
+	mov	r1, #-2147483648
+.L17:
+	mov	r6, #288
+	add	r6, r6, #67108864
+	str	r1, [r6, #0]
+	mov	r0, #1
+	bl	Sio32WaitSIState
+	mov	r0, r0, asl #16
+	cmp	r0, #65536
+	beq	.L31
+	mov	r5, #296
+	add	r5, r5, #67108864
+	mov	r7, #20480
+	ldr	r2, [r4, #0]
+	add	r3, r7, #2
+	strh	r3, [r5, #0]	@ movhi   ;; CYGNUS LOCAL nickc
+	cmp	r2, #9
+	bne	.L29
+	mov	r0, #0
+	bl	Sio32WaitSIState
+	mov	r0, r0, asl #16
+	cmp	r0, #65536
+	beq	.L31
+	mov	r1, #0
+	str	r1, [r6, #0]
+    str	r1, [r4, #0]
+	mov	r3, #1
+	strb	r3, [r4, #11]
+	mov	r2, #255
+	strb	r2, [r4, #15]
+    mov	r3, r1
+	strb	r3, [r4, #13]
+	strh	r1, [r5, #0]	@ movhi   ;; CYGNUS LOCAL nickc
+	ldr	r3, .L34+24
+	ldr	r0, [r3, #0]
+	add	r2, r7, #3
+	strh	r2, [r5, #0]	@ movhi   ;; CYGNUS LOCAL nickc
+	bl	Call_thumb
+	b	.L31
+.L35:
+	.align	0
+.L34:
+	.word	Rfu
+	.word	RfuBufRecv
+	.word	RfuIntrSize
+	.word	RfuIntrCmd
+	.word	RfuBufSend
+	.word	-1721368082
+	.word	Sio32IntrProc
+.L29:
+	mov	r3, #20480
+	add	r3, r3, #130
+	strh	r3, [r5, #0]	@ movhi   ;; CYGNUS LOCAL nickc
+.L31:
+	mov	r0, #0
+	ldmea	fp, {r4, r5, r6, r7, fp, sp, lr}
+	bx	lr
+.Lfe2:
+	.size	 Sio32IntrSlave,.Lfe2-Sio32IntrSlave
 ");
 #else
+u32 Sio32IntrSlave(void)
+{
+    u32 data;
+    u32 data_send;
+
+    if (Sio32WaitSIState(0) == 1) return 0;
+    *(vu16 *)REG_SIOCNT = 0x500a;
+
+    data = *(vu32 *)REG_SIODATA32;
+
+    if (Rfu.state == 5) {
+        Rfu.field3_0x9 = 0;
+        BufWrite(RfuBufRecv, Rfu.field3_0x9, data, 32);
+        Rfu.field3_0x9++;
+
+        Rfu.cmdHeader = data;
+
+        if (data >> 0x10 == 0x9966) {
+            Rfu.cmdSize = (data & 0xff00) >> 8;
+            RfuIntrSize = Rfu.cmdSize;
+            RfuIntrCmd = data;
+
+            if (Rfu.cmdSize == 0) {
+                if (RfuIntrCmd == 0x27 ||
+                        RfuIntrCmd == 0x28 ||
+                        RfuIntrCmd == 0x29 ||
+                        RfuIntrCmd == 0x36) {
+                    Rfu.cmdSize = 0;
+                    RfuIntrSize = Rfu.cmdSize;
+                    *(u32 *)RfuBufSend = 0x99660080 + RfuIntrCmd;
+                } else {
+                    Rfu.cmdSize = 1;
+                    RfuIntrSize = Rfu.cmdSize;
+                    BufWrite(RfuBufSend, 0, 0x996601ee, 32);
+                    BufWrite(RfuBufSend, 4, 0x00000001, 32);
+                }
+
+                Rfu.field3_0x9 = 0;
+                Rfu.state = 7;
+                data_send = BufRead(RfuBufSend, Rfu.field3_0x9, 32);
+                Rfu.cmdHeader = data_send;
+                Rfu.field3_0x9++;
+
+            } else {
+                RfuIntrSize = Rfu.cmdSize - 1;
+                Rfu.state = 6;
+                data_send = 0x80000000;
+            }
+        } else {
+            Rfu.state = 5;
+            data_send = 0x80000000;
+        }
+    } else if (Rfu.state == 6) {
+        BufWrite(RfuBufRecv, Rfu.field3_0x9 * 4, data, 32);
+        Rfu.field3_0x9++;
+
+        if (RfuIntrSize == 0) {
+            if (RfuIntrCmd == 0x28 ||
+                    RfuIntrCmd == 0x29 ||
+                    RfuIntrCmd == 0x36) {
+                Rfu.cmdSize = 0;
+                RfuIntrSize = Rfu.cmdSize;
+                *(u32 *)RfuBufSend = 0x99660080 + RfuIntrCmd;
+            } else {
+                Rfu.cmdSize = 1;
+                RfuIntrSize = Rfu.cmdSize;
+                BufWrite(RfuBufSend, 0, 0x996601ee, 32);
+                BufWrite(RfuBufSend, 4, 0x00000001, 32);
+            }
+            Rfu.field3_0x9 = 0;
+            Rfu.state = 7;
+            data_send = BufRead(RfuBufSend, Rfu.field3_0x9, 32);
+            Rfu.cmdHeader = data_send;
+            Rfu.field3_0x9++;
+        } else {
+            RfuIntrSize--;
+            Rfu.cmdHeader += data;
+            data_send = 0x80000000;
+        }
+    } else if (Rfu.state == 7) {
+        if (RfuIntrSize != 0) {
+            RfuIntrSize--;
+            data_send = BufRead(RfuBufSend, Rfu.field3_0x9 * 4, 32);
+            Rfu.cmdHeader += data_send;
+            Rfu.field3_0x9++;
+        } else {
+            Rfu.state = 9;
+            BufWrite(RfuBufSend, Rfu.field3_0x9 * 4, Rfu.cmdHeader, 32);
+            data_send = 0x80000000;
+        }
+    } else {
+        data_send = 0x80000000;
+    }
+    *(vu32 *)REG_SIODATA32 = data_send;
+
+    if (Sio32WaitSIState(1) == 1) return 0;
+
+    *(vu16 *)REG_SIOCNT = 0x5002;
+
+    if (Rfu.state == 9) {
+        if (Sio32WaitSIState(0) == 1) return 0;
+
+        *(vu32 *)REG_SIODATA32 = 0;
+        Rfu.state = 0;
+        Rfu.modeMaster = TRUE;
+        Rfu.unk_10 = 0xff;
+        Rfu.unk_08 = 0;
+        *(vu16 *)REG_SIOCNT = 0;
+        *(vu16 *)REG_SIOCNT = 0x5003;
+        Call_thumb(Sio32IntrProc);
+    } else {
+        *(vu16 *)REG_SIOCNT = 0x5082;
+    }
+
+    return 0;
+}
 #endif
 
 #if 1

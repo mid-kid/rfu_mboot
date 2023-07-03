@@ -188,5 +188,6 @@ SECTIONS {
     RfuEncTable = 0x03005648;
     u8_03005728 = 0x03005728;
     u8_03005729 = 0x03005729;
-    u8_0300572a = 0x0300572a;
+    RfuIntrSize = 0x0300572a;
+    RfuIntrCmd = 0x03005730;
 }
