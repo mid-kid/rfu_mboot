@@ -8,7 +8,6 @@
 .endm
 
 tdef FUN_03003078, 0x03003078
-tdef Init_Unk2894, 0x03002894
 tdef Init_Unk2d34, 0x03002d34
 tdef Init_Unk292c, 0x0300292c
 tdef FUN_03002d4c, 0x03002d4c
@@ -16,3 +15,6 @@ tdef RfuCmd_0x11_Call_Unk2d74, 0x03002d74
 tdef FUN_03003044, 0x03003044
 tdef FUN_03003b60, 0x03003b60
 tdef FUN_0300397c, 0x0300397c
+tdef Sio32_Unk5, 0x03001f20
+tdef RfuMemcpy, 0x03002f28
+tdef RfuMemcpyEnd, 0x03002f58

@@ -74,7 +74,7 @@ SECTIONS {
         Sio32InitUpdate.o(.text)
         RfuIntrHandshake.o(.text)
         dump/baserom_demo_286c.o(.text)
-        dump/baserom_demo_2894.o(.text)
+        RfuInit.o(.text)
         dump/baserom_demo_292c.o(.text)
         RfuStart.o(.text)
         RfuGameInfoSet.o(.text)
@@ -190,4 +190,5 @@ SECTIONS {
     u8_03005729 = 0x03005729;
     RfuIntrSize = 0x0300572a;
     RfuIntrCmd = 0x03005730;
+    RfuMemcpyFunc = 0x03006198;
 }

@@ -106,7 +106,7 @@ split .text 0x26d0 Sio32Init
 split .text 0x27a0 Sio32InitUpdate
 split .text 0x286c RfuIntrHandshake
 split .text 0x2894
-split .text 0x292c
+split .text 0x292c RfuInit
 split .text 0x2984
 split .text 0x29a0 RfuStart
 split .text 0x2a40 RfuGameInfoSet
@@ -145,9 +145,9 @@ split .text 0x3b60
 split .text 0x3ce0
 split .text 0x3d38
 split .text 0x3e04
-split .text 0x3e44
-split .text 0x3ed0 # Library start
-split .text 0x3f38
+split .text 0x3e44 RfuReset
+split .text 0x3ed0 RfuResetSub
+split .text 0x3f38  # Libraries
 split .rodata 0x3f70 SearchProcTable
 split .rodata 0x3f7c GameNameInitial
 split .rodata 0x3fb8

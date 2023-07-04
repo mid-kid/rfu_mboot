@@ -3,7 +3,7 @@
 extern void intr_main(void);
 extern void SoundInit(void);
 extern void WinInit(void);
-extern void Init_Unk2894(void);
+extern void RfuInit(void);
 extern void Init_Unk2d34(u8 param_1);
 extern void MainMenuInit(void);
 extern void MainMenu(void);
@@ -49,7 +49,7 @@ void DemoMain(void)
         3 << BG_PRIORITY_SHIFT;
     *(vu16 *)REG_DISPCNT = DISP_BG0_ON | DISP_BG3_ON;
 
-    Init_Unk2894();
+    RfuInit();
     *(vu16 *)REG_IE = SIO_INTR_FLAG | V_BLANK_INTR_FLAG;
     *(vu16 *)REG_STAT = STAT_V_BLANK_IF_ENABLE;
     *(vu16 *)REG_IME = 1;
