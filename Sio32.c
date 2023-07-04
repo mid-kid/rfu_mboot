@@ -13,6 +13,8 @@ extern u8 RfuBufRecv[0x120];
 extern u8 u8_03005729;
 extern u8 u8_03005728;
 extern u8 RfuBufSend[0x120];
+extern u8 RfuIntrCmd;
+extern u8 RfuIntrSize;
 
 #define BufWrite(Buf, Offs, Data, Bit) \
 { \
@@ -369,9 +371,6 @@ u32 Sio32IntrMaster(void)
 }
 #endif
 
-extern u8 RfuIntrCmd;
-extern u8 RfuIntrSize;
-
 #if 1
 __asm__("
 	.text
@@ -696,12 +695,12 @@ u32 Sio32IntrSlave(void)
     if (Rfu.state == 9) {
         if (Sio32WaitSIState(0) == 1) return 0;
 
-        Rfu.state = 0;
         *(vu32 *)REG_SIODATA32 = 0;
+        __asm__("str %0, %1" : : "r"(0), "o"(Rfu.state) : "r3");
+        __asm__("strb %0, %1" : : "r"(TRUE), "o"(Rfu.modeMaster) : "r2");
+        __asm__("strb %0, %1" : : "r"(0xff), "o"(Rfu.unk_10) : "r3");
+        __asm__("strb %0, %1" : : "r"(0), "o"(Rfu.unk_08));
         *(vu16 *)REG_SIOCNT = 0;
-        Rfu.modeMaster = TRUE;
-        Rfu.unk_10 = 0xff;
-        Rfu.unk_08 = 0;
         *(vu16 *)REG_SIOCNT = 0x5003;
 
         Call_thumb(Sio32IntrProc);
@@ -776,7 +775,6 @@ Sio32WaitSIState:
 #else
 u16 Sio32WaitSIState(u32 State)
 {
-#if 1
     u32 x;
 
     for (x = 0; x != 0x9800 && Rfu.unk_12 != 1; x++) {
@@ -786,50 +784,6 @@ u16 Sio32WaitSIState(u32 State)
     Rfu.error = 3;
     Rfu.unk_07 = 1;
     return 1;
-#else
-    vu32 x;
-    vu32 siocnt;
-    vu16 state;
-    u8 tmp;
-
-    state = State;
-    x = 0;
-
-loop:
-    x++;
-
-    __asm__(
-    "ldr r3, =Rfu;"
-    "ldrb %0, [r3, #0x11];"  // Rfu.unk_12
-    : "=r"((u8)tmp) : : "r0", "r1");
-
-    if (tmp == 1 && x == 0x9800) {
-        __asm__(
-        "ldr r3, =Rfu;"
-        "mov r2, #3;"
-        "mov r1, r2;"
-        "strb r1, [r3, #0xa];"  // Rfu.error
-        : : : "r1", "r2", "r3");
-        __asm__(
-        "ldr r3, =Rfu;"
-        "mov r2, #1;"
-        "mov r1, r2;"
-        "strb r1, [r3, #0xc];"  // Rfu.unk_07
-        : : : "r1", "r2", "r3");
-        return 1;
-    }
-
-    __asm__(
-    "mov r3, #0x128;"
-    "add r3, r3, #0x4000000;"
-    "ldrh r2, [r3];"
-    "mov r1, r2, lsl #0x10;"
-    "mov %0, r1, lsr #0x10;"
-    : "=r"(siocnt) : : "r1", "r2");
-
-    if ((state << 2) == (siocnt & SIO_MULTI_SI)) return 0;
-    goto loop;
-#endif
 }
 #endif
 
