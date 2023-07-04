@@ -1,7 +1,7 @@
 #include <Agb.h>
 
 #include "Mboot.h"
-extern void FUN_03003e04(void);
+extern void RfuReset(void);
 extern void KeyRepeatHold(void);
 extern void SoundPlaySfx(u8 Num);
 extern void SearchMenuDrawList(u8 Blink);
@@ -84,7 +84,7 @@ void SearchMenu(void)
     u16 procRes = 0;
 
     if (Mboot.mode == 0) {
-        FUN_03003e04();
+        RfuReset();
 
         if (MenuState != SEARCH_MBOOT_DL_COMPLETE) {
             *(vu16 *)REG_IME = 0;
