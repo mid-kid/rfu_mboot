@@ -263,7 +263,7 @@ void SearchMenu(void)
             if (SearchMenuTimer > 0 && RfuBuf.recv[7] == 0) {
                 SearchMenuClearGame();
                 Sio32IntrProcSet(RfuIntrDataTransfer);
-                RfuMbootCfg(0x20, MbootPeer, (void *)EX_WRAM, EX_WRAM_SIZE);
+                RfuMbootCfg(0x20, MbootPeer, (u8 *)EX_WRAM, EX_WRAM_SIZE);
                 MenuState = SEARCH_SETGAMEINFO;
             } else {
                 SearchMenuErrorMsg = 0;  // CONNECTION ATTEMPT FAILED!
@@ -308,7 +308,7 @@ void SearchMenu(void)
         // Return to main menu
         if (procRes == 0) {
             MainMenuInit();
-            Proc = MainMenu + 1;
+            Proc = MainMenu;
         }
         break;
 
@@ -329,7 +329,7 @@ void SearchMenu(void)
             // MenuState == SEARCH_ERROR_END
             SoundPlaySfx(3);
             MainMenuInit();
-            Proc = MainMenu + 1;
+            Proc = MainMenu;
         }
         break;
     }
@@ -377,7 +377,10 @@ extern const u8 GameLogoInitial[10];
 
 void SearchMenuMbootDL(void)
 {
+    u16 x;
     u16 *data;
+    u16 checksum;
+    vu16 *header;
 
     data = RfuPeers[MbootPeer].sub[1];
 
@@ -398,9 +401,9 @@ void SearchMenuMbootDL(void)
     case SEARCH_MBOOT_DL:
         MenuMsgBlink(0xb, 0x20);  // DOWNLOADING...
         if (data[0] == 0x47) {
-            if (RfuStrcmp(GameLogoInitial, (void *)0x02000004) == 0) {
+            if (RfuStrcmp(GameLogoInitial, (u8 *)EX_WRAM + 4) == 0) {
                 SoundPlaySfx(5);
-                SearchMenuTimer = 0x78;
+                SearchMenuTimer = 2 * 60;
                 MenuMsgSet(0xc, 2);  // DOWNLOAD COMPLETED!
                 MenuState = SEARCH_MBOOT_DL_COMPLETE;
             } else {
@@ -422,22 +425,17 @@ void SearchMenuMbootDL(void)
     }
 
     if (MenuState == SEARCH_MBOOT_EXEC) {
-        u16 x;
-        u16 sum;
-        u16 *ptr;
+        CpuCopy(&Mboot, CPU_WRAM + 0, sizeof(Mboot), 16);
+        CpuCopy(GameLogoInitial, CPU_WRAM + 0xf0, sizeof(GameLogoInitial), 16);
 
-        CpuCopy(&Mboot, 0x03000000, sizeof(Mboot), 16);
-        CpuCopy(GameLogoInitial, 0x030000f0, sizeof(GameLogoInitial), 16);
-
-        ptr = (void *)0x03000000;
-        sum = 0;
+        header = (vu16 *)CPU_WRAM;
+        checksum = 0;
         for (x = 0; x < 0x5a; x++) {
-            sum += *ptr++;
+            checksum += *header++;
         }
+        *(vu16 *)(CPU_WRAM + 0xfa) = checksum;
 
-        *(u16 *)0x030000fa = sum;
         *(vu16 *)REG_IME = 0;
-
         *(vu8 *)SOFT_RESET_DIRECT_BUF = 1;
         SoftReset(0xdc);
     }
