@@ -13,6 +13,7 @@ struct Rfu {
     u8 unk_09;
     u8 unk_10;
     u8 unk_11;
+    u8 unk_12;
 };
 
 #endif

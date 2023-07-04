@@ -2,13 +2,23 @@
 
 u32 Sio32IntrMaster(void);
 u32 Sio32IntrSlave(void);
-u16 Sio32WaitSIState(u16 State);
+u16 Sio32WaitSIState(u32 State);
 void Call_thumb(void (*)());
 
 #include "Rfu.h"
 extern u8 u8_03005efc;
 extern void (*Sio32IntrProc)(void);
 extern struct Rfu Rfu;
+extern u8 RfuBufRecv[0x120];
+extern u8 u8_03005729;
+extern u8 u8_03005728;
+extern u8 RfuBufSend[0x120];
+
+#define BufWrite(Buf, Offs, Data, Bit) \
+{ \
+    u8 *buf = (u8 *)&(Buf); \
+    *(u##Bit *)(buf + (Offs)) = (Data); \
+}
 
 void Sio32Intr(void)
 {
@@ -23,17 +33,6 @@ void Sio32Intr(void)
     } else {
         Sio32IntrSlave();
     }
-}
-
-extern u8 RfuBufRecv[0x120];
-extern u8 u8_03005729;
-extern u8 u8_03005728;
-extern u8 RfuBufSend[0x120];
-
-#define BufWrite(Buf, Offs, Data, Bit) \
-{ \
-    u8 *buf = (u8 *)&(Buf); \
-    *(u##Bit *)(buf + (Offs)) = (Data); \
 }
 
 #if 1
@@ -716,13 +715,122 @@ u32 Sio32IntrSlave(void)
 
 #if 1
 __asm__("
-.section .text
+.text
 .type Sio32WaitSIState, function
 Sio32WaitSIState:
-.2byte 0xc00d,0xe1a0,0xd800,0xe92d,0xb004,0xe24c,0xd00c,0xe24d,0x3000,0xe1a0,0x30be,0xe14b,0x3000,0xe3a0,0x3018,0xe50b,0x3018,0xe51b,0x2001,0xe283,0x2018,0xe50b,0x307c,0xe59f,0x2011,0xe5d3,0x0001,0xe352,0x000c,0x1a00,0x3018,0xe51b,0x0b26,0xe353,0x0009,0x1a00,0x3060,0xe59f,0x2003,0xe3a0,0x1002,0xe1a0,0x100a,0xe5c3,0x3050,0xe59f,0x2001,0xe3a0,0x1002,0xe1a0,0x100c,0xe5c3,0x0001,0xe3a0,0x0010,0xea00,0x3f4a,0xe3a0,0x3301,0xe283,0x20b0,0xe1d3,0x1802,0xe1a0,0x3821,0xe1a0,0x3014,0xe50b,0x2014,0xe51b,0x3004,0xe202,0x20be,0xe15b,0x1102,0xe1a0,0x0001,0xe153,0x0000,0x1a00,0x0000,0xea00,0xffdd,0xeaff,0x0000,0xe3a0,0x0000,0xea00,0x5ca0,0x0300,0x6800,0xe91b,0xff1e,0xe12f
-.size Sio32WaitSIState, .-Sio32WaitSIState
+    mov	ip, sp
+    stmdb	sp!, {fp, ip, lr, pc}
+    sub	fp, ip, #4
+    sub	sp, sp, #12
+    mov	r3, r0
+    strh	r3, [fp, #-14]
+    mov	r3, #0
+    str	r3, [fp, #-24]
+5:
+    ldr	r3, [fp, #-24]
+    add	r2, r3, #1
+    str	r2, [fp, #-24]
+    ldr	r3, .LRfu
+    ldrb	r2, [r3, #17]
+    cmp	r2, #1
+    bne	1f
+    ldr	r3, [fp, #-24]
+    cmp	r3, #38912
+    bne	1f
+    ldr	r3, .LRfu
+    mov	r2, #3
+    mov	r1, r2
+    strb	r1, [r3, #10]
+    ldr	r3, .LRfu
+    mov	r2, #1
+    mov	r1, r2
+    strb	r1, [r3, #12]
+    mov	r0, #1
+    b	2f
+1:
+    mov	r3, #296
+    add	r3, r3, #67108864
+    ldrh	r2, [r3]
+    mov	r1, r2, lsl #16
+    mov	r3, r1, lsr #16
+    str	r3, [fp, #-20]
+    ldr	r2, [fp, #-20]
+    and	r3, r2, #4
+    ldrh	r2, [fp, #-14]
+    mov	r1, r2, lsl #2
+    cmp	r3, r1
+    bne	3f
+    b	4f
+3:
+    b	5b
+4:
+    mov	r0, #0
+    b	2f
+.LRfu:
+    .word Rfu
+2:
+    ldmdb	fp, {fp, sp, lr}
+    bx	lr
+    .size Sio32WaitSIState, .-Sio32WaitSIState
 ");
 #else
+u16 Sio32WaitSIState(u32 State)
+{
+#if 1
+    u32 x;
+
+    for (x = 0; x != 0x9800 && Rfu.unk_12 != 1; x++) {
+        if ((*(vu16 *)REG_SIOCNT & SIO_MULTI_SI) == (State << 2)) return 0;
+    }
+
+    Rfu.error = 3;
+    Rfu.unk_07 = 1;
+    return 1;
+#else
+    vu32 x;
+    vu32 siocnt;
+    vu16 state;
+    u8 tmp;
+
+    state = State;
+    x = 0;
+
+loop:
+    x++;
+
+    __asm__(
+    "ldr r3, =Rfu;"
+    "ldrb %0, [r3, #0x11];"  // Rfu.unk_12
+    : "=r"((u8)tmp) : : "r0", "r1");
+
+    if (tmp == 1 && x == 0x9800) {
+        __asm__(
+        "ldr r3, =Rfu;"
+        "mov r2, #3;"
+        "mov r1, r2;"
+        "strb r1, [r3, #0xa];"  // Rfu.error
+        : : : "r1", "r2", "r3");
+        __asm__(
+        "ldr r3, =Rfu;"
+        "mov r2, #1;"
+        "mov r1, r2;"
+        "strb r1, [r3, #0xc];"  // Rfu.unk_07
+        : : : "r1", "r2", "r3");
+        return 1;
+    }
+
+    __asm__(
+    "mov r3, #0x128;"
+    "add r3, r3, #0x4000000;"
+    "ldrh r2, [r3];"
+    "mov r1, r2, lsl #0x10;"
+    "mov %0, r1, lsr #0x10;"
+    : "=r"(siocnt) : : "r1", "r2");
+
+    if ((state << 2) == (siocnt & SIO_MULTI_SI)) return 0;
+    goto loop;
+#endif
+}
 #endif
 
 __asm__("
