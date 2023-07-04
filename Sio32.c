@@ -31,16 +31,10 @@ extern u8 u8_03005728;
 extern u8 RfuBufSend[0x120];
 
 #define BufWrite(Buf, Offs, Data, Bit) \
-({ \
-    u8 *buf = (u8 *)&Buf; \
+{ \
+    u8 *buf = (u8 *)&(Buf); \
     *(u##Bit *)(buf + (Offs)) = (Data); \
-})
-
-#define BufRead(Buf, Offs, Bit) \
-({ \
-    u8 *buf = (u8 *)&Buf[Offs]; \
-    *(u##Bit *)(buf); \
-})
+}
 
 #if 1
 __asm__("
@@ -275,6 +269,7 @@ Sio32IntrMaster:
 u32 Sio32IntrMaster(void)
 {
     u32 data;
+    u32 *buf;
 
     data = *(u32 *)REG_SIODATA32;
 
@@ -298,8 +293,9 @@ u32 Sio32IntrMaster(void)
         }
 
         if (Rfu.cmdSize + 1 > Rfu.field3_0x9) {
-            *(vu32 *)REG_SIODATA32 = BufRead(RfuBufSend, Rfu.field3_0x9 * 4, 32);
-            Rfu.cmdHeader += BufRead(RfuBufSend, Rfu.field3_0x9 * 4, 32);
+            buf = &((u32 *)RfuBufSend)[Rfu.field3_0x9];
+            *(u32 *)REG_SIODATA32 = *buf;
+            Rfu.cmdHeader += *buf;
             Rfu.field3_0x9++;
         } else {
             Rfu.state = 2;
@@ -338,7 +334,7 @@ u32 Sio32IntrMaster(void)
             return 0;
         }
 
-        *(vu32 *)REG_SIODATA32 = 0x80000000;
+        *(u32 *)REG_SIODATA32 = 0x80000000;
     }
 
     if (Sio32WaitSIState(1) == 1) return 0;
@@ -392,12 +388,12 @@ Sio32IntrSlave:
 	bl	Sio32WaitSIState
 	mov	r0, r0, asl #16
 	cmp	r0, #65536
-	beq	.L31
+	beq	.LY31
 	mov	r1, #296
 	add	r1, r1, #67108864
 	mov	r2, #20480
 	add	r2, r2, #10
-	ldr	r0, .L34
+	ldr	r0, .LY34
 	mov	r3, #288
 	strh	r2, [r1, #0]	@ movhi   ;; CYGNUS LOCAL nickc
 	add	r3, r3, #67108864
@@ -405,63 +401,63 @@ Sio32IntrSlave:
 	mov	r4, r0
 	ldr	ip, [r3, #0]
 	cmp	lr, #5
-	bne	.L10
+	bne	.LY10
 	mov	r3, #0
 	add	r5, r3, #1
 	strb	r5, [r4, #9]
 	str	ip, [r4, #4]
 	mov	r2, #39168
-	ldr	r1, .L34+4
+	ldr	r1, .LY34+4
 	add	r2, r2, #102
 	str	ip, [r1, r3]
 	cmp	r2, ip, lsr #16
-	bne	.L11
+	bne	.LY11
 	and	r3, ip, #65280
 	mov	r3, r3, lsr #8
 	strb	r3, [r4, #8]
-	ldr	r0, .L34+8
-	ldr	r2, .L34+12
+	ldr	r0, .LY34+8
+	ldr	r2, .LY34+12
 	strb	r3, [r0, #0]
 	strb	ip, [r2, #0]
     ands	r1, r3, #255
-	bne	.L12
+	bne	.LY12
 	ldrb	r2, [r2, #0]	@ zero_extendqisi2
 	sub	r3, r2, #39
 	cmp	r2, #54
 	cmpne	r3, #2
-	bhi	.L13
+	bhi	.LY13
 	strb	r1, [r4, #8]
 	add	r3, r2, #128
-	ldr	r2, .L34+16
+	ldr	r2, .LY34+16
 	add	r3, r3, #-1728053248
 	strb	r1, [r0, #0]
 	add	r3, r3, #6684672
 	str	r3, [r2, #0]
-	b	.L33
-.L13:
+	b	.LY33
+.LY13:
 	strb	r5, [r4, #8]
-	ldr	r3, .L34+16
-	ldr	r2, .L34+20
+	ldr	r3, .LY34+16
+	ldr	r2, .LY34+20
 	strb	r5, [r0, #0]
 	str	r2, [r3, #0]
 	mov	r1, r3
 	str	r5, [r3, #4]
-	b	.L21
-.L12:
+	b	.LY21
+.LY12:
 	sub	r3, r3, #1
 	strb	r3, [r0, #0]
 	mov	r2, #6
 	str	r2, [r4, #0]
-	b	.L24
-.L11:
+	b	.LY24
+.LY11:
 	str	lr, [r4, #0]
-	b	.L24
-.L10:
+	b	.LY24
+.LY10:
 	cmp	lr, #6
-	bne	.L18
-	ldr	r2, .L34+4
+	bne	.LY18
+	ldr	r2, .LY34+4
 	ldrb	r3, [r4, #9]	@ zero_extendqisi2
-	ldr	r0, .L34+8
+	ldr	r0, .LY34+8
 	str	ip, [r2, r3, asl #2]
 	ldrb	r3, [r4, #9]
 	ldrb	r2, [r0, #0]
@@ -469,31 +465,31 @@ Sio32IntrSlave:
 	and	r1, r2, #255
 	strb	r3, [r4, #9]
 	cmp	r1, #0
-	bne	.L19
-	ldr	r3, .L34+12
+	bne	.LY19
+	ldr	r3, .LY34+12
 	ldrb	r3, [r3, #0]	@ zero_extendqisi2
 	sub	r2, r3, #40
 	cmp	r3, #54
 	cmpne	r2, #1
-	bhi	.L20
+	bhi	.LY20
 	strb	r1, [r4, #8]
     add	r3, r3, #128
-	ldr	r2, .L34+16
+	ldr	r2, .LY34+16
 	add	r3, r3, #-1728053248
 	strb	r1, [r0, #0]
 	add	r3, r3, #6684672
 	str	r3, [r2, #0]
-	b	.L33
-.L20:
+	b	.LY33
+.LY20:
 	mov	r3, #1
 	strb	r3, [r4, #8]
-	ldr	r2, .L34+16
-	ldr	r1, .L34+20
+	ldr	r2, .LY34+16
+	ldr	r1, .LY34+20
 	strb	r3, [r0, #0]
 	stmia	r2, {r1, r3}	@ phole stm
-.L33:
+.LY33:
 	mov	r1, r2
-.L21:
+.LY21:
 	mov	r2, #0
 	strb	r2, [r4, #9]
 	mov	r3, #7
@@ -502,24 +498,24 @@ Sio32IntrSlave:
 	str	r1, [r4, #4]
 	add	r2, r2, #1
 	strb	r2, [r4, #9]
-	b	.L17
-.L19:
+	b	.LY17
+.LY19:
 	ldr	r3, [r4, #4]
 	sub	r2, r2, #1
 	strb	r2, [r0, #0]
 	add	r3, r3, ip
 	str	r3, [r4, #4]
-	b	.L24
-.L18:
+	b	.LY24
+.LY18:
 	cmp	lr, #7
-	bne	.L24
-	ldr	r2, .L34+8
+	bne	.LY24
+	ldr	r2, .LY34+8
 	ldrb	r3, [r2, #0]
 	cmp	r3, #0
-	beq	.L25
+	beq	.LY25
 	sub	r3, r3, #1
 	strb	r3, [r2, #0]
-	ldr	r1, .L34+16
+	ldr	r1, .LY34+16
 	ldrb	r2, [r4, #9]
     ldrb	r3, [r4, #9]
 	ldr	r1, [r1, r2, asl #2]
@@ -528,17 +524,17 @@ Sio32IntrSlave:
 	strb	r3, [r4, #9]
 	add	r2, r2, r1
 	str	r2, [r4, #4]
-	b	.L17
-.L25:
+	b	.LY17
+.LY25:
 	mov	r3, #9
 	str	r3, [r4, #0]
-	ldr	r1, .L34+16
+	ldr	r1, .LY34+16
 	ldrb	r2, [r4, #9]	@ zero_extendqisi2
 	ldr	r3, [r4, #4]
 	str	r3, [r1, r2, asl #2]
-.L24:
+.LY24:
 	mov	r1, #-2147483648
-.L17:
+.LY17:
 	mov	r6, #288
 	add	r6, r6, #67108864
 	str	r1, [r6, #0]
@@ -546,7 +542,7 @@ Sio32IntrSlave:
 	bl	Sio32WaitSIState
 	mov	r0, r0, asl #16
 	cmp	r0, #65536
-	beq	.L31
+	beq	.LY31
 	mov	r5, #296
 	add	r5, r5, #67108864
 	mov	r7, #20480
@@ -554,12 +550,12 @@ Sio32IntrSlave:
 	add	r3, r7, #2
 	strh	r3, [r5, #0]	@ movhi   ;; CYGNUS LOCAL nickc
 	cmp	r2, #9
-	bne	.L29
+	bne	.LY29
 	mov	r0, #0
 	bl	Sio32WaitSIState
 	mov	r0, r0, asl #16
 	cmp	r0, #65536
-	beq	.L31
+	beq	.LY31
 	mov	r1, #0
 	str	r1, [r6, #0]
     str	r1, [r4, #0]
@@ -570,15 +566,15 @@ Sio32IntrSlave:
     mov	r3, r1
 	strb	r3, [r4, #13]
 	strh	r1, [r5, #0]	@ movhi   ;; CYGNUS LOCAL nickc
-	ldr	r3, .L34+24
+	ldr	r3, .LY34+24
 	ldr	r0, [r3, #0]
 	add	r2, r7, #3
 	strh	r2, [r5, #0]	@ movhi   ;; CYGNUS LOCAL nickc
 	bl	Call_thumb
-	b	.L31
-.L35:
+	b	.LY31
+.LY35:
 	.align	0
-.L34:
+.LY34:
 	.word	Rfu
 	.word	RfuBufRecv
 	.word	RfuIntrSize
@@ -586,22 +582,24 @@ Sio32IntrSlave:
 	.word	RfuBufSend
 	.word	-1721368082
 	.word	Sio32IntrProc
-.L29:
+.LY29:
 	mov	r3, #20480
 	add	r3, r3, #130
 	strh	r3, [r5, #0]	@ movhi   ;; CYGNUS LOCAL nickc
-.L31:
+.LY31:
 	mov	r0, #0
 	ldmea	fp, {r4, r5, r6, r7, fp, sp, lr}
 	bx	lr
-.Lfe2:
-	.size	 Sio32IntrSlave,.Lfe2-Sio32IntrSlave
+.LYfe2:
+	.size	 Sio32IntrSlave,.LYfe2-Sio32IntrSlave
 ");
 #else
 u32 Sio32IntrSlave(void)
 {
     u32 data;
     u32 data_send;
+    u16 intrsize;
+    u32 *buf;
 
     if (Sio32WaitSIState(0) == 1) return 0;
     *(vu16 *)REG_SIOCNT = 0x500a;
@@ -616,18 +614,17 @@ u32 Sio32IntrSlave(void)
         Rfu.cmdHeader = data;
 
         if (data >> 0x10 == 0x9966) {
-            Rfu.cmdSize = (data & 0xff00) >> 8;
+            intrsize = (data & 0xff00) >> 8;
+            Rfu.cmdSize = intrsize;
             RfuIntrSize = Rfu.cmdSize;
             RfuIntrCmd = data;
 
-            if (Rfu.cmdSize == 0) {
-                if (RfuIntrCmd == 0x27 ||
-                        RfuIntrCmd == 0x28 ||
-                        RfuIntrCmd == 0x29 ||
-                        RfuIntrCmd == 0x36) {
+            if (intrsize == 0) {
+                u8 cmd = RfuIntrCmd;
+                if (cmd == 0x27 || cmd == 0x28 || cmd == 0x29 || cmd == 0x36) {
                     Rfu.cmdSize = 0;
                     RfuIntrSize = Rfu.cmdSize;
-                    *(u32 *)RfuBufSend = 0x99660080 + RfuIntrCmd;
+                    BufWrite(RfuBufSend, 0, 0x99660080 + cmd, 32);
                 } else {
                     Rfu.cmdSize = 1;
                     RfuIntrSize = Rfu.cmdSize;
@@ -637,12 +634,12 @@ u32 Sio32IntrSlave(void)
 
                 Rfu.field3_0x9 = 0;
                 Rfu.state = 7;
-                data_send = BufRead(RfuBufSend, Rfu.field3_0x9, 32);
-                Rfu.cmdHeader = data_send;
+                data_send = *(u32 *)RfuBufSend;
+                Rfu.cmdHeader = *(u32 *)RfuBufSend;
                 Rfu.field3_0x9++;
 
             } else {
-                RfuIntrSize = Rfu.cmdSize - 1;
+                RfuIntrSize--;
                 Rfu.state = 6;
                 data_send = 0x80000000;
             }
@@ -655,12 +652,11 @@ u32 Sio32IntrSlave(void)
         Rfu.field3_0x9++;
 
         if (RfuIntrSize == 0) {
-            if (RfuIntrCmd == 0x28 ||
-                    RfuIntrCmd == 0x29 ||
-                    RfuIntrCmd == 0x36) {
+            u8 cmd = RfuIntrCmd;
+            if (cmd == 0x28 || cmd == 0x29 || cmd == 0x36) {
                 Rfu.cmdSize = 0;
                 RfuIntrSize = Rfu.cmdSize;
-                *(u32 *)RfuBufSend = 0x99660080 + RfuIntrCmd;
+                *(u32 *)RfuBufSend = 0x99660080 + cmd;
             } else {
                 Rfu.cmdSize = 1;
                 RfuIntrSize = Rfu.cmdSize;
@@ -669,8 +665,8 @@ u32 Sio32IntrSlave(void)
             }
             Rfu.field3_0x9 = 0;
             Rfu.state = 7;
-            data_send = BufRead(RfuBufSend, Rfu.field3_0x9, 32);
-            Rfu.cmdHeader = data_send;
+            data_send = *(u32 *)RfuBufSend;
+            Rfu.cmdHeader = *(u32 *)RfuBufSend;
             Rfu.field3_0x9++;
         } else {
             RfuIntrSize--;
@@ -680,8 +676,9 @@ u32 Sio32IntrSlave(void)
     } else if (Rfu.state == 7) {
         if (RfuIntrSize != 0) {
             RfuIntrSize--;
-            data_send = BufRead(RfuBufSend, Rfu.field3_0x9 * 4, 32);
-            Rfu.cmdHeader += data_send;
+            buf = (u32 *)RfuBufSend;
+            data_send = buf[Rfu.field3_0x9];
+            Rfu.cmdHeader += buf[Rfu.field3_0x9];
             Rfu.field3_0x9++;
         } else {
             Rfu.state = 9;
@@ -700,13 +697,14 @@ u32 Sio32IntrSlave(void)
     if (Rfu.state == 9) {
         if (Sio32WaitSIState(0) == 1) return 0;
 
-        *(vu32 *)REG_SIODATA32 = 0;
         Rfu.state = 0;
+        *(vu32 *)REG_SIODATA32 = 0;
+        *(vu16 *)REG_SIOCNT = 0;
         Rfu.modeMaster = TRUE;
         Rfu.unk_10 = 0xff;
         Rfu.unk_08 = 0;
-        *(vu16 *)REG_SIOCNT = 0;
         *(vu16 *)REG_SIOCNT = 0x5003;
+
         Call_thumb(Sio32IntrProc);
     } else {
         *(vu16 *)REG_SIOCNT = 0x5082;
