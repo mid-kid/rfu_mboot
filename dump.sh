@@ -123,7 +123,7 @@ split .text 0x2d4c
 split .text 0x2d74
 split .text 0x2eb0
 split .text 0x2f28
-split .text 0x2f58
+split .text 0x2f58 RfuMemcpy
 split .text 0x2f64 Sio32IntrProcSet
 split .text 0x2fb0 RfuWaitDataStart
 split .text 0x2fd4 RfuWaitDataStartForce

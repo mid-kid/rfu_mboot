@@ -91,7 +91,8 @@ SECTIONS {
         dump/baserom_demo_2d4c.o(.text)
         dump/baserom_demo_2d74.o(.text)
         dump/baserom_demo_2eb0.o(.text)
-        dump/baserom_demo_2f28.o(.text)
+        RfuMemcpy.o(.text)
+        RfuMemcpyEnd = .|1;
         Sio32IntrProcSet.o(.text)
         RfuWaitDataStart.o(.text)
         RfuWaitDataStartForce.o(.text)
