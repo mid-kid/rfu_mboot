@@ -1,7 +1,7 @@
 #include <Agb.h>
 
 #include "Rfu.h"
-extern u32 RfuCmdInit(void);
+extern u32 RfuCmdReset(void);
 extern u16 RfuCmdSend(void);
 extern u16 RfuCmdRecv(u32 Cmd, u8 VarSize);
 extern u8 RfuBufSend[0x120];
@@ -11,7 +11,7 @@ u16 RfuCmd_DataSend(u8 *Srcp, u8 Size)
 {
     u16 CmdSize;
 
-    RfuCmdInit();
+    RfuCmdReset();
 
     CmdSize = Size / 4;
     if (Size % 4) CmdSize++;

@@ -13,7 +13,7 @@ RfuCmd_GameInfoSet:
 #include <Agb.h>
 
 #include "Rfu.h"
-extern u32 RfuCmdInit(void);
+extern u32 RfuCmdReset(void);
 extern u16 RfuCmdSend(void);
 extern u16 RfuCmdRecv(u32 Cmd, u8 VarSize);
 extern u8 RfuBufSend[0x120];
@@ -24,7 +24,7 @@ u16 RfuCmd_GameInfoSet(char *GameData, char *UserName)
     u8 *dst;
     int x;
 
-    RfuCmdInit();
+    RfuCmdReset();
 
     dst = RfuBufSend;
     *((u32 *)dst)++ = 0x99660616;

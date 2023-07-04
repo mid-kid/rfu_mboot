@@ -15,6 +15,5 @@ tdef RfuCmd_0x11_Call_Unk2d74, 0x03002d74
 tdef FUN_03003044, 0x03003044
 tdef FUN_03003b60, 0x03003b60
 tdef FUN_0300397c, 0x0300397c
-tdef Sio32_Unk5, 0x03001f20
 tdef RfuMemcpy, 0x03002f28
 tdef RfuMemcpyEnd, 0x03002f58

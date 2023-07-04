@@ -13,7 +13,7 @@ RfuCmdSend:
 #include <Agb.h>
 
 #include "Rfu.h"
-extern u32 RfuCmdInit(void);
+extern u32 RfuCmdReset(void);
 extern struct Rfu Rfu;
 extern u8 RfuBufSend[0x120];
 
@@ -40,7 +40,7 @@ wait:
         for (x = 0; x < Rfu.unk_09; x++) VBlankIntrWait();
 
         tmp = Rfu.unk_08;
-        RfuCmdInit();
+        RfuCmdReset();
         Rfu.unk_08 = tmp;
         Rfu.error = 2;
         goto retry;

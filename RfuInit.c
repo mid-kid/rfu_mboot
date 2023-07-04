@@ -12,7 +12,7 @@ extern struct RfuBuf {
 extern u8 RfuBufRecv[0x120];
 extern struct RfuPeer RfuPeers[4];
 extern void RfuMemcpyFunc();
-extern void Sio32_Unk5(void);
+extern void RfuCmdInit(void);
 extern void Init_Unk292c(void);
 extern void RfuMemcpy(u32 *Src, u32 *Dst, int Size);
 extern void RfuMemcpyEnd();
@@ -24,7 +24,7 @@ void RfuInit(void)
     u16 *src;
     u16 *dst;
 
-    Sio32_Unk5();
+    RfuCmdInit();
     Init_Unk292c();
     Mboot.unk_09 = 0;
     RfuBuf.recv = RfuBufRecv;

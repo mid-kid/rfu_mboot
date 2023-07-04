@@ -78,8 +78,8 @@ split .text 0x180c Sio32Intr
 split .text 0x1b20 Sio32_Unk1
 split .text 0x1e20 Sio32_Unk2
 split .text 0x1ee0 Sio32WaitSIState
-split .text 0x1f20 RfuCmdInit
-split .text 0x1f58
+split .text 0x1f20 RfuCmdReset
+split .text 0x1f58 RfuCmdInit
 split .text 0x2020 RfuCmdSend
 split .text 0x2060 RfuCmdRecv
 split .text 0x20c8
