@@ -82,7 +82,7 @@ split .text 0x1f20 RfuCmdReset
 split .text 0x1f58 RfuCmdInit
 split .text 0x2020 RfuCmdSend
 split .text 0x2060 RfuCmdRecv
-split .text 0x20c8
+split .text 0x20c8 Sio32VBlank
 split .text 0x210c RfuCmd_Start
 split .text 0x2150 RfuCmd_Status
 split .text 0x2194 RfuCmd_0x13

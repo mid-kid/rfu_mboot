@@ -50,7 +50,7 @@ SECTIONS {
         RfuCmdInit.o(.text)
         RfuCmdSend.o(.text)
         RfuCmdRecv.o(.text)
-        dump/baserom_demo_2060.o(.text)
+        Sio32VBlank.o(.text)
         RfuCmd_Start.o(.text)
         RfuCmd_Status.o(.text)
         RfuCmd_0x13.o(.text)
