@@ -5,7 +5,7 @@
 #include "MbootTmp.h"
 extern u32 RfuDataSendPrepare(void);
 extern u16 RfuCmd_DataSend(u8 *Srcp, u8 Size);
-extern void FUN_03003044(u8 param_1, u8 param_2, struct RfuPeerSub *param_3);
+extern void RfuPeerUpdate(u8 param_1, u8 param_2, struct RfuPeerSub *param_3);
 extern struct Mboot Mboot;
 extern struct MbootTmp MbootTmp;
 extern u8 RfuDataSendBuf[];
@@ -33,7 +33,7 @@ u16 RfuDataSend(void)
 
             sub = &RfuPeers[x].sub[0];
 
-            FUN_03003044(x, FALSE, sub);
+            RfuPeerUpdate(x, FALSE, sub);
 
             Mboot.unk_04 &= ~sub->unk_05;
             if (sub->unk_20 == 1) Mboot.unk_07 |= 1 << x;

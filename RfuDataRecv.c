@@ -5,7 +5,7 @@
 #include "RfuPeer.h"
 extern u16 RfuCmd_DataRecv(void);
 extern void RfuCmd_DataRecv_Parse(void);
-extern void FUN_03003044(u8 param_1, u8 param_2, struct RfuPeerSub *param_3);
+extern void RfuPeerUpdate(u8 param_1, u8 param_2, struct RfuPeerSub *param_3);
 extern struct Mboot Mboot;
 extern struct MbootTmp MbootTmp;
 extern struct RfuPeer RfuPeers[4];
@@ -35,7 +35,7 @@ u32 RfuDataRecv(void)
             sub = &RfuPeers[x].sub[1];
 
             if (sub->unk_20 == 1) Mboot.unk_07 |= 1 << x;
-            FUN_03003044(x, TRUE, sub);
+            RfuPeerUpdate(x, TRUE, sub);
             Mboot.unk_05 &= ~sub->unk_05;
             sub->unk_01[0] = 0x47;
         }

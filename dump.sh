@@ -129,7 +129,7 @@ split .text 0x2fb0 RfuWaitDataStart
 split .text 0x2fd4 RfuWaitDataStartForce
 split .text 0x2fe0 RfuWaitDataDone
 split .text 0x3044 MbootReset
-split .text 0x3078
+split .text 0x3078 RfuPeerUpdate
 split .text 0x3184
 split .text 0x31c8 RfuMbootCfg
 split .text 0x31f4
