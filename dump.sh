@@ -107,7 +107,7 @@ split .text 0x27a0 Sio32InitUpdate
 split .text 0x286c RfuIntrHandshake
 split .text 0x2894
 split .text 0x292c RfuInit
-split .text 0x2984
+split .text 0x2984 MbootInit
 split .text 0x29a0 RfuStart
 split .text 0x2a40 RfuGameInfoSet
 split .text 0x2a60 RfuRadioCfg
@@ -128,7 +128,7 @@ split .text 0x2f64 Sio32IntrProcSet
 split .text 0x2fb0 RfuWaitDataStart
 split .text 0x2fd4 RfuWaitDataStartForce
 split .text 0x2fe0 RfuWaitDataDone
-split .text 0x3044 MbootInit
+split .text 0x3044 MbootReset
 split .text 0x3078
 split .text 0x3184
 split .text 0x31c8 RfuMbootCfg

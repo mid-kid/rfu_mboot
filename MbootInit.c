@@ -1,27 +1,20 @@
 #include <Agb.h>
 
-#include "RfuPeer.h"
 #include "Mboot.h"
 #include "MbootTmp.h"
-extern struct RfuPeer RfuPeers[4];
 extern struct Mboot Mboot;
 extern struct MbootTmp MbootTmp;
+extern u32 MbootReset(void);
 
-u32 MbootInit(void)
+void MbootInit(void)
 {
-    u16 x;
+    u8 save;
 
-    for (x = 0; x < 4; x++) {
-        CpuArrayClear(0, RfuPeers[x].sub, 16);
-        Mboot.unk_10[x] = 0x10;
-    }
-
-    Mboot.unk_0f = 0x57;
-    Mboot.unk_04 = 0;
-    Mboot.unk_05 = 0;
-    Mboot.unk_06 = 0;
-    MbootTmp.unk_06 = 0;
-    MbootTmp.unk_07 = 0;
-
-    return 0;
+    CpuClear(0, &MbootTmp, 16, 16);
+    save = Mboot.unk_09;
+    CpuClear(0, &Mboot, 0x5a*2, 16);
+    MbootTmp.unk_04 = save;
+    Mboot.unk_09 = save;
+    Mboot.mode = 0xff;
+    MbootReset();
 }

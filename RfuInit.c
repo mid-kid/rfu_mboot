@@ -13,7 +13,7 @@ extern u8 RfuBufRecv[0x120];
 extern struct RfuPeer RfuPeers[4];
 extern void RfuMemcpyFunc();
 extern void RfuCmdInit(void);
-extern void Init_Unk292c(void);
+extern void MbootInit(void);
 extern void RfuMemcpy(u32 *Src, u32 *Dst, int Size);
 extern void RfuMemcpyEnd();
 
@@ -25,7 +25,7 @@ void RfuInit(void)
     u16 *dst;
 
     RfuCmdInit();
-    Init_Unk292c();
+    MbootInit();
     Mboot.unk_09 = 0;
     RfuBuf.recv = RfuBufRecv;
 

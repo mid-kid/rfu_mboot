@@ -5,7 +5,7 @@ extern void WinFade(u8 Dir);
 extern void VramDrawBg2_SearchMenu(u8 Len);
 extern void SearchMenuDrawListTitle(u16 Pos, u8 Len, u16 CharNo);
 extern void GameNameInit(void);
-extern u32 MbootInit(void);
+extern u32 MbootReset(void);
 extern u8 LZ_450c[];
 extern u16 BgBak[32*20];
 extern u8 Lang;
@@ -44,7 +44,7 @@ void SearchMenuInit(void)
     }
 
     for (x = 0; x < 4; x++) GameList[x].beaconID = 0;
-    MbootInit();
+    MbootReset();
     SearchMenuEnd = FALSE;
     SearchMenuCursor = 0;
     SearchMenuErrorTimer = 0;
