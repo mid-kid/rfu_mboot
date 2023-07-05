@@ -120,7 +120,7 @@ split .text 0x2d08 RfuConnectCheck
 split .text 0x2d18 RfuConnectReady
 split .text 0x2d34 RfuCmd_ConnectCheck_Parse
 split .text 0x2d4c
-split .text 0x2d74
+split .text 0x2d74 RfuVBlank
 split .text 0x2eb0 RfuStatus
 split .text 0x2f28 RfuDisconnect
 split .text 0x2f58 RfuMemcpy

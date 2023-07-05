@@ -8,8 +8,8 @@ void RfuDisconnect(u8 Peer, u8 Clear)
     u8 bit;
 
     bit = 1 << Peer;
-    if (Mboot.peersConn & bit && Mboot.unk_01 != 0) {
-        Mboot.unk_01--;
+    if (Mboot.peersConn & bit) {
+        if (Mboot.unk_01) Mboot.unk_01--;
     }
 
     Mboot.peersConn &= ~bit;
