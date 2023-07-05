@@ -89,7 +89,7 @@ SECTIONS {
         RfuCmd_ConnectCheck_Parse.o(.text)
         dump/baserom_demo_2d34.o(.text)
         dump/baserom_demo_2d4c.o(.text)
-        dump/baserom_demo_2d74.o(.text)
+        RfuStatus.o(.text)
         dump/baserom_demo_2eb0.o(.text)
         RfuMemcpy.o(.text)
         RfuMemcpyEnd = .|1;

@@ -13,7 +13,7 @@ RfuIntrDataTransfer:
 #include <Agb.h>
 
 #include "RfuPeer.h"
-extern u32 RfuCmd_0x11_Call_Unk2d74(u8 *param_1, u8 *param_2, u8 *param_3);
+extern u32 RfuStatus(u8 *param_1, u8 *param_2, u8 *param_3);
 extern u16 RfuDataRecv(void);
 extern u16 RfuDataSend(void);
 extern u16 RfuWaitDataStartForce(void);
@@ -33,7 +33,7 @@ void RfuIntrDataTransfer(void)
     x = 0;
     SearchMenuErrorTimer = 0;
 
-    RfuCmd_0x11_Call_Unk2d74(&res, &res2, &res3);
+    RfuStatus(&res, &res2, &res3);
     if (res != 0) {
         if (RfuPeers[MbootPeer].sub[1].unk_01[0] != 0) {
             SearchMenuErrorMsg = 1;

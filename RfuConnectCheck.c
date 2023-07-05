@@ -203,13 +203,13 @@ u16 RfuConnectCheck(u8 *Busy, u8 *PlayerNum)
     if (*Busy != 0) return 0;
 
     bit = 1 << *PlayerNum;
-    if (Mboot.unk_02 & bit) return 0;
+    if (Mboot.peersConn & bit) return 0;
 
     ime = *(vu16 *)REG_IME;
     *(vu16 *)REG_IME = 0;
 
-    Mboot.unk_02 |= bit;
-    Mboot.unk_03 &= ~bit;
+    Mboot.peersConn |= bit;
+    Mboot.peersSeen &= ~bit;
 
     Mboot.curGame.beaconID = ID;
     Mboot.unk_01++;

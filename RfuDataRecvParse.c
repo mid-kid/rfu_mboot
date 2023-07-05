@@ -47,7 +47,7 @@ u16 RfuDataRecvParse(u32 unused, u8 *Srcp, u16 Size)
     ret = fields[0] + enc[0];
 
     if (*(u8 *)fields == 0) {
-        u32 temp = (fields[1] >> 8) & Mboot.unk_02;
+        u32 temp = (fields[1] >> 8) & Mboot.peersConn;
 
         for (x = 0; x < 4; x++) {
             if (!(temp >> x & 1)) continue;

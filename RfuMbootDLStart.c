@@ -29,7 +29,7 @@ u16 RfuMbootDLStart(u8 param_1, u8 param_2, u16 param_3, u16 *GameID, u32 param_
         return 0x502;
     } else if ((param_2 & 0xf) == 0) {
         return 0x601;
-    } else if ((Mboot.unk_02 & param_2) != param_2) {
+    } else if ((Mboot.peersConn & param_2) != param_2) {
         return 0x602;
     } else if ((Mboot.unk_04 & param_2) != 0) {
         return 0x603;

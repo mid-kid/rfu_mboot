@@ -121,7 +121,7 @@ split .text 0x2d18 RfuConnectReady
 split .text 0x2d34 RfuCmd_ConnectCheck_Parse
 split .text 0x2d4c
 split .text 0x2d74
-split .text 0x2eb0
+split .text 0x2eb0 RfuStatus
 split .text 0x2f28
 split .text 0x2f58 RfuMemcpy
 split .text 0x2f64 Sio32IntrProcSet
