@@ -13,8 +13,8 @@ RfuDataRecvParse:
 #include <Agb.h>
 
 #include "Mboot.h"
-extern void FUN_03003b60(u8 param_1, u8 *param_2, u8 *param_3);
-extern void FUN_0300397c(u8 param_1, u8 param_2, u8 *param_3);
+extern void RfuDataRecvHandle2(u8 param_1, u8 *param_2, u8 *param_3);
+extern void RfuDataRecvHandle1(u8 param_1, u8 param_2, u8 *param_3);
 extern struct Mboot Mboot;
 extern u8 RfuEncTable[2][16];
 
@@ -52,9 +52,9 @@ u16 RfuDataRecvParse(u32 unused, u8 *Srcp, u16 Size)
         for (x = 0; x < 4; x++) {
             if (!(temp >> x & 1)) continue;
             if ((fields[0] >> 24) == 0) {
-                FUN_03003b60(x, (u8 *)fields, Srcp);
+                RfuDataRecvHandle2(x, (u8 *)fields, Srcp);
             } else if (Mboot.unk_04 & (1 << x)) {
-                FUN_0300397c(x, x, (u8 *)&fields);
+                RfuDataRecvHandle1(x, x, (u8 *)fields);
             }
         }
     }

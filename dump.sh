@@ -141,8 +141,8 @@ split .text 0x36ec RfuDataSendPreparePeer
 split .text 0x37b8 RfuDataRecv
 split .text 0x3808 RfuCmd_DataRecv_Parse
 split .text 0x397c RfuDataRecvParse
-split .text 0x3b60
-split .text 0x3ce0
+split .text 0x3b60 RfuDataRecvHandle1
+split .text 0x3ce0 RfuDataRecvHandle2
 split .text 0x3d38
 split .text 0x3e04
 split .text 0x3e44 RfuReset
