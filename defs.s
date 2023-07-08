@@ -6,5 +6,3 @@
 .global \name
 .set \name, \addr
 .endm
-
-tdef Init_Unk2d34, 0x03002d34

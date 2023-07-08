@@ -87,7 +87,7 @@ SECTIONS {
         RfuConnectCheck.o(.text)
         RfuConnectReady.o(.text)
         RfuCmd_ConnectCheck_Parse.o(.text)
-        dump/baserom_demo_2d34.o(.text)
+        RfuSetUnk04.o(.text)
         RfuVBlank.o(.text)
         RfuStatus.o(.text)
         RfuDisconnect.o(.text)

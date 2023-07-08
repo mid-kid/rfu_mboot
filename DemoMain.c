@@ -4,7 +4,7 @@ extern void intr_main(void);
 extern void SoundInit(void);
 extern void WinInit(void);
 extern void RfuInit(void);
-extern void Init_Unk2d34(u8 param_1);
+extern void RfuSetUnk04(u8 param_1);
 extern void MainMenuInit(void);
 extern void MainMenu(void);
 extern void KeyRead(void);
@@ -54,7 +54,7 @@ void DemoMain(void)
     *(vu16 *)REG_STAT = STAT_V_BLANK_IF_ENABLE;
     *(vu16 *)REG_IME = 1;
 
-    Init_Unk2d34(8);
+    RfuSetUnk04(8);
     MainMenuFadeOut = FALSE;
     Lang = 0;
 
