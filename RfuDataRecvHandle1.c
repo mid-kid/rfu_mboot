@@ -5,7 +5,7 @@
 extern struct RfuPeer RfuPeers[4];
 extern struct MbootTmp MbootTmp;
 
-void RfuDataRecvHandle1(u8 param_1, u8 param_2, u8 *param_3)
+void RfuDataRecvHandle1(u8 Peer, u8 param_2, u8 *param_3)
 {
     u8 x;
     struct RfuPeerSub *sub;
@@ -13,7 +13,7 @@ void RfuDataRecvHandle1(u8 param_1, u8 param_2, u8 *param_3)
     u8 save_unk_12;
     int diff;
 
-    sub = &RfuPeers[param_1].sub[0];
+    sub = &RfuPeers[Peer].sub[0];
     save_unk_01 = sub->unk_01[0];
     save_unk_12 = sub->unk_12[param_3[4]];
 
