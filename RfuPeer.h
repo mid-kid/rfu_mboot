@@ -2,7 +2,7 @@
 #define RfuPeer_h
 
 struct RfuPeerSub {
-    u16 unk_01[1];
+    u16 unk_01[2];
     u8 *unk_02[4];
     u32 unk_03;
     u16 unk_04;

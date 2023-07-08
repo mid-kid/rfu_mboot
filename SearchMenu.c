@@ -345,7 +345,7 @@ struct RfuPeer {
     u32 mbootSize;
 };
 
-extern u32 FUN_03003078(u8 param_1, u8 Peer);
+extern u32 RfuPeerUpdateFlags(u8 param_1, u8 Peer);
 extern u16 MbootDLStart(u8 Peer, u16 param_2);
 extern struct RfuPeer RfuPeers[4];
 
@@ -360,12 +360,12 @@ void SearchMenuMbootStart(void)
     case SEARCH_MBOOT_START_CHECK:
         if (RfuPeers[MbootPeer].sub[0][0] == 0x27) {
             MenuState = SEARCH_MBOOT_DL_START;
-            FUN_03003078(4, MbootPeer);
+            RfuPeerUpdateFlags(4, MbootPeer);
         }
         if (RfuPeers[MbootPeer].sub[0][1] > 0xfa) {
             SearchMenuErrorMsg = 0;  // CONNECTION ATTEMPT FAILED!
             MenuState = SEARCH_ERROR_REBOOT;
-            FUN_03003078(4, MbootPeer);
+            RfuPeerUpdateFlags(4, MbootPeer);
         }
 
         if (MenuState != SEARCH_MBOOT_START_CHECK) FrameCountReset();
@@ -410,7 +410,7 @@ void SearchMenuMbootDL(void)
                 SearchMenuErrorMsg = 2;  // INVALID DATA RECEIVED!
                 MenuState = SEARCH_ERROR_RESTART;
             }
-            FUN_03003078(0xc, MbootPeer);
+            RfuPeerUpdateFlags(0xc, MbootPeer);
             RfuWaitData();
         } else if (data[1] > 0xfa || data[0] == 0x49) {
             SearchMenuErrorMsg = 1;  // DOWNLOAD FAILED!

@@ -99,7 +99,7 @@ SECTIONS {
         RfuWaitDataDone.o(.text)
         MbootReset.o(.text)
         RfuPeerUpdate.o(.text)
-        dump/baserom_demo_3078.o(.text)
+        RfuPeerUpdateFlags.o(.text)
         RfuMbootCfg.o(.text)
         dump/baserom_demo_31c8.o(.text)
         MbootDLStart.o(.text)
