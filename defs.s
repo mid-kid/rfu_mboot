@@ -8,4 +8,3 @@
 .endm
 
 tdef Init_Unk2d34, 0x03002d34
-tdef RfuDataRecvWrite2, 0x03003d38

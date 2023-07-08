@@ -23,7 +23,7 @@ struct RfuPeerSub {
 
 struct RfuPeer {
     struct RfuPeerSub sub[2];
-    void *mbootDest;
+    u8 *mbootDest;
     u32 mbootSize;
 };
 

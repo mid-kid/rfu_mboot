@@ -113,7 +113,7 @@ SECTIONS {
         RfuDataRecvHandle1.o(.text)
         RfuDataRecvHandle2.o(.text)
         RfuDataRecvWrite1.o(.text)
-        dump/baserom_demo_3d38.o(.text)
+        RfuDataRecvWrite2.o(.text)
         RfuReset.o(.text)
         RfuResetSub.o(.text)
         dump/libagbsyscall/AgbSysCpuSet.o(.text)
