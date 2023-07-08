@@ -73,7 +73,7 @@ SECTIONS {
         Sio32Init.o(.text)
         Sio32InitUpdate.o(.text)
         RfuIntrHandshake.o(.text)
-        dump/baserom_demo_286c.o(.text)
+        Rfu0x13.o(.text)
         RfuInit.o(.text)
         MbootInit.o(.text)
         RfuStart.o(.text)
