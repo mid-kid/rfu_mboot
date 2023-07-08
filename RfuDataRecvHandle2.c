@@ -4,8 +4,8 @@
 #include "MbootTmp.h"
 extern struct RfuPeer RfuPeers[4];
 extern struct MbootTmp MbootTmp;
-extern u32 FUN_03003ce0(u8 Peer, struct RfuPeerSub *Sub);
-extern u16 FUN_03003d38(u8 Peer, struct RfuPeerSub *Sub);
+extern u32 RfuDataRecvWrite1(u8 Peer, struct RfuPeerSub *Sub);
+extern u16 RfuDataRecvWrite2(u8 Peer, struct RfuPeerSub *Sub);
 extern struct RfuBuf {
     u8 *recv;
     u8 *send;
@@ -36,14 +36,14 @@ void RfuDataRecvHandle2(u8 Peer, u8 *param_2, u8 *param_3)
         }
     } else if (param_2[2] == 2) {
         if (sub->unk_01[0] == 0x8041 && sub->unk_03 == 0) {
-            sub->unk_01[0] = FUN_03003d38(Peer, sub);
+            sub->unk_01[0] = RfuDataRecvWrite2(Peer, sub);
         }
         if (sub->unk_01[0] == 0x8042) {
             cont = TRUE;
         }
     } else if (param_2[2] == 1) {
         if (!(sub->unk_01[0] & 0x8000)) {
-            sub->unk_01[0] = FUN_03003ce0(Peer, sub);
+            sub->unk_01[0] = RfuDataRecvWrite1(Peer, sub);
         }
         if (sub->unk_01[0] == 0x8041) {
             cont = TRUE;
