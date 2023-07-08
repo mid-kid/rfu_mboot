@@ -1,13 +1,12 @@
 #include <Agb.h>
 
-extern char StringEnglish[];
 extern u16 BgBak[32*20];
 extern u8 Lang;
 extern u8 MainMenuFadeOut;
 extern u8 MenuBusy;
 extern u8 MenuState;
 
-extern u16 *BgScSet(u16 Pos, u16 PlttNo, char *Srcp);
+extern u16 *BgScSet(u16 Pos, u16 PlttNo, const char *Srcp);
 extern void BgScClear(u16 Pos, u8 Height, u8 Width);
 extern void FrameCountReset(void);
 extern void MenuMsgInit(void);
@@ -28,7 +27,7 @@ void MainMenuInit(void)
 
     CpuClear(0, BgBak, sizeof(BgBak), 16);
     MenuMsgInit();
-    BgScSet(0xcb, 0, StringEnglish);
+    BgScSet(0xcb, 0, "ENGLISH");
 
     bg = BgBak + (9 * 32 + 13);
     charNo = 0x10f;

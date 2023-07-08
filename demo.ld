@@ -126,19 +126,17 @@ SECTIONS {
 
         SearchProcTable.o(.rodata)
         GameNameInit.o(.rodata)
-        dump/baserom_demo_3f7c.o(.rodata)
+        UserNames.o(.rodata)
         MenuMsgInitial.o(.rodata)
-        dump/baserom_demo_4200.o(.rodata)
+        MainMenuInit.o(.rodata)
+        Sfx.o(.rodata)
         IntrTableBuf.o(.rodata)
         dump/baserom_demo_43c8.o(.rodata)
+
+        UserNames.o(.data)
     }
     .bss : { }
-    bss_start = 0x03005684;
-    bss_end = 0x03006310;
 
-    GameLogoInitial = 0x03003f7c;
-    StringEnglish = 0x03004200;
-    SoundSfxTable = 0x030043a4;
     LZ_43c8 = 0x030043c8;
     LZ_4420 = 0x03004420;
     LZ_450c = 0x0300450c;
@@ -146,6 +144,9 @@ SECTIONS {
     HandshakeString = 0x03005630;
     RfuEncTable = 0x03005648;
     UserNames = 0x03005674;
+
+    bss_start = 0x03005684;
+
     SearchMenuEnd = 0x03005690;
     SearchMenuCursor = 0x03005691;
     MbootPeer = 0x03005692;
@@ -187,6 +188,8 @@ SECTIONS {
     RfuBuf = 0x03006190;
     RfuMemcpyFunc = 0x03006198;
     RfuDataSendBuf = 0x030061f8;
+
+    bss_end = 0x03006310;
 
     /* Discard anything not explicitly listed */
     /DISCARD/ : { *(*) }

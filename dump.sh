@@ -15,6 +15,17 @@ mkdir -p dump/libgcc
     thumb-elf-ar x "$(thumb-elf-gcc -print-libgcc-file-name)"
 )
 
+# Dump data
+dump() {
+    skip=$(expr $(printf %d $2) - 256 || true)
+    size=$(printf %d $3)
+    dd if=baserom_demo.bin of=dump/$1 bs=1 skip=$skip count=$size 2>/dev/null
+}
+dump LZ_43c8.lz 0x43c8 0x58
+dump LZ_4420.lz 0x4420 0xec
+dump LZ_450c.lz 0x450c 0x100
+dump LZ_460c.lz 0x460c 0x1024
+
 off=256
 split() {
     skip=$(expr $off - 256 || true)
@@ -150,8 +161,11 @@ split .text 0x3ed0 RfuResetSub
 split .text 0x3f38  # Libraries
 split .rodata 0x3f70 SearchProcTable
 split .rodata 0x3f7c GameNameInitial
-split .rodata 0x3fb8
+split .rodata 0x3f88 GameLogoInitial
+split .rodata 0x3fb8 UserNames_const
 split .rodata 0x4200 MenuMsgInitial
-split .rodata 0x43c0
+split .rodata 0x4208 StringEnglish
+split .rodata 0x43c0 SoundSfxTable
 split .rodata 0x43c8 IntrTableBuf
-split .rodata 0x5684
+split .rodata 0x5674
+split .rodata 0x5684 UserNames
