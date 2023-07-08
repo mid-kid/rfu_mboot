@@ -143,7 +143,7 @@ split .text 0x3808 RfuCmd_DataRecv_Parse
 split .text 0x397c RfuDataRecvParse
 split .text 0x3b60 RfuDataRecvHandle1
 split .text 0x3ce0 RfuDataRecvHandle2
-split .text 0x3d38
+split .text 0x3d38 RfuDataRecvWrite1
 split .text 0x3e04
 split .text 0x3e44 RfuReset
 split .text 0x3ed0 RfuResetSub

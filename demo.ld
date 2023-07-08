@@ -112,7 +112,7 @@ SECTIONS {
         RfuDataRecvParse.o(.text)
         RfuDataRecvHandle1.o(.text)
         RfuDataRecvHandle2.o(.text)
-        dump/baserom_demo_3ce0.o(.text)
+        RfuDataRecvWrite1.o(.text)
         dump/baserom_demo_3d38.o(.text)
         RfuReset.o(.text)
         RfuResetSub.o(.text)
