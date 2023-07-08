@@ -346,14 +346,14 @@ struct RfuPeer {
 };
 
 extern u32 RfuPeerUpdateFlags(u8 param_1, u8 Peer);
-extern u16 MbootDLStart(u8 Peer, u16 param_2);
+extern u16 MbootDLStart2(u8 Peer, u16 param_2);
 extern struct RfuPeer RfuPeers[4];
 
 void SearchMenuMbootStart(void)
 {
     switch (MenuState) {
     case SEARCH_MBOOT_START:
-        MbootDLStart(MbootPeer, 8);
+        MbootDLStart2(MbootPeer, 8);
         MenuState = SEARCH_MBOOT_START_CHECK;
         break;
 

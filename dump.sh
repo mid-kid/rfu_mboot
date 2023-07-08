@@ -132,8 +132,8 @@ split .text 0x3044 MbootReset
 split .text 0x3078 RfuPeerUpdate
 split .text 0x3184 RfuPeerUpdateFlags
 split .text 0x31c8 RfuMbootCfg
-split .text 0x31f4
-split .text 0x3224 MbootDLStart
+split .text 0x31f4 MbootDLStart1
+split .text 0x3224 MbootDLStart2
 split .text 0x33a8 RfuMbootDLStart
 split .text 0x3454 RfuDataSend
 split .text 0x353c RfuDataSendPrepare
