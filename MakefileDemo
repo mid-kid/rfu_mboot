@@ -3,15 +3,9 @@ AS = thumb-elf-as
 OBJCOPY = thumb-elf-objcopy
 
 .SFILES    =   crt0_demo.s defs.s
-.CFILES    =   \
-	$(wildcard *.c) \
-	$(wildcard dump/*.c)
+.CFILES    =   $(wildcard *.c)
 .BFILES    =   dump/LZ_43c8.lz dump/LZ_4420.lz dump/LZ_450c.lz dump/LZ_460c.lz
 .OFILES    =   $(.SFILES:.s=.o) $(.CFILES:.c=.o) $(.BFILES:.lz=.o)
-
-.LFILES    =   \
-	dump/libagbsyscall/*.o \
-	dump/libgcc/*.o
 
 AGBINC	=	$(AGBDIR)/include
 AGBLIB	=	$(AGBDIR)/lib
@@ -35,7 +29,7 @@ $(TARGET_BIN): $(TARGET_ELF)
 
 $(TARGET_ELF): $(.OFILES) Makefile $(LINKFILE) $(DEPENDFILE)
 	@echo > $(MAPFILE)
-	$(CC) -g -o $@ $(.OFILES) $(.LFILES) -Wl,$(LDFLAGS)
+	$(CC) -g -o $@ $(.OFILES) -Wl,$(LDFLAGS)
 
 %.o: %.lz
 	$(OBJCOPY) -I binary -O elf32-little $< $@

@@ -116,13 +116,7 @@ SECTIONS {
         RfuDataRecvWrite2.o(.text)
         RfuReset.o(.text)
         RfuResetSub.o(.text)
-        dump/libagbsyscall/AgbSysCpuSet.o(.text)
-        dump/libagbsyscall/AgbSysCpuSet.o(.text)
-        dump/libagbsyscall/AgbSysLZ77UnCompVram.o(.text)
-        dump/libagbsyscall/AgbSysRegisterRamReset.o(.text)
-        dump/libagbsyscall/AgbSysSoftReset.o(.text)
-        dump/libagbsyscall/AgbSysVBlankIntrWait.o(.text)
-        dump/libgcc/_call_via_rX.o(.text)
+        *(.text)
 
         SearchProcTable.o(.rodata)
         GameNameInit.o(.rodata)
@@ -143,7 +137,6 @@ SECTIONS {
         Sio32ID.o(.rodata)
         RfuEncTable.o(.rodata)
         RfuID.o(.rodata)
-
         UserNames.o(.data)
     }
     .bss : { }
@@ -193,7 +186,4 @@ SECTIONS {
     RfuDataSendBuf = 0x030061f8;
 
     bss_end = 0x03006310;
-
-    /* Discard anything not explicitly listed */
-    /DISCARD/ : { *(*) }
 }
