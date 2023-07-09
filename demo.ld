@@ -131,19 +131,22 @@ SECTIONS {
         MainMenuInit.o(.rodata)
         Sfx.o(.rodata)
         IntrTableBuf.o(.rodata)
-        dump/baserom_demo_43c8.o(.rodata)
+        LZ_43c8 = .;
+        dump/LZ_43c8.o(.data)
+        LZ_4420 = .;
+        dump/LZ_4420.o(.data)
+        LZ_450c = .;
+        dump/LZ_450c.o(.data)
+        LZ_460c = .;
+        dump/LZ_460c.o(.data)
+        RfuIntrHandshake.o(.rodata)
+        Sio32ID.o(.rodata)
+        RfuEncTable.o(.rodata)
+        RfuID.o(.rodata)
 
         UserNames.o(.data)
     }
     .bss : { }
-
-    LZ_43c8 = 0x030043c8;
-    LZ_4420 = 0x03004420;
-    LZ_450c = 0x0300450c;
-    LZ_460c = 0x0300460c;
-    HandshakeString = 0x03005630;
-    RfuEncTable = 0x03005648;
-    UserNames = 0x03005674;
 
     bss_start = 0x03005684;
 

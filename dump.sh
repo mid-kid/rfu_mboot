@@ -167,5 +167,6 @@ split .rodata 0x4200 MenuMsgInitial
 split .rodata 0x4208 StringEnglish
 split .rodata 0x43c0 SoundSfxTable
 split .rodata 0x43c8 IntrTableBuf
-split .rodata 0x5674
+split .rodata 0x5630 LZ
+split .rodata 0x5674 Misc
 split .rodata 0x5684 UserNames

@@ -6,7 +6,8 @@ OBJCOPY = thumb-elf-objcopy
 .CFILES    =   \
 	$(wildcard *.c) \
 	$(wildcard dump/*.c)
-.OFILES    =   $(.SFILES:.s=.o) $(.CFILES:.c=.o)
+.BFILES    =   dump/LZ_43c8.lz dump/LZ_4420.lz dump/LZ_450c.lz dump/LZ_460c.lz
+.OFILES    =   $(.SFILES:.s=.o) $(.CFILES:.c=.o) $(.BFILES:.lz=.o)
 
 .LFILES    =   \
 	dump/libagbsyscall/*.o \
@@ -35,6 +36,9 @@ $(TARGET_BIN): $(TARGET_ELF)
 $(TARGET_ELF): $(.OFILES) Makefile $(LINKFILE) $(DEPENDFILE)
 	@echo > $(MAPFILE)
 	$(CC) -g -o $@ $(.OFILES) $(.LFILES) -Wl,$(LDFLAGS)
+
+%.o: %.lz
+	$(OBJCOPY) -I binary -O elf32-little $< $@
 
 
 .PHONY: all clean depend

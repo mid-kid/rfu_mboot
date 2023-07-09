@@ -1,3 +1,5 @@
+static const char HandshakeString[] = {'N', 'I', 'N', 'T', 'E', 'N', 'D', 'O'};
+
 #if 1
 __asm__("
 .section .text
@@ -14,8 +16,6 @@ RfuIntrHandshake:
 
 #include "Sio32.h"
 extern struct Sio32 Sio32;
-
-extern char HandshakeString[];
 
 void RfuIntrHandshake(void)
 {
