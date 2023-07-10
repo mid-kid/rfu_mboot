@@ -56,7 +56,7 @@ u16 RfuMbootDLStart(u8 param_1, u8 param_2, u16 param_3, u16 *GameID, u32 param_
                     sub->unk_20 = 1;
                 }
                 sub->unk_22 = param_5;
-                sub->unk_18 = GameID;
+                sub->unk_18 = (u8 *)GameID;
                 sub->unk_10 = 0;
                 sub->unk_11 = 0;
 

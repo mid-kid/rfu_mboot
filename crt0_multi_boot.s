@@ -15,7 +15,6 @@
 _start:
 	.INCLUDE	"rom_header.s"
 
-	@b	start_vector
 	b	multiboot_handshake
 
 @ Declare as the following examples from C program:

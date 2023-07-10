@@ -1,7 +1,9 @@
 *.bin
 *.dep
 *.elf
+*.gba
 *.map
 *.o
+*.sav
 /__pycache__
 /dump
