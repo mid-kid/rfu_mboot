@@ -11,7 +11,6 @@ extern struct RfuBuf {
 } RfuBuf;
 extern u8 RfuBufRecv[0x120];
 extern struct RfuPeer RfuPeers[4];
-extern void RfuMemcpyFunc();
 extern void RfuCmdInit(void);
 extern void MbootInit(void);
 extern void RfuMemcpy(u32 *Src, u32 *Dst, int Size);

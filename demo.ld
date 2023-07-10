@@ -139,51 +139,44 @@ SECTIONS {
         RfuID.o(.rodata)
         UserNames.o(.data)
     }
-    .bss : { }
 
-    bss_start = 0x03005684;
+    bss_start = .;
+    .bss : {
+        bss_Menu.o(.bss)
+        bss_Game.o(COMMON)
+        bss_Game.o(.bss)
+        bss_KeyTimers.o(.bss)
+        bss_4.o(.bss)
+        bss_Sio32.o(.bss)
 
-    SearchMenuEnd = 0x03005690;
-    SearchMenuCursor = 0x03005691;
-    MbootPeer = 0x03005692;
-    SearchMenuErrorMsg = 0x03005693;
-    MbootBeaconID = 0x03005694;
-    SearchMenuTimer = 0x03005696;
-    FrameCount = 0x03005698;
-    GameList = 0x030056a0;
-    GameListBits = 0x03005720;
-    GameListBitsNew = 0x03005721;
-    KeyTimers = 0x03005724;
-    u8_03005728 = 0x03005728;
-    u8_03005729 = 0x03005729;
-    RfuIntrSize = 0x0300572a;
-    RfuIntrCmd = 0x03005730;
-    Sio32 = 0x03005738;
-    SearchMenuErrorTimer = 0x03005750;
-    MenuBusy = 0x03005754;
-    u8_03005754 = 0x03005754;
-    Lang = 0x03005758;
-    MenuMsg = 0x0300575c;
-    MenuState = 0x03005760;
-    MainMenuFadeOut = 0x03005764;
-    u8_03005764 = 0x03005764;
-    GameName = 0x03005770;
-    Sound = 0x03005780;
-    BgBak = 0x03005790;
-    Proc = 0x03005c90;
-    Keys = 0x03005c94;
-    Sio32IntrProc = 0x03005c98;
-    Rfu = 0x03005ca0;
-    RfuBufSend = 0x03005cc0;
-    RfuBufRecv = 0x03005de0;
-    u8_03005efc = 0x03005efc;
-    RfuPeers = 0x03005f00;
-    Mboot = 0x030060c0;
-    MbootTmp = 0x03006180;
-    struct_unk_6180 = 0x03006180;
-    RfuBuf = 0x03006190;
-    RfuMemcpyFunc = 0x03006198;
-    RfuDataSendBuf = 0x030061f8;
+        /* COMMON ordering shenanigans */
+        . = ALIGN(0x10);
+        common = .;
+        bss_5.o(COMMON)
+        SearchMenuErrorTimer = common; common += 4;
+        MenuBusy = common; common += 4;
+        Lang = common; common += 4;
+        MenuMsg = common; common += 4;
+        MenuState = common; common += 4;
+        MainMenuFadeOut = common; common += 4;
 
-    bss_end = 0x03006310;
+        bss_6.o(COMMON)
+        bss_Sound.o(.bss)
+        bss_8.o(COMMON)
+        bss_9.o(COMMON)
+        bss_Rfu.o(COMMON)
+        bss_11.o(.bss)
+        bss_11.o(COMMON)
+        bss_12.o(COMMON)
+    }
+    bss_end = .;
+
+    /* Temporary renames */
+    BgBak = Bg0Bak;
+    Proc = nowProcess;
+    Keys = key;
+    Sio32IntrProc = STWI_intr;
+    Rfu = STWI_status;
+    RfuBufSend = STWI_buffer_send;
+    RfuBufRecv = STWI_buffer_recv;
 }

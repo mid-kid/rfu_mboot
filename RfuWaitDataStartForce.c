@@ -1,20 +1,17 @@
 #include <Agb.h>
 
+#include "MbootTmp.h"
+extern struct MbootTmp MbootTmp;
 extern u16 RfuCmd_WaitData(void);
-
-extern struct {
-    u8 _;
-    u8 field1_0x1;
-} struct_unk_6180;
 
 u16 RfuWaitDataStartForce(void)
 {
     u16 ret = 0;
 
-    if (struct_unk_6180.field1_0x1 == 0) {
+    if (MbootTmp.unk_02 == 0) {
         ret = RfuCmd_WaitData();
     } else {
-        struct_unk_6180.field1_0x1 = 0;
+        MbootTmp.unk_02 = 0;
     }
 
     return ret;

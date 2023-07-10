@@ -1,0 +1,1 @@
+void (*STWI_intr)();
