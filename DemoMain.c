@@ -13,7 +13,7 @@ extern u8 LZ_43c8[];
 extern u8 LZ_4420[];
 extern u8 MainMenuFadeOut;
 extern u8 Lang;
-extern void (*Proc)();
+extern void (*nowProcess)();
 extern u8 bss_start[];
 extern u8 bss_end[];
 
@@ -59,11 +59,11 @@ void DemoMain(void)
     Lang = 0;
 
     MainMenuInit();
-    Proc = MainMenu;
+    nowProcess = MainMenu;
 
     for (;;) {
         VBlankIntrWait();
         KeyRead();
-        Proc();
+        nowProcess();
     }
 }

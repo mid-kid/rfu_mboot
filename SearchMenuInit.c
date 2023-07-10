@@ -7,7 +7,7 @@ extern void SearchMenuDrawListTitle(u16 Pos, u8 Len, u16 CharNo);
 extern void GameNameInit(void);
 extern u32 MbootReset(void);
 extern u8 LZ_450c[];
-extern u16 BgBak[32*20];
+extern u16 Bg0Bak[32*20];
 extern u8 Lang;
 extern struct GameInfo GameList[4];
 extern u8 SearchMenuEnd;
@@ -27,7 +27,7 @@ void SearchMenuInit(void)
     VramDrawBg2_SearchMenu(0x18);
     *(vu16 *)REG_BG2VOFS = -52;
     *(vu16 *)REG_BG2HOFS = -24;
-    DmaClear(3, 0, BgBak, sizeof(BgBak), 16);
+    DmaClear(3, 0, Bg0Bak, sizeof(Bg0Bak), 16);
     LZ77UnCompVram(&LZ_450c, (void *)0x6000800);
     VBlankIntrWait();
 

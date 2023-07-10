@@ -1,20 +1,20 @@
 #include <Agb.h>
 
-#include "Rfu.h"
-extern struct Rfu Rfu;
-extern u8 RfuBufRecv[0x120];
+#include "STWI_status.h"
+extern struct STWI_status STWI_status;
+extern u8 STWI_buffer_recv[0x120];
 
 u16 RfuCmdRecv(u32 Cmd, u8 VarSize)
 {
     u32 Head;
 
     // An error happened locally
-    if (Rfu.error != 0) return Rfu.error;
+    if (STWI_status.error != 0) return STWI_status.error;
 
     // An error has been received
-    if (*(u32 *)RfuBufRecv == 0x996601ee) return 4;
+    if (*(u32 *)STWI_buffer_recv == 0x996601ee) return 4;
 
-    Head = *(u32 *)RfuBufRecv;
+    Head = *(u32 *)STWI_buffer_recv;
     if (VarSize == TRUE) Head = Head & 0xffff00ff;
     if (Head == Cmd) return 0;
     return 6;

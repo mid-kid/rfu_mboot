@@ -1,6 +1,6 @@
 #include <Agb.h>
 
-extern u16 BgBak[32*20];
+extern u16 Bg0Bak[32*20];
 extern u8 Lang;
 extern u8 MainMenuFadeOut;
 extern u8 MenuBusy;
@@ -25,11 +25,11 @@ void MainMenuInit(void)
     }
     *(vu16 *)REG_DISPCNT &= ~DISP_BG1_ON;
 
-    CpuClear(0, BgBak, sizeof(BgBak), 16);
+    CpuClear(0, Bg0Bak, sizeof(Bg0Bak), 16);
     MenuMsgInit();
     BgScSet(0xcb, 0, "ENGLISH");
 
-    bg = BgBak + (9 * 32 + 13);
+    bg = Bg0Bak + (9 * 32 + 13);
     charNo = 0x10f;
     for (i = 0; i < 3; i++) {
         *bg++ = charNo++;

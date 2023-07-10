@@ -9,7 +9,7 @@ extern struct RfuBuf {
     u8 *send;
     u8 func[1];
 } RfuBuf;
-extern u8 RfuBufRecv[0x120];
+extern u8 STWI_buffer_recv[0x120];
 extern struct RfuPeer RfuPeers[4];
 extern void RfuCmdInit(void);
 extern void MbootInit(void);
@@ -26,7 +26,7 @@ void RfuInit(void)
     RfuCmdInit();
     MbootInit();
     Mboot.unk_09 = 0;
-    RfuBuf.recv = RfuBufRecv;
+    RfuBuf.recv = STWI_buffer_recv;
 
     for (peer = 0; peer < 4; peer++) {
         RfuPeers[peer].mbootDest = NULL;

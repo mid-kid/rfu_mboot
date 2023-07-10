@@ -2,11 +2,11 @@
 
 extern void SoundMain(void);
 extern void RfuVBlank(void);
-extern u16 BgBak[32*20];
+extern u16 Bg0Bak[32*20];
 
 void VBlankIntr(void)
 {
-    DmaArrayCopy(3, BgBak, VRAM, 32);
+    DmaArrayCopy(3, Bg0Bak, VRAM, 32);
 
     SoundMain();
     RfuVBlank();

@@ -1,9 +1,9 @@
 #include <Agb.h>
 
-extern struct Keys {
+extern struct key {
     u16 trg;
     u16 cont;
-} Keys;
+} key;
 
 extern u8 KeyTimers[4];
 
@@ -14,10 +14,10 @@ void KeyRepeatHold(void)
 
     for (i = 0; i < 4; i++) {
         bit = 1 << (i + 4);
-        if (Keys.cont & bit) {
+        if (key.cont & bit) {
             KeyTimers[i]++;
             if (KeyTimers[i] == 20) {
-                Keys.trg |= bit;
+                key.trg |= bit;
                 KeyTimers[i] = 15;
             }
         } else {

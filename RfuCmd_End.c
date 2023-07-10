@@ -1,17 +1,17 @@
 #include <Agb.h>
 
-#include "Rfu.h"
+#include "STWI_status.h"
 extern u32 RfuCmdReset(void);
 extern u16 RfuCmdSend(void);
 extern u16 RfuCmdRecv(u32 Cmd, u8 VarSize);
-extern u8 RfuBufSend[0x120];
-extern struct Rfu Rfu;
+extern u8 STWI_buffer_send[0x120];
+extern struct STWI_status STWI_status;
 
 u16 RfuCmd_End(void)
 {
     RfuCmdReset();
-    *(u32 *)(RfuBufSend + 0) = 0x9966003d;
-    Rfu.cmdSize = 0;
+    *(u32 *)(STWI_buffer_send + 0) = 0x9966003d;
+    STWI_status.cmdSize = 0;
 
     if (RfuCmdSend() == 1) {
         return 5;

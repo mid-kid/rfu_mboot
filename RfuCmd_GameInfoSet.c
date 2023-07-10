@@ -12,12 +12,12 @@ RfuCmd_GameInfoSet:
 
 #include <Agb.h>
 
-#include "Rfu.h"
+#include "STWI_status.h"
 extern u32 RfuCmdReset(void);
 extern u16 RfuCmdSend(void);
 extern u16 RfuCmdRecv(u32 Cmd, u8 VarSize);
-extern u8 RfuBufSend[0x120];
-extern struct Rfu Rfu;
+extern u8 STWI_buffer_send[0x120];
+extern struct STWI_status STWI_status;
 
 u16 RfuCmd_GameInfoSet(char *GameData, char *UserName)
 {
@@ -26,7 +26,7 @@ u16 RfuCmd_GameInfoSet(char *GameData, char *UserName)
 
     RfuCmdReset();
 
-    dst = RfuBufSend;
+    dst = STWI_buffer_send;
     *((u32 *)dst)++ = 0x99660616;
     *((u16 *)dst)++ = *((u16 *)GameData)++;
 
@@ -47,7 +47,7 @@ u16 RfuCmd_GameInfoSet(char *GameData, char *UserName)
         x++;
     }
 
-    Rfu.cmdSize = 6;
+    STWI_status.cmdSize = 6;
     if (RfuCmdSend() == 1) {
         return 5;
     } else {

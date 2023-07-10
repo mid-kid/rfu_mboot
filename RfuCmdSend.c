@@ -12,10 +12,10 @@ RfuCmdSend:
 
 #include <Agb.h>
 
-#include "Rfu.h"
+#include "STWI_status.h"
 extern u32 RfuCmdReset(void);
-extern struct Rfu Rfu;
-extern u8 RfuBufSend[0x120];
+extern struct STWI_status STWI_status;
+extern u8 STWI_buffer_send[0x120];
 
 u16 RfuCmdSend(void)
 {
@@ -24,29 +24,29 @@ u16 RfuCmdSend(void)
     u8 *ptr8;
     u16 val;
 
-    if (!Rfu.modeMaster) return 1;
+    if (!STWI_status.modeMaster) return 1;
 
 retry:
-    *(vu32 *)REG_SIODATA32 = *(u32 *)RfuBufSend;
-    Rfu.cmdHeader = *(u32 *)RfuBufSend;
-    Rfu.field3_0x9 = 1;
+    *(vu32 *)REG_SIODATA32 = *(u32 *)STWI_buffer_send;
+    STWI_status.cmdHeader = *(u32 *)STWI_buffer_send;
+    STWI_status.field3_0x9 = 1;
     *(vu16 *)REG_SIOCNT = 0x5083;
 
-    ptr8 = &Rfu.unk_07;
+    ptr8 = &STWI_status.unk_07;
 wait:
     if (*ptr8 == 0) goto wait;
 
-    if ((u8)(Rfu.unk_08 - 1) <= 1) {
-        for (x = 0; x < Rfu.unk_09; x++) VBlankIntrWait();
+    if ((u8)(STWI_status.unk_08 - 1) <= 1) {
+        for (x = 0; x < STWI_status.unk_09; x++) VBlankIntrWait();
 
-        tmp = Rfu.unk_08;
+        tmp = STWI_status.unk_08;
         RfuCmdReset();
-        Rfu.unk_08 = tmp;
-        Rfu.error = 2;
+        STWI_status.unk_08 = tmp;
+        STWI_status.error = 2;
         goto retry;
     }
 
-    if (Rfu.unk_08 != 3) return 0;
+    if (STWI_status.unk_08 != 3) return 0;
 
     *(vu16 *)REG_RCNT = 0x8000;
     val = 0x80ff;

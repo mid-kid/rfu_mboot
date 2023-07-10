@@ -1,13 +1,13 @@
 #include <Agb.h>
 
-extern struct Keys {
+extern struct key {
     u16 trg;
     u16 cont;
-} Keys;
+} key;
 
 void KeyRead(void)
 {
     u16 ReadData = *(vu16 *)REG_KEYINPUT ^ 0xffff;
-    Keys.trg  = ReadData & (ReadData ^ Keys.cont);  // Trigger input
-    Keys.cont = ReadData;                           // Hold input
+    key.trg  = ReadData & (ReadData ^ key.cont);  // Trigger input
+    key.cont = ReadData;                           // Hold input
 }

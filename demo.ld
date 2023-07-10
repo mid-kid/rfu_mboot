@@ -170,13 +170,4 @@ SECTIONS {
         bss_12.o(COMMON)
     }
     bss_end = .;
-
-    /* Temporary renames */
-    BgBak = Bg0Bak;
-    Proc = nowProcess;
-    Keys = key;
-    Sio32IntrProc = STWI_intr;
-    Rfu = STWI_status;
-    RfuBufSend = STWI_buffer_send;
-    RfuBufRecv = STWI_buffer_recv;
 }

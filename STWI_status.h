@@ -1,7 +1,7 @@
 #ifndef Rfu_h
 #define Rfu_h
 
-struct Rfu {
+struct STWI_status {
     u32 state;
     u32 cmdHeader;
     u8 cmdSize;

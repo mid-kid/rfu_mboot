@@ -41,12 +41,12 @@ extern struct RfuBuf {
     u8 *send;
 } RfuBuf;
 extern u8 MbootPeer;
-extern void (*Proc)();
+extern void (*nowProcess)();
 
-extern struct Keys {
+extern struct key {
     u16 trg;
     u16 cont;
-} Keys;
+} key;
 
 enum SearchMenuState {
     // Correspond to entries in SearchProcTable
@@ -102,8 +102,8 @@ void SearchMenu(void)
         KeyRepeatHold();
 
         // Move the cursor
-        if (Keys.trg & (U_KEY | D_KEY)) {
-            if (Keys.trg & U_KEY) {
+        if (key.trg & (U_KEY | D_KEY)) {
+            if (key.trg & U_KEY) {
                 SearchMenuCursor--;
                 if (SearchMenuCursor & 0x80) SearchMenuCursor = 3;
             } else {
@@ -115,7 +115,7 @@ void SearchMenu(void)
         }
 
         // Select game
-        if (Keys.trg & A_BUTTON && GameList[SearchMenuCursor].beaconID) {
+        if (key.trg & A_BUTTON && GameList[SearchMenuCursor].beaconID) {
             SearchMenuDrawList(FALSE);
             MbootBeaconID = GameList[SearchMenuCursor].beaconID;
             if (MenuState == SEARCH_SELECT_DISCO) {
@@ -127,7 +127,7 @@ void SearchMenu(void)
         }
     }
 
-    if (Keys.trg & B_BUTTON) {
+    if (key.trg & B_BUTTON) {
         if (MenuState == SEARCH_MBOOT_DL_START) {
             RfuWaitData();
             MenuState = SEARCH_START;
@@ -308,7 +308,7 @@ void SearchMenu(void)
         // Return to main menu
         if (procRes == 0) {
             MainMenuInit();
-            Proc = MainMenu;
+            nowProcess = MainMenu;
         }
         break;
 
@@ -329,7 +329,7 @@ void SearchMenu(void)
             // MenuState == SEARCH_ERROR_END
             SoundPlaySfx(3);
             MainMenuInit();
-            Proc = MainMenu;
+            nowProcess = MainMenu;
         }
         break;
     }

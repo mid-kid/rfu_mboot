@@ -5,14 +5,14 @@ u32 Sio32IntrSlave(void);
 u16 Sio32WaitSIState(u32 State);
 void Call_thumb(void (*)());
 
-#include "Rfu.h"
+#include "STWI_status.h"
 extern u8 u8_03005efc;
-extern void (*Sio32IntrProc)(void);
-extern struct Rfu Rfu;
-extern u8 RfuBufRecv[0x120];
+extern void (*STWI_intr)(void);
+extern struct STWI_status STWI_status;
+extern u8 STWI_buffer_recv[0x120];
 extern u8 u8_03005729;
 extern u8 u8_03005728;
-extern u8 RfuBufSend[0x120];
+extern u8 STWI_buffer_send[0x120];
 extern u8 RfuIntrCmd;
 extern u8 RfuIntrSize;
 
@@ -25,12 +25,12 @@ extern u8 RfuIntrSize;
 void Sio32Intr(void)
 {
     if (u8_03005efc == 1) {
-        Call_thumb(Sio32IntrProc);
+        Call_thumb(STWI_intr);
         return;
     }
 
-    Rfu.unk_10 = 0;
-    if (Rfu.modeMaster == TRUE) {
+    STWI_status.unk_10 = 0;
+    if (STWI_status.modeMaster == TRUE) {
         Sio32IntrMaster();
     } else {
         Sio32IntrSlave();
@@ -241,11 +241,11 @@ Sio32IntrMaster:
 .LL37:
 	.align	0
 .LL36:
-	.word	Rfu
+	.word	STWI_status
 	.word	u8_03005729
-	.word	RfuBufRecv
+	.word	STWI_buffer_recv
 	.word	u8_03005728
-	.word	RfuBufSend
+	.word	STWI_buffer_send
 .LL29:
 	add	r3, r6, #3
 	strh	r3, [r5, #0]	@ movhi   ;; CYGNUS LOCAL nickc
@@ -274,48 +274,48 @@ u32 Sio32IntrMaster(void)
 
     data = *(u32 *)REG_SIODATA32;
 
-    if (Rfu.state == 3) {
-        BufWrite(RfuBufRecv, u8_03005729 * 4, data, 32);
+    if (STWI_status.state == 3) {
+        BufWrite(STWI_buffer_recv, u8_03005729 * 4, data, 32);
         u8_03005729++;
 
         if (u8_03005728 == 0) {
-            Rfu.error = 0;
-            Rfu.state = 4;
+            STWI_status.error = 0;
+            STWI_status.state = 4;
         } else {
             u8_03005728--;
             *(u32 *)REG_SIODATA32 = 0x80000000;
-            Rfu.cmdHeader += data;
+            STWI_status.cmdHeader += data;
         }
-    } else if (Rfu.state == 0) {
+    } else if (STWI_status.state == 0) {
         if (data != 0x80000000) {
-            Rfu.unk_07 = 1;
-            Rfu.unk_08++;
+            STWI_status.unk_07 = 1;
+            STWI_status.unk_08++;
             return 0;
         }
 
-        if (Rfu.cmdSize + 1 > Rfu.field3_0x9) {
-            buf = &((u32 *)RfuBufSend)[Rfu.field3_0x9];
+        if (STWI_status.cmdSize + 1 > STWI_status.field3_0x9) {
+            buf = &((u32 *)STWI_buffer_send)[STWI_status.field3_0x9];
             *(u32 *)REG_SIODATA32 = *buf;
-            Rfu.cmdHeader += *buf;
-            Rfu.field3_0x9++;
+            STWI_status.cmdHeader += *buf;
+            STWI_status.field3_0x9++;
         } else {
-            Rfu.state = 2;
+            STWI_status.state = 2;
             *(u32 *)REG_SIODATA32 = data;
         }
-    } else if (Rfu.state == 1) {
+    } else if (STWI_status.state == 1) {
         if (data != 0x80000000) {
-            Rfu.unk_07 = 1;
-            Rfu.unk_08++;
+            STWI_status.unk_07 = 1;
+            STWI_status.unk_08++;
             return 0;
         }
 
-        Rfu.state = 2;
+        STWI_status.state = 2;
         *(u32 *)REG_SIODATA32 = data;
-    } else if (Rfu.state == 2) {
-        Rfu.cmdHeader = data;
+    } else if (STWI_status.state == 2) {
+        STWI_status.cmdHeader = data;
         u8_03005729 = 0;
 
-        BufWrite(RfuBufRecv, u8_03005729, data, 32);
+        BufWrite(STWI_buffer_recv, u8_03005729, data, 32);
         u8_03005729++;
 
         if (data >> 0x10 == 0x9966) {
@@ -323,15 +323,15 @@ u32 Sio32IntrMaster(void)
             if (u8_03005728 > 0x45) u8_03005728 = 0x45;
 
             if (u8_03005728 == 0) {
-                Rfu.error = 0;
-                Rfu.state = 4;
+                STWI_status.error = 0;
+                STWI_status.state = 4;
             } else {
                 u8_03005728--;
-                Rfu.state = 3;
+                STWI_status.state = 3;
             }
         } else {
-            Rfu.unk_07 = 1;
-            Rfu.unk_08++;
+            STWI_status.unk_07 = 1;
+            STWI_status.unk_08++;
             return 0;
         }
 
@@ -342,28 +342,28 @@ u32 Sio32IntrMaster(void)
     *(vu16 *)REG_SIOCNT = 0x500b;
     if (Sio32WaitSIState(0) == 1) return 0;
 
-    if (Rfu.state == 4) {
-        if (*(u32 *)RfuBufRecv == 0x996600a7 ||
-                *(u32 *)RfuBufRecv == 0x996600a5 ||
-                *(u32 *)RfuBufRecv == 0x996600b5 ||
-                *(u32 *)RfuBufRecv == 0x996600b7) {
-            Rfu.modeMaster = FALSE;
+    if (STWI_status.state == 4) {
+        if (*(u32 *)STWI_buffer_recv == 0x996600a7 ||
+                *(u32 *)STWI_buffer_recv == 0x996600a5 ||
+                *(u32 *)STWI_buffer_recv == 0x996600b5 ||
+                *(u32 *)STWI_buffer_recv == 0x996600b7) {
+            STWI_status.modeMaster = FALSE;
             *(vu32 *)REG_SIODATA32 = 0x80000000;
             *(vu16 *)REG_SIOCNT = 0x5002;
             *(vu16 *)REG_SIOCNT = 0x5082;
-            Rfu.state = 5;
+            STWI_status.state = 5;
         } else {
             *(vu16 *)REG_SIOCNT = 0x5003;
         }
 
-        Rfu.unk_08 = 0;
-        Rfu.unk_10 = 0xff;
-        Rfu.unk_07 = 1;
+        STWI_status.unk_08 = 0;
+        STWI_status.unk_10 = 0xff;
+        STWI_status.unk_07 = 1;
     } else {
         *(vu16 *)REG_SIOCNT = 0x5003;
     }
 
-    if (Rfu.unk_07 == 0) {
+    if (STWI_status.unk_07 == 0) {
         *(vu16 *)REG_SIOCNT = 0x5083;
     }
 
@@ -573,13 +573,13 @@ Sio32IntrSlave:
 .LY35:
 	.align	0
 .LY34:
-	.word	Rfu
-	.word	RfuBufRecv
+	.word	STWI_status
+	.word	STWI_buffer_recv
 	.word	RfuIntrSize
 	.word	RfuIntrCmd
-	.word	RfuBufSend
+	.word	STWI_buffer_send
 	.word	-1721368082
-	.word	Sio32IntrProc
+	.word	STWI_intr
 .LY29:
 	mov	r3, #20480
 	add	r3, r3, #130
@@ -604,83 +604,83 @@ u32 Sio32IntrSlave(void)
 
     data = *(vu32 *)REG_SIODATA32;
 
-    if (Rfu.state == 5) {
-        Rfu.field3_0x9 = 0;
-        BufWrite(RfuBufRecv, Rfu.field3_0x9, data, 32);
-        Rfu.field3_0x9++;
+    if (STWI_status.state == 5) {
+        STWI_status.field3_0x9 = 0;
+        BufWrite(STWI_buffer_recv, STWI_status.field3_0x9, data, 32);
+        STWI_status.field3_0x9++;
 
-        Rfu.cmdHeader = data;
+        STWI_status.cmdHeader = data;
 
         if (data >> 0x10 == 0x9966) {
             intrsize = (data & 0xff00) >> 8;
-            Rfu.cmdSize = intrsize;
-            RfuIntrSize = Rfu.cmdSize;
+            STWI_status.cmdSize = intrsize;
+            RfuIntrSize = STWI_status.cmdSize;
             RfuIntrCmd = data;
 
             if (intrsize == 0) {
                 u8 cmd = RfuIntrCmd;
                 if (cmd == 0x27 || cmd == 0x28 || cmd == 0x29 || cmd == 0x36) {
-                    Rfu.cmdSize = 0;
-                    RfuIntrSize = Rfu.cmdSize;
-                    BufWrite(RfuBufSend, 0, 0x99660080 + cmd, 32);
+                    STWI_status.cmdSize = 0;
+                    RfuIntrSize = STWI_status.cmdSize;
+                    BufWrite(STWI_buffer_send, 0, 0x99660080 + cmd, 32);
                 } else {
-                    Rfu.cmdSize = 1;
-                    RfuIntrSize = Rfu.cmdSize;
-                    BufWrite(RfuBufSend, 0, 0x996601ee, 32);
-                    BufWrite(RfuBufSend, 4, 0x00000001, 32);
+                    STWI_status.cmdSize = 1;
+                    RfuIntrSize = STWI_status.cmdSize;
+                    BufWrite(STWI_buffer_send, 0, 0x996601ee, 32);
+                    BufWrite(STWI_buffer_send, 4, 0x00000001, 32);
                 }
 
-                Rfu.field3_0x9 = 0;
-                Rfu.state = 7;
-                data_send = *(u32 *)RfuBufSend;
-                Rfu.cmdHeader = *(u32 *)RfuBufSend;
-                Rfu.field3_0x9++;
+                STWI_status.field3_0x9 = 0;
+                STWI_status.state = 7;
+                data_send = *(u32 *)STWI_buffer_send;
+                STWI_status.cmdHeader = *(u32 *)STWI_buffer_send;
+                STWI_status.field3_0x9++;
 
             } else {
                 RfuIntrSize--;
-                Rfu.state = 6;
+                STWI_status.state = 6;
                 data_send = 0x80000000;
             }
         } else {
-            Rfu.state = 5;
+            STWI_status.state = 5;
             data_send = 0x80000000;
         }
-    } else if (Rfu.state == 6) {
-        BufWrite(RfuBufRecv, Rfu.field3_0x9 * 4, data, 32);
-        Rfu.field3_0x9++;
+    } else if (STWI_status.state == 6) {
+        BufWrite(STWI_buffer_recv, STWI_status.field3_0x9 * 4, data, 32);
+        STWI_status.field3_0x9++;
 
         if (RfuIntrSize == 0) {
             u8 cmd = RfuIntrCmd;
             if (cmd == 0x28 || cmd == 0x29 || cmd == 0x36) {
-                Rfu.cmdSize = 0;
-                RfuIntrSize = Rfu.cmdSize;
-                *(u32 *)RfuBufSend = 0x99660080 + cmd;
+                STWI_status.cmdSize = 0;
+                RfuIntrSize = STWI_status.cmdSize;
+                *(u32 *)STWI_buffer_send = 0x99660080 + cmd;
             } else {
-                Rfu.cmdSize = 1;
-                RfuIntrSize = Rfu.cmdSize;
-                BufWrite(RfuBufSend, 0, 0x996601ee, 32);
-                BufWrite(RfuBufSend, 4, 0x00000001, 32);
+                STWI_status.cmdSize = 1;
+                RfuIntrSize = STWI_status.cmdSize;
+                BufWrite(STWI_buffer_send, 0, 0x996601ee, 32);
+                BufWrite(STWI_buffer_send, 4, 0x00000001, 32);
             }
-            Rfu.field3_0x9 = 0;
-            Rfu.state = 7;
-            data_send = *(u32 *)RfuBufSend;
-            Rfu.cmdHeader = *(u32 *)RfuBufSend;
-            Rfu.field3_0x9++;
+            STWI_status.field3_0x9 = 0;
+            STWI_status.state = 7;
+            data_send = *(u32 *)STWI_buffer_send;
+            STWI_status.cmdHeader = *(u32 *)STWI_buffer_send;
+            STWI_status.field3_0x9++;
         } else {
             RfuIntrSize--;
-            Rfu.cmdHeader += data;
+            STWI_status.cmdHeader += data;
             data_send = 0x80000000;
         }
-    } else if (Rfu.state == 7) {
+    } else if (STWI_status.state == 7) {
         if (RfuIntrSize != 0) {
             RfuIntrSize--;
-            buf = (u32 *)RfuBufSend;
-            data_send = buf[Rfu.field3_0x9];
-            Rfu.cmdHeader += buf[Rfu.field3_0x9];
-            Rfu.field3_0x9++;
+            buf = (u32 *)STWI_buffer_send;
+            data_send = buf[STWI_status.field3_0x9];
+            STWI_status.cmdHeader += buf[STWI_status.field3_0x9];
+            STWI_status.field3_0x9++;
         } else {
-            Rfu.state = 9;
-            BufWrite(RfuBufSend, Rfu.field3_0x9 * 4, Rfu.cmdHeader, 32);
+            STWI_status.state = 9;
+            BufWrite(STWI_buffer_send, STWI_status.field3_0x9 * 4, STWI_status.cmdHeader, 32);
             data_send = 0x80000000;
         }
     } else {
@@ -692,18 +692,18 @@ u32 Sio32IntrSlave(void)
 
     *(vu16 *)REG_SIOCNT = 0x5002;
 
-    if (Rfu.state == 9) {
+    if (STWI_status.state == 9) {
         if (Sio32WaitSIState(0) == 1) return 0;
 
         *(vu32 *)REG_SIODATA32 = 0;
-        __asm__("str %0, %1" : : "r"(0), "o"(Rfu.state) : "r3");
-        __asm__("strb %0, %1" : : "r"(TRUE), "o"(Rfu.modeMaster) : "r2");
-        __asm__("strb %0, %1" : : "r"(0xff), "o"(Rfu.unk_10) : "r3");
-        __asm__("strb %0, %1" : : "r"(0), "o"(Rfu.unk_08));
+        __asm__("str %0, %1" : : "r"(0), "o"(STWI_status.state) : "r3");
+        __asm__("strb %0, %1" : : "r"(TRUE), "o"(STWI_status.modeMaster) : "r2");
+        __asm__("strb %0, %1" : : "r"(0xff), "o"(STWI_status.unk_10) : "r3");
+        __asm__("strb %0, %1" : : "r"(0), "o"(STWI_status.unk_08));
         *(vu16 *)REG_SIOCNT = 0;
         *(vu16 *)REG_SIOCNT = 0x5003;
 
-        Call_thumb(Sio32IntrProc);
+        Call_thumb(STWI_intr);
     } else {
         *(vu16 *)REG_SIOCNT = 0x5082;
     }
@@ -766,7 +766,7 @@ Sio32WaitSIState:
     mov	r0, #0
     b	2f
 .LRfu:
-    .word Rfu
+    .word STWI_status
 2:
     ldmdb	fp, {fp, sp, lr}
     bx	lr
@@ -777,12 +777,12 @@ u16 Sio32WaitSIState(u32 State)
 {
     u32 x;
 
-    for (x = 0; x != 0x9800 && Rfu.unk_12 != 1; x++) {
+    for (x = 0; x != 0x9800 && STWI_status.unk_12 != 1; x++) {
         if ((*(vu16 *)REG_SIOCNT & SIO_MULTI_SI) == (State << 2)) return 0;
     }
 
-    Rfu.error = 3;
-    Rfu.unk_07 = 1;
+    STWI_status.error = 3;
+    STWI_status.unk_07 = 1;
     return 1;
 }
 #endif

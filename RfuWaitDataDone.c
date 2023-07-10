@@ -1,9 +1,9 @@
 #include <Agb.h>
 
-#include "Rfu.h"
-extern struct Rfu Rfu;
+#include "STWI_status.h"
+extern struct STWI_status STWI_status;
 
 u8 RfuWaitDataDone(void)
 {
-    return Rfu.modeMaster;
+    return STWI_status.modeMaster;
 }

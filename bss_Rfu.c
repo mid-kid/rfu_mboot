@@ -1,7 +1,7 @@
 #include <Agb.h>
 
-#include "Rfu.h"
+#include "STWI_status.h"
 
-struct Rfu STWI_status;
+struct STWI_status STWI_status;
 u8 STWI_buffer_send[280];
 u8 STWI_buffer_recv[280];
