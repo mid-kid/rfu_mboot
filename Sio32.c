@@ -2,7 +2,7 @@
 
 u32 Sio32IntrMaster(void);
 u32 Sio32IntrSlave(void);
-u16 Sio32WaitSIState(u32 State);
+u16 Sio32WaitSIState(u16 State);
 void Call_thumb(void (*)());
 
 #include "STWI_status.h"
@@ -37,7 +37,7 @@ void Sio32Intr(void)
     }
 }
 
-#if 1
+#ifndef NONMATCHING
 __asm__("
     .text
 	.global	Sio32IntrMaster
@@ -371,7 +371,7 @@ u32 Sio32IntrMaster(void)
 }
 #endif
 
-#if 1
+#ifndef NONMATCHING
 __asm__("
 	.text
 	.global	Sio32IntrSlave
@@ -773,17 +773,20 @@ Sio32WaitSIState:
     .size Sio32WaitSIState, .-Sio32WaitSIState
 ");
 #else
-u16 Sio32WaitSIState(u32 State)
+u16 Sio32WaitSIState(u16 State)
 {
     u32 x;
 
-    for (x = 0; x != 0x9800 && STWI_status.unk_12 != 1; x++) {
+    x = 0;
+    for (;;) {
+        x++;
+        if (STWI_status.unk_12 == 1 && x == 0x98000000) break;
         if ((*(vu16 *)REG_SIOCNT & SIO_MULTI_SI) == (State << 2)) return 0;
     }
 
     STWI_status.error = 3;
     STWI_status.unk_07 = 1;
-    return 1;
+    return 0;
 }
 #endif
 
