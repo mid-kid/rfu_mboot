@@ -1,12 +1,94 @@
 #if 1
 __asm__("
-.section .text
-.global RfuIntrDataTransfer
-.type RfuIntrDataTransfer, function
-.thumb_func
+.text
+	.align	2
+	.globl	RfuIntrDataTransfer
+	.type	 RfuIntrDataTransfer,function
+	.thumb_func
 RfuIntrDataTransfer:
-.2byte 0xb570,0xb081,0x2400,0x480c,0x7004,0x466a,0x3201,0x4668,0x1c11,0xf001,0xffa7,0x4668,0x7800,0x2800,0xd020,0x4a07,0x4807,0x7801,0x00c8,0x1a40,0x0100,0x1880,0x8e80,0x2800,0xd00a,0x4904,0x2001,0xe009,0x5750,0x0300,0x5f00,0x0300,0x5692,0x0300,0x5693,0x0300,0x4903,0x2003,0x7008,0x4903,0x20c1,0x7008,0xe01b,0x0000,0x5693,0x0300,0x5760,0x0300,0x4d0d,0x7828,0x28c5,0xd803,0xf002,0xfc38,0xf002,0xfa94,0x4e0a,0xf002,0xf895,0x0400,0x2800,0xd008,0x1c60,0x0600,0x0e04,0x2c02,0xd1f5,0x2004,0x7030,0x20c1,0x7028,0xb001,0xbc70,0xbc01,0x4700,0x0000,0x5760,0x0300,0x5693,0x0300
-.size RfuIntrDataTransfer, .-RfuIntrDataTransfer
+	push	{r4, r5, r6, lr}
+	add	sp, sp, #-4
+	mov	r4, #0
+	ldr	r0, .L15
+	strb	r4, [r0]
+	mov	r2, sp
+	add	r2, r2, #1
+	mov	r0, sp
+	add	r1, r2, #0
+	bl	RfuStatus
+	mov	r0, sp
+	ldrb	r0, [r0]
+	cmp	r0, #0
+	beq	.L21	@cond_branch
+	ldr	r2, .L15+4
+	ldr	r0, .L15+8
+	ldrb	r1, [r0]
+	lsl	r0, r1, #3
+	sub	r0, r0, r1
+	lsl	r0, r0, #4
+	add	r0, r0, r2
+	ldrh	r0, [r0, #52]
+	cmp	r0, #0
+	beq	.L4	@cond_branch
+	ldr	r1, .L15+12
+	mov	r0, #1
+	b	.L3
+.L16:
+	.align	2
+.L15:
+	.word	SearchMenuErrorTimer
+	.word	RfuPeers
+	.word	MbootPeer
+	.word	SearchMenuErrorMsg
+.L4:
+	ldr	r1, .L17
+	mov	r0, #3
+.L3:
+	strb	r0, [r1]
+	ldr	r1, .L17+4
+	mov	r0, #193
+	strb	r0, [r1]
+	b	.L2
+.L18:
+	.align	2
+.L17:
+	.word	SearchMenuErrorMsg
+	.word	MenuState
+.L21:
+	ldr	r5, .L19
+	ldrb	r0, [r5]
+	cmp	r0, #197
+	bhi	.L11	@cond_branch
+	bl	RfuDataRecv
+	bl	RfuDataSend
+.L11:
+	ldr	r6, .L19+4
+.L14:
+	bl	RfuWaitDataStartForce
+	lsl	r0, r0, #16
+	cmp	r0, #0
+	beq	.L2	@cond_branch
+	add	r0, r4, #1
+	lsl	r0, r0, #24
+	lsr	r4, r0, #24
+	cmp	r4, #2
+	bne	.L14	@cond_branch
+	mov	r0, #4
+	strb	r0, [r6]
+	mov	r0, #193
+	strb	r0, [r5]
+.L2:
+	add	sp, sp, #4
+	pop	{r4, r5, r6}
+	pop	{r0}
+	bx	r0
+.L20:
+	.align	2
+.L19:
+	.word	MenuState
+	.word	SearchMenuErrorMsg
+.Lfe1:
+	.size	 RfuIntrDataTransfer,.Lfe1-RfuIntrDataTransfer
 ");
 #else
 

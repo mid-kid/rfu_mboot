@@ -1,12 +1,87 @@
 #if 1
 __asm__("
-.section .text
-.global RfuCmd_GameInfoSet
-.type RfuCmd_GameInfoSet, function
-.thumb_func
+.text
+	.align	2
+	.globl	RfuCmd_GameInfoSet
+	.type	 RfuCmd_GameInfoSet,function
+	.thumb_func
 RfuCmd_GameInfoSet:
-.2byte 0xb530,0x1c04,0x1c0d,0xf7ff,0xfea1,0x4809,0x4909,0xc002,0x1c02,0x8820,0x8010,0x3202,0x3402,0x210d,0x7820,0x7010,0x3201,0x3401,0x3901,0x2900,0xdaf8,0x4b03,0x2100,0xe00b,0x5cc0,0x0300,0x0616,0x9966,0x5ca0,0x0300,0x7010,0x3201,0x3501,0x3101,0x2907,0xdc0a,0x7828,0x2800,0xd1f6,0x2907,0xdc05,0x2000,0x7010,0x3201,0x3101,0x2907,0xddfa,0x2006,0x7218,0xf7ff,0xfeaf,0x0400,0x0c00,0x2801,0xd008,0x4803,0x2100,0xf7ff,0xff0b,0x0400,0x0c00,0xe002,0x0096,0x9966,0x2005,0xbc30,0xbc02,0x4708
-.size RfuCmd_GameInfoSet, .-RfuCmd_GameInfoSet
+	push	{r4, r5, lr}
+	add	r4, r0, #0
+	add	r5, r1, #0
+	bl	RfuCmdReset
+	ldr	r0, .L22
+	ldr	r1, .L22+4
+	stmia	r0!, {r1}
+	add	r2, r0, #0
+	ldrh	r0, [r4]
+	strh	r0, [r2]
+	add	r2, r2, #2
+	add	r4, r4, #2
+	mov	r1, #13
+.L6:
+	ldrb	r0, [r4]
+	strb	r0, [r2]
+	add	r2, r2, #1
+	add	r4, r4, #1
+	sub	r1, r1, #1
+	cmp	r1, #0
+	bge	.L6	@cond_branch
+	ldr	r3, .L22+8
+	mov	r1, #0
+	b	.L8
+.L23:
+	.align	2
+.L22:
+	.word	STWI_buffer_send
+	.word	-1721367018
+	.word	STWI_status
+.L12:
+	strb	r0, [r2]
+	add	r2, r2, #1
+	add	r5, r5, #1
+	add	r1, r1, #1
+	cmp	r1, #7
+	bgt	.L9	@cond_branch
+.L8:
+	ldrb	r0, [r5]
+	cmp	r0, #0
+	bne	.L12	@cond_branch
+	cmp	r1, #7
+	bgt	.L9	@cond_branch
+	mov	r0, #0
+.L16:
+	strb	r0, [r2]
+	add	r2, r2, #1
+	add	r1, r1, #1
+	cmp	r1, #7
+	ble	.L16	@cond_branch
+.L9:
+	mov	r0, #6
+	strb	r0, [r3, #8]
+	bl	RfuCmdSend
+	lsl	r0, r0, #16
+	lsr	r0, r0, #16
+	cmp	r0, #1
+	beq	.L19	@cond_branch
+	ldr	r0, .L24
+	mov	r1, #0
+	bl	RfuCmdRecv
+	lsl	r0, r0, #16
+	lsr	r0, r0, #16
+	b	.L21
+.L25:
+	.align	2
+.L24:
+	.word	-1721368426
+.L19:
+	mov	r0, #5
+.L21:
+	pop	{r4, r5}
+	pop	{r1}
+	bx	r1
+.Lfe1:
+	.size	 RfuCmd_GameInfoSet,.Lfe1-RfuCmd_GameInfoSet
 ");
 #else
 
@@ -22,29 +97,25 @@ extern struct STWI_status STWI_status;
 u16 RfuCmd_GameInfoSet(char *GameData, char *UserName)
 {
     u8 *dst;
+    u8 *src;
     int x;
 
     RfuCmdReset();
 
     dst = STWI_buffer_send;
     *((u32 *)dst)++ = 0x99660616;
-    *((u16 *)dst)++ = *((u16 *)GameData)++;
+    *((u16 *)dst)++ = *(u16 *)GameData;
 
-    for (x = 13; x >= 0; x--) *dst++ = *GameData++;
+    src = GameData + 2;
+    for (x = 0; x < 14; x++) *dst++ = *src++;
 
-    x = 0;
-    for (;;) {
-        if (!*UserName) {
-            for (;;) {
-                if (x < 8) break;
-                *dst++ = '\0';
-                x++;
-            }
+    src = UserName;
+    for (x = 0; x < 8; x++) {
+        if (!*src) {
+            for (; x < 8; x++) *dst++ = '\0';
             break;
         }
-        if (x >= 8) break;
-        *dst++ = *UserName++;
-        x++;
+        *dst++ = *src++;
     }
 
     STWI_status.cmdSize = 6;
@@ -54,5 +125,4 @@ u16 RfuCmd_GameInfoSet(char *GameData, char *UserName)
         return RfuCmdRecv(0x99660096, FALSE);
     }
 }
-
 #endif

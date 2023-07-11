@@ -1,12 +1,118 @@
 #if 1
 __asm__("
-.section .text
-.global RfuCmdSend
-.type RfuCmdSend, function
-.thumb_func
+.text
+	.align	2
+	.globl	RfuCmdSend
+	.type	 RfuCmdSend,function
+	.thumb_func
 RfuCmdSend:
-.2byte 0xb530,0x4803,0x7ac0,0x2800,0xd104,0x2001,0xe053,0x0000,0x5ca0,0x0300,0x4914,0x4815,0x6800,0x6008,0x4914,0x6048,0x2001,0x7248,0x4a13,0x4b14,0x1c18,0x8010,0x1c0a,0x320c,0x7810,0x2800,0xd0fc,0x7b4a,0x1e50,0x0600,0x0e00,0x2801,0xd81c,0x2400,0x7b88,0x4284,0xda06,0x1c0d,0xf001,0xffa6,0x3401,0x7baa,0x4294,0xdbf9,0x4c05,0x7b65,0xf7ff,0xff94,0x7365,0x2002,0x72a0,0xe7d5,0x0120,0x0400,0x5cc0,0x0300,0x5ca0,0x0300,0x0128,0x0400,0x5083,0x0000,0x0610,0x0e00,0x2803,0xd117,0x490d,0x2380,0x021b,0x1c18,0x8008,0x4a0c,0x1c10,0x24fa,0x00a4,0x8008,0x3c01,0x2c00,0xd1fb,0x4907,0x2380,0x021b,0x1c18,0x8008,0x2000,0x8008,0x390c,0x4a05,0x1c10,0x8008,0x2000,0xbc30,0xbc02,0x4708,0x0134,0x0400,0x80ff,0x0000,0x5003,0x0000
-.size RfuCmdSend, .-RfuCmdSend
+	push	{r4, r5, lr}
+	ldr	r0, .L21
+	ldrb	r0, [r0, #11]
+	cmp	r0, #0
+	bne	.L4	@cond_branch
+	mov	r0, #1
+	b	.L19
+.L22:
+	.align	2
+.L21:
+	.word	STWI_status
+.L4:
+	ldr	r1, .L23
+	ldr	r0, .L23+4
+	ldr	r0, [r0]
+	str	r0, [r1]
+	ldr	r1, .L23+8
+	str	r0, [r1, #4]
+	mov	r0, #1
+	strb	r0, [r1, #9]
+	ldr	r2, .L23+12
+	ldr	r3, .L23+16
+	add	r0, r3, #0
+	strh	r0, [r2]
+	add	r2, r1, #0
+	add	r2, r2, #12
+.L5:
+	ldrb	r0, [r2]
+	cmp	r0, #0
+	beq	.L5	@cond_branch
+	ldrb	r2, [r1, #13]
+	sub	r0, r2, #1
+	lsl	r0, r0, #24
+	lsr	r0, r0, #24
+	cmp	r0, #1
+	bhi	.L7	@cond_branch
+	mov	r4, #0
+	ldrb	r0, [r1, #14]
+	cmp	r4, r0
+	bge	.L9	@cond_branch
+	add	r5, r1, #0
+.L11:
+	bl	VBlankIntrWait
+	add	r4, r4, #1
+	ldrb	r2, [r5, #14]
+	cmp	r4, r2
+	blt	.L11	@cond_branch
+.L9:
+	ldr	r4, .L23+8
+	ldrb	r5, [r4, #13]
+	bl	RfuCmdReset
+	strb	r5, [r4, #13]
+	mov	r0, #2
+	strb	r0, [r4, #10]
+	b	.L4
+.L24:
+	.align	2
+.L23:
+	.word	67109152
+	.word	STWI_buffer_send
+	.word	STWI_status
+	.word	67109160
+	.word	20611
+.L7:
+	lsl	r0, r2, #24
+	lsr	r0, r0, #24
+	cmp	r0, #3
+	bne	.L20	@cond_branch
+	ldr	r1, .L25
+	mov	r3, #128
+	lsl	r3, r3, #8
+	add	r0, r3, #0
+	strh	r0, [r1]
+	ldr	r2, .L25+4
+	add	r0, r2, #0
+	mov	r4, #250
+	lsl	r4, r4, #2
+.L17:
+	strh	r0, [r1]
+	sub	r4, r4, #1
+	cmp	r4, #0
+	bne	.L17	@cond_branch
+	ldr	r1, .L25
+	mov	r3, #128
+	lsl	r3, r3, #8
+	add	r0, r3, #0
+	strh	r0, [r1]
+	mov	r0, #0
+	strh	r0, [r1]
+	sub	r1, r1, #12
+	ldr	r2, .L25+8
+	add	r0, r2, #0
+	strh	r0, [r1]
+.L20:
+	mov	r0, #0
+.L19:
+	pop	{r4, r5}
+	pop	{r1}
+	bx	r1
+.L26:
+	.align	2
+.L25:
+	.word	67109172
+	.word	33023
+	.word	20483
+.Lfe1:
+	.size	 RfuCmdSend,.Lfe1-RfuCmdSend
 ");
 #else
 

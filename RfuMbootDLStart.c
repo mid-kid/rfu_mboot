@@ -1,12 +1,233 @@
-#ifndef NONMATCHING
+#if 1
 __asm__("
-.section .text
-.global RfuMbootDLStart
-.type RfuMbootDLStart, function
-.thumb_func
+.text
+	.align	2
+	.globl	RfuMbootDLStart
+	.type	 RfuMbootDLStart,function
+	.thumb_func
 RfuMbootDLStart:
-.2byte 0xb5f0,0x4657,0x464e,0x4645,0xb4e0,0x469a,0x0600,0x0e06,0x0609,0x0e0b,0x0412,0x0c12,0x4690,0x4803,0x7801,0x4681,0x29ff,0xd105,0x4801,0xe0a2,0x60c0,0x0300,0x0502,0x0000,0x200f,0x4018,0x2800,0xd103,0x4800,0xe098,0x0601,0x0000,0x4649,0x7888,0x4018,0x4298,0xd004,0x4801,0xe08f,0x0000,0x0602,0x0000,0x464a,0x7910,0x4018,0x2800,0xd004,0x4801,0xe085,0x0000,0x0603,0x0000,0x2100,0x2001,0x4018,0x464d,0x3510,0x4a0e,0x2800,0xd10a,0x2401,0x1c48,0x0600,0x0e01,0x2903,0xd804,0x1c18,0x4108,0x4020,0x2800,0xd0f5,0x194f,0x1c28,0x3810,0x7800,0x0100,0x1880,0x7805,0x7838,0x4580,0xd801,0x45a8,0xd804,0x20e0,0x00c0,0xe060,0x5648,0x0300,0x2020,0x4030,0x0600,0x0e04,0x2c00,0xd101,0x2e40,0xd155,0x00c8,0x1a40,0x0100,0x490b,0x1840,0x4684,0x2100,0x8301,0x4661,0x312d,0x4662,0x6051,0x2007,0x6150,0x4660,0x302c,0x7003,0x7693,0x4642,0x1b50,0x4662,0x85d0,0x2c00,0xd003,0x2000,0xe002,0x5f00,0x0300,0x2001,0x7008,0x9808,0x4661,0x6308,0x4652,0x628a,0x2100,0x4660,0x77c1,0x3020,0x7001,0x4664,0x341b,0x2600,0x4662,0x3221,0x2501,0x1860,0x7006,0x1850,0x7005,0x1c48,0x0600,0x0e01,0x2903,0xd9f6,0x2100,0x2601,0x4d12,0x2400,0x1c18,0x4108,0x4030,0x2800,0xd004,0x00c8,0x1a40,0x0100,0x1940,0x8044,0x1c48,0x0600,0x0e01,0x2903,0xd9f0,0x464a,0x7911,0x1c18,0x4308,0x7110,0x7838,0x4641,0x1a40,0x7038,0x4806,0x4662,0x8010,0x2000,0xbc38,0x4698,0x46a1,0x46aa,0xbcf0,0xbc02,0x4708,0x5f00,0x0300,0x8021,0x0000
-.size RfuMbootDLStart, .-RfuMbootDLStart
+	push	{r4, r5, r6, r7, lr}
+	mov	r7, sl
+	mov	r6, r9
+	mov	r5, r8
+	push	{r5, r6, r7}
+	mov	sl, r3
+	lsl	r0, r0, #24
+	lsr	r6, r0, #24
+	lsl	r1, r1, #24
+	lsr	r3, r1, #24
+	lsl	r2, r2, #16
+	lsr	r2, r2, #16
+	mov	r8, r2
+	ldr	r0, .L37
+	ldrb	r1, [r0]
+	mov	r9, r0
+	cmp	r1, #255
+	bne	.L3	@cond_branch
+	ldr	r0, .L37+4
+	b	.L35
+.L38:
+	.align	2
+.L37:
+	.word	Mboot
+	.word	1282
+.L3:
+	mov	r0, #15
+	and	r0, r0, r3
+	cmp	r0, #0
+	bne	.L5	@cond_branch
+	ldr	r0, .L39
+	b	.L35
+.L40:
+	.align	2
+.L39:
+	.word	1537
+.L5:
+	mov	r1, r9
+	ldrb	r0, [r1, #2]
+	and	r0, r0, r3
+	cmp	r0, r3
+	beq	.L7	@cond_branch
+	ldr	r0, .L41
+	b	.L35
+.L42:
+	.align	2
+.L41:
+	.word	1538
+.L7:
+	mov	r2, r9
+	ldrb	r0, [r2, #4]
+	and	r0, r0, r3
+	cmp	r0, #0
+	beq	.L9	@cond_branch
+	ldr	r0, .L43
+	b	.L35
+.L44:
+	.align	2
+.L43:
+	.word	1539
+.L9:
+	mov	r1, #0
+	mov	r0, #1
+	and	r0, r0, r3
+	mov	r5, r9
+	add	r5, r5, #16
+	ldr	r2, .L45
+	cmp	r0, #0
+	bne	.L12	@cond_branch
+	mov	r4, #1
+.L13:
+	add	r0, r1, #1
+	lsl	r0, r0, #24
+	lsr	r1, r0, #24
+	cmp	r1, #3
+	bhi	.L12	@cond_branch
+	add	r0, r3, #0
+	asr	r0, r0, r1
+	and	r0, r0, r4
+	cmp	r0, #0
+	beq	.L13	@cond_branch
+.L12:
+	add	r7, r1, r5
+	add	r0, r5, #0
+	sub	r0, r0, #16
+	ldrb	r0, [r0]
+	lsl	r0, r0, #4
+	add	r0, r0, r2
+	ldrb	r5, [r0]
+	ldrb	r0, [r7]
+	cmp	r8, r0
+	bhi	.L18	@cond_branch
+	cmp	r8, r5
+	bhi	.L17	@cond_branch
+.L18:
+	mov	r0, #224
+	lsl	r0, r0, #3
+	b	.L35
+.L46:
+	.align	2
+.L45:
+	.word	RfuEncTable
+.L17:
+	mov	r0, #32
+	and	r0, r0, r6
+	lsl	r0, r0, #24
+	lsr	r4, r0, #24
+	cmp	r4, #0
+	bne	.L21	@cond_branch
+	cmp	r6, #64
+	bne	.L20	@cond_branch
+.L21:
+	lsl	r0, r1, #3
+	sub	r0, r0, r1
+	lsl	r0, r0, #4
+	ldr	r1, .L47
+	add	r0, r0, r1
+	mov	ip, r0
+	mov	r1, #0
+	strh	r1, [r0, #24]
+	mov	r1, ip
+	add	r1, r1, #45
+	mov	r2, ip
+	str	r1, [r2, #4]
+	mov	r0, #7
+	str	r0, [r2, #20]
+	mov	r0, ip
+	add	r0, r0, #44
+	strb	r3, [r0]
+	strb	r3, [r2, #26]
+	mov	r2, r8
+	sub	r0, r2, r5
+	mov	r2, ip
+	strh	r0, [r2, #46]
+	cmp	r4, #0
+	beq	.L22	@cond_branch
+	mov	r0, #0
+	b	.L36
+.L48:
+	.align	2
+.L47:
+	.word	RfuPeers
+.L22:
+	mov	r0, #1
+.L36:
+	strb	r0, [r1]
+	ldr	r0, [sp, #32]
+	mov	r1, ip
+	str	r0, [r1, #48]
+	mov	r2, sl
+	str	r2, [r1, #40]
+	mov	r1, #0
+	mov	r0, ip
+	strb	r1, [r0, #31]
+	add	r0, r0, #32
+	strb	r1, [r0]
+	mov	r4, ip
+	add	r4, r4, #27
+	mov	r6, #0
+	mov	r2, ip
+	add	r2, r2, #33
+	mov	r5, #1
+.L27:
+	add	r0, r4, r1
+	strb	r6, [r0]
+	add	r0, r2, r1
+	strb	r5, [r0]
+	add	r0, r1, #1
+	lsl	r0, r0, #24
+	lsr	r1, r0, #24
+	cmp	r1, #3
+	bls	.L27	@cond_branch
+	mov	r1, #0
+	mov	r6, #1
+	ldr	r5, .L49
+	mov	r4, #0
+.L32:
+	add	r0, r3, #0
+	asr	r0, r0, r1
+	and	r0, r0, r6
+	cmp	r0, #0
+	beq	.L31	@cond_branch
+	lsl	r0, r1, #3
+	sub	r0, r0, r1
+	lsl	r0, r0, #4
+	add	r0, r0, r5
+	strh	r4, [r0, #2]
+.L31:
+	add	r0, r1, #1
+	lsl	r0, r0, #24
+	lsr	r1, r0, #24
+	cmp	r1, #3
+	bls	.L32	@cond_branch
+	mov	r2, r9
+	ldrb	r1, [r2, #4]
+	add	r0, r3, #0
+	orr	r0, r0, r1
+	strb	r0, [r2, #4]
+	ldrb	r0, [r7]
+	mov	r1, r8
+	sub	r0, r0, r1
+	strb	r0, [r7]
+	ldr	r0, .L49+4
+	mov	r2, ip
+	strh	r0, [r2]
+.L20:
+	mov	r0, #0
+.L35:
+	pop	{r3, r4, r5}
+	mov	r8, r3
+	mov	r9, r4
+	mov	sl, r5
+	pop	{r4, r5, r6, r7}
+	pop	{r1}
+	bx	r1
+.L50:
+	.align	2
+.L49:
+	.word	RfuPeers
+	.word	32801
+.Lfe1:
+	.size	 RfuMbootDLStart,.Lfe1-RfuMbootDLStart
 ");
 #else
 
