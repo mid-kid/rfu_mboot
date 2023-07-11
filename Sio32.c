@@ -712,7 +712,7 @@ u32 Sio32IntrSlave(void)
 }
 #endif
 
-#if 1
+#ifndef NONMATCHING
 __asm__("
 .text
 .type Sio32WaitSIState, function
@@ -777,10 +777,7 @@ u16 Sio32WaitSIState(u16 State)
 {
     u32 x;
 
-    x = 0;
-    for (;;) {
-        x++;
-        if (STWI_status.unk_12 == 1 && x == 0x98000000) break;
+    for (x = 0; STWI_status.unk_12 != 1 || x != 0x9800; x++) {
         if ((*(vu16 *)REG_SIOCNT & SIO_MULTI_SI) == (State << 2)) return 0;
     }
 

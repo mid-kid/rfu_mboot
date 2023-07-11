@@ -254,6 +254,5 @@ u16 RfuDataRecvParse(u32 unused, u8 *Srcp, u16 Size)
     }
 
     return ret;
-
 }
 #endif

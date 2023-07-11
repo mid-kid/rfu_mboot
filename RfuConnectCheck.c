@@ -1,4 +1,4 @@
-#if 1
+#ifndef NONMATCHING
 __asm__("
 .text
 	.align	2

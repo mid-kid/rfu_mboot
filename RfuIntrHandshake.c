@@ -1,6 +1,6 @@
 static const char HandshakeString[] = {'N', 'I', 'N', 'T', 'E', 'N', 'D', 'O'};
 
-#if 1
+#ifndef NONMATCHING
 __asm__("
 .text
 	.align	2
