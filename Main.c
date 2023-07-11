@@ -17,7 +17,7 @@ extern void (*nowProcess)();
 extern u8 bss_start[];
 extern u8 bss_end[];
 
-void DemoMain(void)
+void AgbMain(void)
 {
     *(vu16 *)REG_IME = 0;
     *(vu16 *)REG_WAITCNT = CST_ROM0_2ND_1WAIT | CST_ROM0_1ST_3WAIT;

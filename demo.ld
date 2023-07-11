@@ -2,7 +2,7 @@ SECTIONS {
     . = 0x03000100;
     .text : {
         crt0_demo.o(.text)
-        DemoMain.o(.text)
+        Main.o(.text)
         MainMenuInit.o(.text)
         MenuMsgInit.o(.text)
         MainMenu.o(.text)
@@ -124,7 +124,7 @@ SECTIONS {
         MenuMsgInitial.o(.rodata)
         MainMenuInit.o(.rodata)
         Sfx.o(.rodata)
-        IntrTableBuf.o(.rodata)
+        interrupt.o(.rodata)
         LZ_43c8 = .;
         dump/LZ_43c8.o(.data)
         LZ_4420 = .;

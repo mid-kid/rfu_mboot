@@ -1,8 +1,10 @@
 @********************************************************************
-@*          crt0_demo.s                                             *
-@*            Startup Routine (GAS)		                    *
+@*          crt0.s                                                  *
+@*            Start-up Routine (GAS)                                *
 @*                                                                  *
 @*          Copyright (C) 1999-2001 NINTENDO Co.,Ltd.               *
+@*                                                                  *
+@*          Ver 2002/02/15                                          *
 @********************************************************************
     .INCLUDE    "AgbDefine.s"
     .INCLUDE    "AgbMemoryMap.s"
@@ -15,9 +17,9 @@ _start:
     .INCLUDE    "rom_header_demo.s"
 
 @--------------------------------------------------------------------
-@-                          Reset                                -
+@-                          Reset                                   -
 @--------------------------------------------------------------------
-    .EXTERN     DemoMain
+    .EXTERN     AgbMain
     .GLOBAL     start_vector
     .CODE 32
 start_vector:
@@ -30,7 +32,7 @@ start_vector:
         ldr     r1, =INTR_VECTOR_BUF    @ Sets interrupt address
         adr     r0, intr_main
         str     r0, [r1]
-        ldr     r1, =DemoMain           @ Starts and switches to 16-bit code
+        ldr     r1, =AgbMain            @ Starts and switches to 16-bit code
         mov     lr, pc
         bx      r1
         b       start_vector            @ Resets
@@ -41,65 +43,72 @@ sp_irq: .word   WRAM_END - 0x60
 
 
 @--------------------------------------------------------------------
-@-          Interrupt Branch Process (Jump Table) 32 bits    27-62c -
+@-  Interrupt Branch Processing (Multiple Interrupts) (Look-up Table) 42-80c -
 @--------------------------------------------------------------------
-    .EXTERN     IntrTableBuf
+    .EXTERN     IntrTable
+    .EXTERN     STWI_status
+
     .GLOBAL     intr_main
     .ALIGN
     .CODE 32
 intr_main:
-        mov     r3, #REG_BASE            @ r12: REG_BASE
-        add     r3, r3, #OFFSET_REG_IE   @ r3:  REG_IE
-        ldr     r12, [r3]
+        mov     r3, #REG_BASE           @ Reads IE/IF
+        add     r3, r3, #OFFSET_REG_IE  @ r3:  REG_IE
+        ldr     r12, [r3]               @ r12: IF|IE
 
-        mrs     r0, spsr
-        stmdb   sp!, {r0, r3, r12, lr}
+        mrs     r0, spsr                @ Saves register (IRQ mode)
+        stmfd   sp!, {r0, r3, r12, lr}  @ {spsr, REG_IE, IF|IE, lr}
 
-        mov     r0, #1
-        strh    r0, [r3, #8]                 @ Set REG_IME
+        mov     r0, #1                  @ IME = 1 (To permit multiple interrupts
+                                        @          even when an interrupt occurs while executing IME=0)
+        strh    r0, [r3, #REG_IME - REG_IE]
 
-        and     r1, r12, r12, lsr #16        @ r1:  IE & IF
-        mov     r2, #0                       @ Checks IE/IF
+        and     r1, r12, r12, lsr #16   @ Checks IE/IF
+        mov     r2, #0
 
-        ands    r0, r1, #SIO_INTR_FLAG       @ Serial communication interrupt
-        bne     jump_intr
+        ands    r0, r1, #SIO_INTR_FLAG
+        bne     jump_intr                    @ Serial communication interrupt
         add     r2, r2, #4
 
-        ands    r0, r1, #V_BLANK_INTR_FLAG   @ V-blank interrupt
+        ands    r0, r1, #V_BLANK_INTR_FLAG   @ V-Blank interrupt
         bne     jump_intr
         add     r2, r2, #4
 
 jump_intr:
-        strh    r0, [r3, #2]            @ Clears IF           11c
+        strh    r0, [r3, #2]                    @ Clears IF         23c
+                                                @ Sets IE <- Selects multiple interrupts
 
         mov     r1, #SIO_INTR_FLAG
         and     r1, r1, r12
         strh    r1, [r3]
 
-        mrs     r3, cpsr
-        bic     r3, r3, #(PSR_IRQ_FIQ_DISABLE | PSR_CPU_MODE_MASK)
+        mrs     r3, cpsr                            @ Permits multiple interrupts and switches to system mode
+        bic     r3, r3, #PSR_CPU_MODE_MASK | PSR_IRQ_DISABLE | PSR_FIQ_DISABLE
         orr     r3, r3, #PSR_SYS_MODE
-        msr     cpsr_all, r3
-
-        ldr     r1, =IntrTableBuf       @ Jumps to user IRQ process
+        msr     cpsr, r3
+@---------------------------------------------------------------------System mode
+        ldr     r1, =IntrTable                      @ Jumps to user IRQ process
         add     r1, r1, r2
         ldr     r0, [r1]
-        stmfd   sp!, {lr}
-        adr     lr, 1f
+
+        stmfd   sp!, {lr}                           @ Saves register (System mode)
+        adr     lr, intr_return                     @ Sets return address
         bx      r0
-1:
-        ldmfd   sp!, {lr}
+intr_return:
+        ldmfd   sp!, {lr}                           @ Returns register (System mode)
 
-        mrs     r3, cpsr
-        bic     r3, r3, #(PSR_IRQ_FIQ_DISABLE | PSR_CPU_MODE_MASK)
-        orr     r3, r3, #(PSR_IRQ_DISABLE | PSR_IRQ_MODE)
-        msr     cpsr_all, r3
+        mrs     r3, cpsr                            @ Disables multiple interrupts and switches to IRQ mode
+        bic     r3, r3, #PSR_CPU_MODE_MASK | PSR_IRQ_DISABLE | PSR_FIQ_DISABLE
+        orr     r3, r3, #PSR_IRQ_MODE      | PSR_IRQ_DISABLE
+        msr     cpsr, r3
+@---------------------------------------------------------------------IRQ mode
+        ldmfd   sp!, {r0, r3, r12, lr}          @ Returns register (IRQ mode)
+        strh    r12, [r3]                       @ {spsr, REG_IE, IF|IE, lr}
+        msr     spsr, r0
+        bx      lr                              @ Returns prior to interrupt
 
-        ldmia   sp!, {r0, r3, r12, lr}
-        strh    r12, [r3]
-        msr     spsr_all, r0
-        bx      lr
 
+@   .ORG    0x200
 
     .END
 
