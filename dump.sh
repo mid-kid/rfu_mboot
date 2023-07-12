@@ -26,6 +26,14 @@ dump LZ_4420.lz 0x4420 0xec
 dump LZ_450c.lz 0x450c 0x100
 dump LZ_460c.lz 0x460c 0x1024
 
+dump_lz() {
+    ./dump_lz77.py < dump/$1.lz > dump/$1.bin
+}
+dump_lz LZ_43c8
+dump_lz LZ_4420
+dump_lz LZ_450c
+dump_lz LZ_460c
+
 off=256
 split() {
     skip=$(expr $off - 256 || true)
