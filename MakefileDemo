@@ -4,7 +4,7 @@ OBJCOPY = thumb-elf-objcopy
 
 .SFILES    =   crt0_demo.s defs.s
 .CFILES    =   $(wildcard *.c)
-.BFILES    =   dump/LZ_43c8.bin dump/LZ_4420.bin dump/LZ_450c.bin char/LZ_460c.bin
+.BFILES    =   char/pals.bin char/tmap.bin char/search_tmap.bin char/tiles.bin
 .OFILES    =   $(.SFILES:.s=.o) $(.CFILES:.c=.o) $(.BFILES:.bin=_LZ.o)
 
 AGBINC	=	$(AGBDIR)/include
@@ -40,7 +40,7 @@ $(TARGET_ELF): $(.OFILES) Makefile $(LINKFILE) $(DEPENDFILE)
 %.bin: %.bmp
 	bmp2agb -np -bi $<
 
-char/LZ_460c.bin: char/LZ_460c.bmp
+char/tiles.bin: char/tiles.bmp
 	bmp2agb -np -bi $<
 	truncate -s 11712 $@
 

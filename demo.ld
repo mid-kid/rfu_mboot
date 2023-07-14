@@ -126,13 +126,13 @@ SECTIONS {
         Sfx.o(.rodata)
         interrupt.o(.rodata)
         LZ_43c8 = .;
-        dump/LZ_43c8_LZ.o(.data)
+        char/pals_LZ.o(.data)
         LZ_4420 = .;
-        dump/LZ_4420_LZ.o(.data)
+        char/tmap_LZ.o(.data)
         LZ_450c = .;
-        dump/LZ_450c_LZ.o(.data)
+        char/search_tmap_LZ.o(.data)
         LZ_460c = .;
-        char/LZ_460c_LZ.o(.data)
+        char/tiles_LZ.o(.data)
         RfuIntrHandshake.o(.rodata)
         Sio32ID.o(.rodata)
         RfuEncTable.o(.rodata)
