@@ -132,7 +132,7 @@ SECTIONS {
         LZ_450c = .;
         dump/LZ_450c_LZ.o(.data)
         LZ_460c = .;
-        dump/LZ_460c_LZ.o(.data)
+        char/LZ_460c_LZ.o(.data)
         RfuIntrHandshake.o(.rodata)
         Sio32ID.o(.rodata)
         RfuEncTable.o(.rodata)
