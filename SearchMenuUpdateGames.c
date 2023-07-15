@@ -3,7 +3,7 @@
 #include "Mboot.h"
 #include "GameInfo.h"
 extern void SoundPlaySfx(u8 Num);
-extern void BgScClear(u16 Pos, u8 Height, u8 Width);
+extern void mf_clearRect(u16 Pos, u8 Height, u8 Width);
 extern void SearchMenuDrawGame(u16 Pos, struct GameInfo *Game);
 extern struct Mboot Mboot;
 extern struct GameInfo GameList[4];
@@ -57,7 +57,7 @@ u8 SearchMenuUpdateGames(void)
     if (GameListBitsNew != 0) SoundPlaySfx(1);
 
     // Draw the game list
-    BgScClear(0xe3, 8, 0x19);
+    mf_clearRect(0xe3, 8, 0x19);
     Pos = 0xe3;
     for (x = 0; x < 4; x++) {
         if (GameList[x].beaconID != 0) SearchMenuDrawGame(Pos, &GameList[x]);

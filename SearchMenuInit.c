@@ -2,7 +2,7 @@
 
 #include "GameInfo.h"
 extern void WinFade(u8 Dir);
-extern void VramDrawBg2_SearchMenu(u8 Len);
+extern void mf_drawBg2_search(u8 Len);
 extern void SearchMenuDrawListTitle(u16 Pos, u8 Len, u16 CharNo);
 extern void GameNameInit(void);
 extern u32 MbootReset(void);
@@ -24,7 +24,7 @@ void SearchMenuInit(void)
 
     WinFade(0);
 
-    VramDrawBg2_SearchMenu(0x18);
+    mf_drawBg2_search(0x18);
     *(vu16 *)REG_BG2VOFS = -52;
     *(vu16 *)REG_BG2HOFS = -24;
     DmaClear(3, 0, Bg0Bak, sizeof(Bg0Bak), 16);

@@ -2,12 +2,12 @@
 
 #include "Mboot.h"
 extern void RfuReset(void);
-extern void KeyRepeatHold(void);
+extern void mf_rapidKey(void);
 extern void SoundPlaySfx(u8 Num);
 extern void SearchMenuDrawList(u8 Blink);
 extern void RfuWaitData(void);
 extern void GameListInit(void);
-extern void BgScClear(u16 Pos, u8 Height, u8 Width);
+extern void mf_clearRect(u16 Pos, u8 Height, u8 Width);
 extern void FrameCountReset(void);
 extern u8 SearchMenuUpdateGames(void);
 extern void SearchMenuClearGame(void);
@@ -17,7 +17,7 @@ extern u32 RfuMbootCfg(u32 param_1, u8 Client, void *Dest, u32 Size);
 extern void MainMenuInit(void);
 extern struct Mboot Mboot;
 extern void MainMenu(void);
-extern u16 *BgScSet(u16 Pos, u16 PlttNo, char *Srcp);
+extern u16 *mf_drawString(u16 Pos, u16 PlttNo, char *Srcp);
 extern void MenuMsgBlink(u8 Msg, u8 Rate);
 extern void MenuMsgSet(u8 Msg, u16 PlttNo);
 extern void SearchMenuErrorBeep(void);
@@ -99,7 +99,7 @@ void SearchMenu(void)
     }
 
     if (MenuState == SEARCH_SELECT_DISCO || MenuState == SEARCH_SELECT) {
-        KeyRepeatHold();
+        mf_rapidKey();
 
         // Move the cursor
         if (key.trg & (U_KEY | D_KEY)) {
@@ -160,7 +160,7 @@ void SearchMenu(void)
                 MenuState = SEARCH_END;
             } else {
                 MenuState = SEARCH_RADIOCFG;
-                BgScClear(0x6b, 1, 8);
+                mf_clearRect(0x6b, 1, 8);
             }
         }
         break;
@@ -232,7 +232,7 @@ void SearchMenu(void)
     case SEARCH_CONNECT:
         // Start connecting to a game
         if (procRes == 0) {
-            BgScClear(0x200, 2, 0x20);
+            mf_clearRect(0x200, 2, 0x20);
             SearchMenuTimer = 2 * 60;
             MenuState = SEARCH_CONNCHECK;
         } else if (procRes == 0x900) {
@@ -285,7 +285,7 @@ void SearchMenu(void)
         if (procRes == 0) {
             if (RfuBuf.recv[4 + MbootPeer]) {
                 MenuState = SEARCH_WAITDATA;
-                BgScSet(0x6b, 2, Mboot.curGame.userName);
+                mf_drawString(0x6b, 2, Mboot.curGame.userName);
                 break;
             }
         }
@@ -318,7 +318,7 @@ void SearchMenu(void)
         MenuMsgSet(SearchMenuErrorMsg, 1);
         SearchMenuErrorBeep();
 
-        BgScClear(0x243, 1, 0x18);
+        mf_clearRect(0x243, 1, 0x18);
         GameListInit();
 
         if (MenuState == SEARCH_ERROR_RESTART) {

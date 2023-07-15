@@ -7,7 +7,7 @@ extern void RfuInit(void);
 extern void RfuSetUnk04(u8 param_1);
 extern void MainMenuInit(void);
 extern void MainMenu(void);
-extern void KeyRead(void);
+extern void mf_readKey(void);
 extern u8 LZ_460c[];
 extern u8 LZ_43c8[];
 extern u8 LZ_4420[];
@@ -63,7 +63,7 @@ void AgbMain(void)
 
     for (;;) {
         VBlankIntrWait();
-        KeyRead();
+        mf_readKey();
         nowProcess();
     }
 }

@@ -2,7 +2,7 @@
 
 extern u8 GameName[14];
 
-const u8 GameNameInitial[] = "RFU-MB-DL";
+static const u8 GameNameInitial[] = "RFU-MB-DL";
 const u8 GameLogoInitial[] = "RFU-MBOOT";
 
 void GameNameInit(void)

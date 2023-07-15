@@ -1,7 +1,7 @@
 #include <Agb.h>
 
 #include "GameInfo.h"
-extern void BgScClear(u16 Pos, u8 Height, u8 Width);
+extern void mf_clearRect(u16 Pos, u8 Height, u8 Width);
 extern void SearchMenuDrawGame(u16 Pos, struct GameInfo *Game);
 extern struct GameInfo GameList[4];
 extern u8 GameListBitsNew;
@@ -18,7 +18,7 @@ void SearchMenuDrawList(u8 Blink)
         if (!Blink || (FrameCount & 0x20) == 0) {
             SearchMenuDrawGame(pos, GameList + x);
         } else {
-            BgScClear(pos, 1, 0x19);
+            mf_clearRect(pos, 1, 0x19);
         }
     }
 

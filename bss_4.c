@@ -1,6 +1,5 @@
 #include <Agb.h>
 
-__attribute__((nocommon)) u8 KeyTimers[4];
 __attribute__((nocommon)) u8 u8_03005728;
 __attribute__((nocommon)) u8 u8_03005729;
 __attribute__((nocommon)) u8 RfuIntrSize;
