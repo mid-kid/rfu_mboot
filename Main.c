@@ -1,4 +1,5 @@
 #include <Agb.h>
+#include "myFunc.h"
 
 // define data------------------------------------------
 #define BG0_SCBLK				0
@@ -10,24 +11,44 @@
 #define BG2_CHBLK				1
 #define BG3_CHBLK				1
 
-// exten data-------------------------------------------
-extern u8 LZ_460c[];
+struct MenuMsg {
+	const char *const *msg;
+	const u16 *pos;
+};
+
+// extern data------------------------------------------
+extern const struct MenuMsg *MenuMsg;
+extern const struct MenuMsg MenuMsgInitial[];
+extern u16 Bg0Bak[32*20];
 extern u8 LZ_43c8[];
 extern u8 LZ_4420[];
-extern u8 MainMenuFadeOut;
+extern u8 LZ_460c[];
 extern u8 Lang;
-extern void (*nowProcess)();
-extern u8 bss_start[];
+extern u8 MainMenuFadeOut;
+extern u8 MenuBusy;
+extern u8 MenuState;
 extern u8 bss_end[];
+extern u8 bss_start[];
+extern void (*nowProcess)();
 
 // function's prototype---------------------------------
-extern void intr_main(void);
-extern void SoundInit(void);
-extern void WinInit(void);
+extern u16 *mf_drawString(u16 Pos,u16 PlttNo,const char *Srcp);
+extern void FrameCountReset(void);
+extern void MenuMsgBlink(u8 Msg,u8 Rate);
+extern void MenuMsgInit(void);
 extern void RfuInit(void);
 extern void RfuSetUnk04(u8 param_1);
-extern void SEQ_title_init(void);
 extern void SEQ_title(void);
+extern void SEQ_title_init(void);
+extern void SearchMenu(void);
+extern void SearchMenuInit(void);
+extern void SoundInit(void);
+extern void SoundPlaySfx(u8 Num);
+extern void WinFade(u8 Dir);
+extern void WinInit(void);
+extern void intr_main(void);
+extern void mf_clearRect(u16 Pos,u8 Height,u8 Width);
+extern void mf_drawBg2_main(void);
 extern void mf_readKey(void);
 
 // global variable -------------------------------------
@@ -110,6 +131,69 @@ void AgbMain(void)
 		mf_readKey();
 		
 		nowProcess();
+	}
+}
+
+
+//----------------------------------------------
+//
+// Title
+//
+//----------------------------------------------
+void SEQ_title_init(void)
+{
+	u16 i;
+	u16 charNo;
+	u16 *bg;
+	
+	if(MainMenuFadeOut) {
+		mf_clearRect(0x80,2,0x20);
+		WinFade(0);
+	}
+	*(vu16 *)REG_DISPCNT&=~DISP_BG1_ON;
+	
+	CpuClear(0,Bg0Bak,sizeof(Bg0Bak),16);
+	MenuMsgInit();
+	mf_drawString(0xcb,0,"ENGLISH");
+	
+	bg=Bg0Bak+(9*32+13);
+	charNo=0x10f;
+	for(i=0;i<3;i++)
+		*bg++=charNo++;
+	
+	mf_drawBg2_main();
+	*(vu16 *)REG_BG2VOFS=~(56+Lang*24-1);
+	*(vu16 *)REG_BG2HOFS=~(65-1);
+	
+	WinFade(1);
+	*(vu16 *)REG_DISPCNT|=DISP_BG2_ON;
+	
+	MenuState=0xc0;
+	FrameCountReset();
+	MainMenuFadeOut=TRUE;
+	MenuBusy=FALSE;
+}
+
+void MenuMsgInit(void)
+{
+	MenuMsg=MenuMsgInitial+Lang;
+}
+
+void SEQ_title(void)
+{
+	MenuMsgBlink(6,0x40);
+	
+	if(key.Trg & (D_KEY | U_KEY)) {
+		SoundPlaySfx(0);
+		Lang^=1;
+		*(vu16 *)REG_BG2VOFS=~(56+Lang*24-1);
+	}
+	
+	if(key.Trg & A_BUTTON) {
+		MenuMsgInit();
+		SoundPlaySfx(2);
+		SearchMenuInit();
+		nowProcess=SearchMenu;
 	}
 }
 
