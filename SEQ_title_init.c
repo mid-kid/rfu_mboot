@@ -13,7 +13,7 @@ extern void MenuMsgInit(void);
 extern void mf_drawBg2_main(void);
 extern void WinFade(u8 Dir);
 
-void MainMenuInit(void)
+void SEQ_title_init(void)
 {
     u16 i;
     u16 charNo;

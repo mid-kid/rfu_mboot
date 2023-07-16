@@ -14,9 +14,9 @@ extern void SearchMenuClearGame(void);
 extern void Sio32IntrProcSet(void (*Func)());
 extern void RfuIntrDataTransfer(void);
 extern u32 RfuMbootCfg(u32 param_1, u8 Client, void *Dest, u32 Size);
-extern void MainMenuInit(void);
+extern void SEQ_title_init(void);
 extern struct Mboot Mboot;
-extern void MainMenu(void);
+extern void SEQ_title(void);
 extern u16 *mf_drawString(u16 Pos, u16 PlttNo, char *Srcp);
 extern void MenuMsgBlink(u8 Msg, u8 Rate);
 extern void MenuMsgSet(u8 Msg, u16 PlttNo);
@@ -307,8 +307,8 @@ void SearchMenu(void)
     case SEARCH_END:
         // Return to main menu
         if (procRes == 0) {
-            MainMenuInit();
-            nowProcess = MainMenu;
+            SEQ_title_init();
+            nowProcess = SEQ_title;
         }
         break;
 
@@ -328,8 +328,8 @@ void SearchMenu(void)
         } else {
             // MenuState == SEARCH_ERROR_END
             SoundPlaySfx(3);
-            MainMenuInit();
-            nowProcess = MainMenu;
+            SEQ_title_init();
+            nowProcess = SEQ_title;
         }
         break;
     }

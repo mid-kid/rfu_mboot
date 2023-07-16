@@ -3,9 +3,9 @@ SECTIONS {
     .text : {
         crt0_demo.o(.text)
         Main.o(.text)
-        MainMenuInit.o(.text)
+        SEQ_title_init.o(.text)
         MenuMsgInit.o(.text)
-        MainMenu.o(.text)
+        SEQ_title.o(.text)
         SearchMenuInit.o(.text)
         SearchMenuDrawListTitle.o(.text)
         SearchMenu.o(.text)
@@ -114,7 +114,7 @@ SECTIONS {
         GameNameInit.o(.rodata)
         UserNames.o(.rodata)
         MenuMsgInitial.o(.rodata)
-        MainMenuInit.o(.rodata)
+        SEQ_title_init.o(.rodata)
         Sfx.o(.rodata)
         interrupt.o(.rodata)
         LZ_43c8 = .;

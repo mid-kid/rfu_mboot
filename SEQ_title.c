@@ -14,7 +14,7 @@ extern void MenuMsgInit(void);
 extern void SearchMenuInit(void);
 extern void SearchMenu(void);
 
-void MainMenu(void)
+void SEQ_title(void)
 {
     MenuMsgBlink(6, 0x40);
 
