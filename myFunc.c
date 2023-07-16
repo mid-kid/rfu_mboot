@@ -6,6 +6,9 @@
 // extern data----------------------------------
 extern u16 Bg0Bak[32*20];
 
+// function's prototype-------------------------
+static void mf_clearBg2(void);
+
 // global data----------------------------------
 KEY_DATA key;
 
@@ -52,8 +55,6 @@ void mf_clearGame(u16 pos)
 	for(x=0;x<8;x++)
 		*bg++=0x142;
 }
-
-static void mf_clearBg2(void);
 
 void mf_drawBg2_title(void)
 {

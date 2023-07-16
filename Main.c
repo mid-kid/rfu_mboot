@@ -30,22 +30,24 @@ extern u8 MenuState;
 extern u8 bss_end[];
 extern u8 bss_start[];
 extern void (*nowProcess)();
+extern void intr_main(void);
 
 // function's prototype---------------------------------
+void SEQ_title(void);
+void SEQ_title_init(void);
+
+static void MenuMsgInit(void);
+
 extern void FrameCountReset(void);
 extern void MenuMsgBlink(u8 Msg,u8 Rate);
-extern void MenuMsgInit(void);
 extern void RfuInit(void);
 extern void RfuSetUnk04(u8 param_1);
-extern void SEQ_title(void);
-extern void SEQ_title_init(void);
 extern void SearchMenu(void);
 extern void SearchMenuInit(void);
 extern void SoundInit(void);
 extern void SoundPlaySfx(u8 Num);
 extern void WinFade(u8 Dir);
 extern void WinInit(void);
-extern void intr_main(void);
 
 // global variable -------------------------------------
 
@@ -170,7 +172,7 @@ void SEQ_title_init(void)
 	MenuBusy=FALSE;
 }
 
-void MenuMsgInit(void)
+static void MenuMsgInit(void)
 {
 	MenuMsg=MenuMsgInitial+Lang;
 }
