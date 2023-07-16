@@ -1,9 +1,10 @@
 #include <Agb.h>
+#include "myFunc.h"
 
 #include "GameInfo.h"
 
-extern void mf_clearGame();
-extern u16 *mf_drawString(u16 Pos, u16 PlttNo, char *Srcp);
+// Function definition not included in myFunc.h, defaults to int
+extern void mf_clearGame(int Pos);
 
 void SearchMenuDrawGame(u16 Pos, struct GameInfo *Game)
 {

@@ -1,4 +1,5 @@
 #include <Agb.h>
+#include "myFunc.h"
 
 struct MenuMsg {
     const char *const *msg;
@@ -7,7 +8,6 @@ struct MenuMsg {
 extern const struct MenuMsg *MenuMsg;
 extern u8 FrameCount;
 
-extern void mf_clearRect(u16 Pos, u8 Height, u8 Width);
 extern void MenuMsgSet(u8 Msg, u16 PlttNo);
 
 void MenuMsgBlink(u8 Msg, u8 Rate)

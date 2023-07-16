@@ -1,8 +1,8 @@
 #include <Agb.h>
+#include "myFunc.h"
 
 #include "GameInfo.h"
 extern void WinFade(u8 Dir);
-extern void mf_drawBg2_search(u8 Len);
 extern void SearchMenuDrawListTitle(u16 Pos, u8 Len, u16 CharNo);
 extern void GameNameInit(void);
 extern u32 MbootReset(void);

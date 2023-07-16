@@ -1,13 +1,12 @@
 #include <Agb.h>
+#include "myFunc.h"
 
 #include "Mboot.h"
 extern void RfuReset(void);
-extern void mf_rapidKey(void);
 extern void SoundPlaySfx(u8 Num);
 extern void SearchMenuDrawList(u8 Blink);
 extern void RfuWaitData(void);
 extern void GameListInit(void);
-extern void mf_clearRect(u16 Pos, u8 Height, u8 Width);
 extern void FrameCountReset(void);
 extern u8 SearchMenuUpdateGames(void);
 extern void SearchMenuClearGame(void);
@@ -17,7 +16,6 @@ extern u32 RfuMbootCfg(u32 param_1, u8 Client, void *Dest, u32 Size);
 extern void SEQ_title_init(void);
 extern struct Mboot Mboot;
 extern void SEQ_title(void);
-extern u16 *mf_drawString(u16 Pos, u16 PlttNo, char *Srcp);
 extern void MenuMsgBlink(u8 Msg, u8 Rate);
 extern void MenuMsgSet(u8 Msg, u16 PlttNo);
 extern void SearchMenuErrorBeep(void);
@@ -42,11 +40,6 @@ extern struct RfuBuf {
 } RfuBuf;
 extern u8 MbootPeer;
 extern void (*nowProcess)();
-
-extern struct key {
-    u16 trg;
-    u16 cont;
-} key;
 
 enum SearchMenuState {
     // Correspond to entries in SearchProcTable
@@ -102,8 +95,8 @@ void SearchMenu(void)
         mf_rapidKey();
 
         // Move the cursor
-        if (key.trg & (U_KEY | D_KEY)) {
-            if (key.trg & U_KEY) {
+        if (key.Trg & (U_KEY | D_KEY)) {
+            if (key.Trg & U_KEY) {
                 SearchMenuCursor--;
                 if (SearchMenuCursor & 0x80) SearchMenuCursor = 3;
             } else {
@@ -115,7 +108,7 @@ void SearchMenu(void)
         }
 
         // Select game
-        if (key.trg & A_BUTTON && GameList[SearchMenuCursor].beaconID) {
+        if (key.Trg & A_BUTTON && GameList[SearchMenuCursor].beaconID) {
             SearchMenuDrawList(FALSE);
             MbootBeaconID = GameList[SearchMenuCursor].beaconID;
             if (MenuState == SEARCH_SELECT_DISCO) {
@@ -127,7 +120,7 @@ void SearchMenu(void)
         }
     }
 
-    if (key.trg & B_BUTTON) {
+    if (key.Trg & B_BUTTON) {
         if (MenuState == SEARCH_MBOOT_DL_START) {
             RfuWaitData();
             MenuState = SEARCH_START;

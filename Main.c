@@ -32,7 +32,6 @@ extern u8 bss_start[];
 extern void (*nowProcess)();
 
 // function's prototype---------------------------------
-extern u16 *mf_drawString(u16 Pos,u16 PlttNo,const char *Srcp);
 extern void FrameCountReset(void);
 extern void MenuMsgBlink(u8 Msg,u8 Rate);
 extern void MenuMsgInit(void);
@@ -47,9 +46,6 @@ extern void SoundPlaySfx(u8 Num);
 extern void WinFade(u8 Dir);
 extern void WinInit(void);
 extern void intr_main(void);
-extern void mf_clearRect(u16 Pos,u8 Height,u8 Width);
-extern void mf_drawBg2_main(void);
-extern void mf_readKey(void);
 
 // global variable -------------------------------------
 
@@ -161,7 +157,7 @@ void SEQ_title_init(void)
 	for(i=0;i<3;i++)
 		*bg++=charNo++;
 	
-	mf_drawBg2_main();
+	mf_drawBg2_title();
 	*(vu16 *)REG_BG2VOFS=~(56+Lang*24-1);
 	*(vu16 *)REG_BG2HOFS=~(65-1);
 	

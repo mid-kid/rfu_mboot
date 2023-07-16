@@ -1,7 +1,7 @@
 #include <Agb.h>
+#include "myFunc.h"
 
 #include "GameInfo.h"
-extern void mf_clearRect(u16 Pos, u8 Height, u8 Width);
 extern void SearchMenuDrawGame(u16 Pos, struct GameInfo *Game);
 extern struct GameInfo GameList[4];
 extern u8 GameListBitsNew;

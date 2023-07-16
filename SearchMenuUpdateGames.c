@@ -1,9 +1,9 @@
 #include <Agb.h>
+#include "myFunc.h"
 
 #include "Mboot.h"
 #include "GameInfo.h"
 extern void SoundPlaySfx(u8 Num);
-extern void mf_clearRect(u16 Pos, u8 Height, u8 Width);
 extern void SearchMenuDrawGame(u16 Pos, struct GameInfo *Game);
 extern struct Mboot Mboot;
 extern struct GameInfo GameList[4];

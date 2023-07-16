@@ -43,19 +43,19 @@ void mf_rapidKey(void)
 	}
 }
 
-void mf_clearGame(u16 Pos)
+void mf_clearGame(u16 pos)
 {
 	u8 x;
 	u16 *bg;
 	
-	bg=Bg0Bak+Pos;
+	bg=Bg0Bak+pos;
 	for(x=0;x<8;x++)
 		*bg++=0x142;
 }
 
-void mf_clearBg2(void);
+static void mf_clearBg2(void);
 
-void mf_drawBg2_main(void)
+void mf_drawBg2_title(void)
 {
 	u8 i;
 	u16 charNo;
@@ -74,21 +74,21 @@ void mf_drawBg2_main(void)
 		*bg++=charNo--;
 }
 
-void mf_drawBg2_search(u8 Len)
+void mf_drawBg2_search(u8 len)
 {
 	u8 i;
 	vu16 *bg;
 	
 	mf_clearBg2();
 	bg=(vu16 *)(BG_VRAM+0x1000);
-	for(i=0;i<Len;i++) {
+	for(i=0;i<len;i++) {
 		bg[32*1]=0x113;
 		bg[32*0]=0x113;
 		bg++;
 	}
 }
 
-void mf_clearBg2(void)
+static void mf_clearBg2(void)
 {
 	u8 i;
 	vu16 *bg;
