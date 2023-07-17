@@ -3,9 +3,7 @@ SECTIONS {
     .text : {
         crt0_demo.o(.text)
         Main.o(.text)
-        SearchMenuInit.o(.text)
-        SearchMenuDrawListTitle.o(.text)
-        SearchMenu.o(.text)
+        searchMenu.o(.text)
         RfuIntrDataTransfer.o(.text)
         RfuStrcmp.o(.text)
         SearchProc_GameInfoSet.o(.text)
