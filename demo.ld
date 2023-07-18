@@ -42,7 +42,7 @@ SECTIONS {
         STWI_init_all.o(.text)
         STWI_poll_CommandEnd.o(.text)
         STWI_check_Command.o(.text)
-        Sio32VBlank.o(.text)
+        STWI_intr_vblank.o(.text)
         AgbRFU_STWI.o(.text)
         RfuResetAdapter.o(.text)
         RfuBoot.o(.text)

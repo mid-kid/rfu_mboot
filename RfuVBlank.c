@@ -4,12 +4,12 @@
 #include "rfuStatic.h"
 extern struct rfuLinkStatus rfuLinkStatus;
 extern struct rfuStatic rfuStatic;
-extern void Sio32VBlank(void);
+extern void STWI_intr_vblank(void);
 
 void RfuVBlank(void)
 {
     if (rfuLinkStatus.mode != (u8)-1) {
         if (rfuStatic.unk_04) rfuStatic.unk_04--;
     }
-    Sio32VBlank();
+    STWI_intr_vblank();
 }

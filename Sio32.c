@@ -29,7 +29,7 @@ void Sio32Intr(void)
         return;
     }
 
-    STWI_status.unk_10 = 0;
+    STWI_status.timer = 0;
     if (STWI_status.modeMaster == TRUE) {
         Sio32IntrMaster();
     } else {
@@ -357,7 +357,7 @@ u32 Sio32IntrMaster(void)
         }
 
         STWI_status.unk_08 = 0;
-        STWI_status.unk_10 = 0xff;
+        STWI_status.timer = -1;
         STWI_status.unk_07 = 1;
     } else {
         *(vu16 *)REG_SIOCNT = 0x5003;
@@ -698,7 +698,7 @@ u32 Sio32IntrSlave(void)
         *(vu32 *)REG_SIODATA32 = 0;
         __asm__("str %0, %1" : : "r"(0), "o"(STWI_status.state) : "r3");
         __asm__("strb %0, %1" : : "r"(TRUE), "o"(STWI_status.modeMaster) : "r2");
-        __asm__("strb %0, %1" : : "r"(0xff), "o"(STWI_status.unk_10) : "r3");
+        __asm__("strb %0, %1" : : "r"(-1), "o"(STWI_status.timer) : "r3");
         __asm__("strb %0, %1" : : "r"(0), "o"(STWI_status.unk_08));
         *(vu16 *)REG_SIOCNT = 0;
         *(vu16 *)REG_SIOCNT = 0x5003;

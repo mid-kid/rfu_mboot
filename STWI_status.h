@@ -11,7 +11,7 @@ struct STWI_status {
     u8 unk_07;
     u8 unk_08;
     u8 unk_09;
-    u8 unk_10;
+    u8 timer;
     u8 unk_11;
     u8 unk_12;
 };

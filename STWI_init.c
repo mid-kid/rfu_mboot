@@ -16,7 +16,7 @@ u32 STWI_init(void)
     STWI_status.modeMaster = TRUE;
     STWI_status.unk_07 = 0;
     STWI_status.unk_08 = 0;
-    STWI_status.unk_10 = 0xff;
+    STWI_status.timer = -1;
     STWI_status.unk_11 = 0;
     return 0;
 }
