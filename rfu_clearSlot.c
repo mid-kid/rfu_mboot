@@ -5,9 +5,9 @@
 #include "rfuLinkStatus.h"
 extern struct RfuPeer RfuPeers[4];
 extern struct rfuLinkStatus rfuLinkStatus;
-extern void RfuPeerUpdate(u8 Peer, u8 Recv, struct RfuPeerSub *Sub);
+extern void rfu_STC_releaseFrame(u8 Peer, u8 Recv, struct RfuPeerSub *Sub);
 
-u32 RfuPeerUpdateFlags(u8 Flags, u8 Peer)
+u32 rfu_clearSlot(u8 Flags, u8 Peer)
 {
     struct RfuPeerSub *sub;
 
@@ -32,7 +32,7 @@ u32 RfuPeerUpdateFlags(u8 Flags, u8 Peer)
             if (sub != NULL) {
                 if (sub->unk_01[0] & 0x8000 ||
                         (sub->unk_01[0] == 0x49 && sub->unk_04 != 0x405)) {
-                    RfuPeerUpdate(Peer, x, sub);
+                    rfu_STC_releaseFrame(Peer, x, sub);
                     for (y = 0; y < 4; y++) {
                         if (sub->unk_05 & 1 << y) sub->unk_01[1] = 0;
                     }

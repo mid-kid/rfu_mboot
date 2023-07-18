@@ -4,7 +4,7 @@
 #include "rfuLinkStatus.h"
 extern struct rfuLinkStatus rfuLinkStatus;
 
-u32 RfuDataRecvWrite1(u8 Peer, struct RfuPeerSub *Sub)
+u32 rfu_STC_NI_initSlot_asRecvControllData(u8 Peer, struct RfuPeerSub *Sub)
 {
     u32 max;
     u8 *ptr;

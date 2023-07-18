@@ -1,14 +1,14 @@
 #include <Agb.h>
 
 #include "rfuStatic.h"
-extern u16 RfuDataRecvParse(u32 unused, u8 *Srcp, u16 Size);
+extern u16 rfu_STC_analyzeLLSF(u32 unused, u8 *Srcp, u16 Size);
 extern struct rfuFixed {
     u8 *recv;
     u8 *send;
 } rfuFixed;
 extern struct rfuStatic rfuStatic;
 
-void RfuCmd_DataRecv_Parse(void)
+void rfu_STC_CHILD_analyzeRecvPacket(void)
 {
     u16 done;
     u16 size;
@@ -20,7 +20,7 @@ void RfuCmd_DataRecv_Parse(void)
     if (size == 0) rfuStatic.unk_05 = 0xf;
 
     while (size != 0) {
-        done = RfuDataRecvParse(0, Srcp, (u16)size);
+        done = rfu_STC_analyzeLLSF(0, Srcp, (u16)size);
         Srcp += done;
         size -= done;
         if (size & 0x8000) break;

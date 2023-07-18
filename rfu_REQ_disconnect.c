@@ -3,7 +3,7 @@
 #include "rfuLinkStatus.h"
 extern struct rfuLinkStatus rfuLinkStatus;
 
-void RfuDisconnect(u8 Peer, u8 Clear)
+void rfu_REQ_disconnect(u8 Peer, u8 Clear)
 {
     u8 bit;
 

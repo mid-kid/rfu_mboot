@@ -6,7 +6,7 @@ extern struct STWI_status STWI_status;
 extern u16 STWI_send_MS_ChangeREQ(void);
 extern struct rfuStatic rfuStatic;
 
-u16 RfuWaitDataStart(u8 param_1)
+u16 rfu_REQ_changeMasterSlave(u8 param_1)
 {
     u16 ret = 0;
 

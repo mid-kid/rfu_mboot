@@ -4,8 +4,8 @@
 #include "rfuStatic.h"
 #include "RfuPeer.h"
 extern u16 STWI_send_DataRxREQ(void);
-extern void RfuCmd_DataRecv_Parse(void);
-extern void RfuPeerUpdate(u8 param_1, u8 param_2, struct RfuPeerSub *param_3);
+extern void rfu_STC_CHILD_analyzeRecvPacket(void);
+extern void rfu_STC_releaseFrame(u8 param_1, u8 param_2, struct RfuPeerSub *param_3);
 extern struct rfuLinkStatus rfuLinkStatus;
 extern struct rfuStatic rfuStatic;
 extern struct RfuPeer RfuPeers[4];
@@ -14,7 +14,7 @@ extern struct rfuFixed {
     u8 *send;
 } rfuFixed;
 
-u32 RfuDataRecv(void)
+u32 rfu_REQ_recvData(void)
 {
     u16 res;
     u8 x;
@@ -26,7 +26,7 @@ u32 RfuDataRecv(void)
     res = STWI_send_DataRxREQ();
     if (res == 0 && rfuFixed.recv[1] != 0) {
         rfuStatic.unk_05 = 0;
-        RfuCmd_DataRecv_Parse();
+        rfu_STC_CHILD_analyzeRecvPacket();
 
         for (x = 0; x < 4; x++) {
             if (RfuPeers[x].sub[1].unk_01[0] != 0x8043) continue;
@@ -35,7 +35,7 @@ u32 RfuDataRecv(void)
             sub = &RfuPeers[x].sub[1];
 
             if (sub->unk_20 == 1) rfuLinkStatus.unk_07 |= 1 << x;
-            RfuPeerUpdate(x, TRUE, sub);
+            rfu_STC_releaseFrame(x, TRUE, sub);
             rfuLinkStatus.unk_05 &= ~sub->unk_05;
             sub->unk_01[0] = 0x47;
         }

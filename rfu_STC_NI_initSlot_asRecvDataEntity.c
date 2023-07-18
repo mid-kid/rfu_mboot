@@ -6,7 +6,7 @@
 extern struct rfuLinkStatus rfuLinkStatus;
 extern struct RfuPeer RfuPeers[4];
 
-u16 RfuDataRecvWrite2(u8 Peer, struct RfuPeerSub *Sub)
+u16 rfu_STC_NI_initSlot_asRecvDataEntity(u8 Peer, struct RfuPeerSub *Sub)
 {
     u8 x;
 

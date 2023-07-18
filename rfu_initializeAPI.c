@@ -14,7 +14,7 @@ extern struct RfuPeer RfuPeers[4];
 extern void STWI_init_all(void);
 extern void rfu_STC_clearAPIVariables(void);
 extern void rfu_STC_fastCopy(u32 *Src, u32 *Dst, int Size);
-extern void RfuMemcpyEnd();
+extern void rfu_STC_fastCopy_end();
 
 void rfu_initializeAPI(void)
 {
@@ -35,7 +35,7 @@ void rfu_initializeAPI(void)
 
     src = (u16 *)((u32)rfu_STC_fastCopy & ~1);
     dst = (u16 *)rfuFixed.func;
-    size = (u16 *)RfuMemcpyEnd - (u16 *)rfu_STC_fastCopy;
+    size = (u16 *)rfu_STC_fastCopy_end - (u16 *)rfu_STC_fastCopy;
     while (--size != (u16)-1) {
         *dst++ = *src++;
     }

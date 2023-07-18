@@ -11,7 +11,7 @@ extern struct rfuFixed {
 } rfuFixed;
 extern struct rfuStatic rfuStatic;
 
-u16 RfuDataSendPreparePeer(u8 Peer, u8 **Destp, struct RfuPeerSub *PeerSub)
+u16 rfu_STC_NI_constructLLSF(u8 Peer, u8 **Destp, struct RfuPeerSub *PeerSub)
 {
     u16 x;
     u16 size;

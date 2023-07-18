@@ -4,7 +4,7 @@
 extern struct rfuStatic rfuStatic;
 extern u16 STWI_send_MS_ChangeREQ(void);
 
-u16 RfuWaitDataStartForce(void)
+u16 rfu_REQ_changeMasterSlave_force(void)
 {
     u16 ret = 0;
 

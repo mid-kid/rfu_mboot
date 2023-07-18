@@ -15,7 +15,7 @@ RfuIntrDataTransfer:
 	add	r2, r2, #1
 	mov	r0, sp
 	add	r1, r2, #0
-	bl	RfuStatus
+	bl	rfu_REQBN_watchLink
 	mov	r0, sp
 	ldrb	r0, [r0]
 	cmp	r0, #0
@@ -59,12 +59,12 @@ RfuIntrDataTransfer:
 	ldrb	r0, [r5]
 	cmp	r0, #197
 	bhi	.L11	@cond_branch
-	bl	RfuDataRecv
-	bl	RfuDataSend
+	bl	rfu_REQ_recvData
+	bl	rfu_REQ_sendData
 .L11:
 	ldr	r6, .L19+4
 .L14:
-	bl	RfuWaitDataStartForce
+	bl	rfu_REQ_changeMasterSlave_force
 	lsl	r0, r0, #16
 	cmp	r0, #0
 	beq	.L2	@cond_branch
@@ -95,10 +95,10 @@ RfuIntrDataTransfer:
 #include <Agb.h>
 
 #include "RfuPeer.h"
-extern u32 RfuStatus(u8 *param_1, u8 *param_2, u8 *param_3);
-extern u16 RfuDataRecv(void);
-extern u16 RfuDataSend(void);
-extern u16 RfuWaitDataStartForce(void);
+extern u32 rfu_REQBN_watchLink(u8 *param_1, u8 *param_2, u8 *param_3);
+extern u16 rfu_REQ_recvData(void);
+extern u16 rfu_REQ_sendData(void);
+extern u16 rfu_REQ_changeMasterSlave_force(void);
 extern u8 SearchMenuErrorTimer;
 extern u8 my_state;
 extern u8 SearchMenuErrorMsg;
@@ -115,7 +115,7 @@ void RfuIntrDataTransfer(void)
     x = 0;
     SearchMenuErrorTimer = 0;
 
-    RfuStatus(&res, &res2, &res3);
+    rfu_REQBN_watchLink(&res, &res2, &res3);
     if (res != 0) {
         if (RfuPeers[MbootPeer].sub[1].unk_01[0] != 0) {
             SearchMenuErrorMsg = 1;
@@ -124,12 +124,12 @@ void RfuIntrDataTransfer(void)
         }
     } else {
         if (my_state < 0xc6) {
-            RfuDataRecv();
-            RfuDataSend();
+            rfu_REQ_recvData();
+            rfu_REQ_sendData();
         }
 
         for (x = 0; x != 2; x++) {
-            if (RfuWaitDataStartForce() == 0) return;
+            if (rfu_REQ_changeMasterSlave_force() == 0) return;
         }
         SearchMenuErrorMsg = 4;
     }

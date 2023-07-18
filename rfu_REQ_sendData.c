@@ -3,15 +3,15 @@
 #include "RfuPeer.h"
 #include "rfuLinkStatus.h"
 #include "rfuStatic.h"
-extern u32 RfuDataSendPrepare(void);
+extern u32 rfu_constructSendLLFrame(void);
 extern u16 STWI_send_DataTxREQ(u8 *Srcp, u8 Size);
-extern void RfuPeerUpdate(u8 param_1, u8 param_2, struct RfuPeerSub *param_3);
+extern void rfu_STC_releaseFrame(u8 param_1, u8 param_2, struct RfuPeerSub *param_3);
 extern struct rfuLinkStatus rfuLinkStatus;
 extern struct rfuStatic rfuStatic;
 extern u8 RfuDataSendBuf[];
 extern struct RfuPeer RfuPeers[4];
 
-u16 RfuDataSend(void)
+u16 rfu_REQ_sendData(void)
 {
     u16 res;
     u16 x;
@@ -22,7 +22,7 @@ u16 RfuDataSend(void)
     if (rfuLinkStatus.mode == (u8)-1) return 0;
 
     rfuStatic.unk_12 = 0;
-    size = RfuDataSendPrepare();
+    size = rfu_constructSendLLFrame();
     if (rfuStatic.unk_12 != 0) {
         res = STWI_send_DataTxREQ(RfuDataSendBuf, size + 4);
     }
@@ -33,7 +33,7 @@ u16 RfuDataSend(void)
 
             sub = &RfuPeers[x].sub[0];
 
-            RfuPeerUpdate(x, FALSE, sub);
+            rfu_STC_releaseFrame(x, FALSE, sub);
 
             rfuLinkStatus.unk_04 &= ~sub->unk_05;
             if (sub->unk_20 == 1) rfuLinkStatus.unk_07 |= 1 << x;

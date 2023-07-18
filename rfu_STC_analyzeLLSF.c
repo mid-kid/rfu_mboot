@@ -1,8 +1,8 @@
 #include <Agb.h>
 
 #include "rfuLinkStatus.h"
-extern void RfuDataRecvHandle2(u8 param_1, u8 *param_2, u8 *param_3);
-extern void RfuDataRecvHandle1(u8 param_1, u8 param_2, u8 *param_3, u8 *param_4);
+extern void rfu_STC_NI_receive_Receiver(u8 param_1, u8 *param_2, u8 *param_3);
+extern void rfu_STC_NI_receive_Sender(u8 param_1, u8 param_2, u8 *param_3, u8 *param_4);
 extern struct rfuLinkStatus rfuLinkStatus;
 extern struct RfuEnc {
     u8 unk_01;
@@ -21,7 +21,7 @@ extern struct RfuEnc {
     u16 unk_15;
 } RfuEncTable[2];
 
-u16 RfuDataRecvParse(u32 unused, u8 *Srcp, u16 Size)
+u16 rfu_STC_analyzeLLSF(u32 unused, u8 *Srcp, u16 Size)
 {
     u16 x;
     struct RfuEnc *enc;
@@ -54,9 +54,9 @@ u16 RfuDataRecvParse(u32 unused, u8 *Srcp, u16 Size)
             for (x = 0; x < 4; x++) {
                 if(!(temp >> x & 1)) continue;
                 if ((fields._4) == 0) {
-                    RfuDataRecvHandle2(x, (u8 *)&fields, Srcp);
+                    rfu_STC_NI_receive_Receiver(x, (u8 *)&fields, Srcp);
                 } else if (rfuLinkStatus.unk_04 & (1 << x)) {
-                    RfuDataRecvHandle1(x, x, (u8 *)&fields, Srcp);
+                    rfu_STC_NI_receive_Sender(x, x, (u8 *)&fields, Srcp);
                 }
             }
         }

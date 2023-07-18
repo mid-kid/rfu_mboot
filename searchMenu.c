@@ -26,7 +26,7 @@ extern void (*nowProcess)();
 extern u16  MbootDLStart2(u8 Peer,u16 param_2);
 extern u32  rfu_clearAllSlot(void);
 extern u32  RfuMbootCfg(u32 param_1,u8 Client,void *Dest,u32 Size);
-extern u32  RfuPeerUpdateFlags(u8 param_1,u8 Peer);
+extern u32  rfu_clearSlot(u8 param_1,u8 Peer);
 extern u8   RfuStrcmp(const char *Str1,const char *Str2);
 extern u8   SearchMenuUpdateGames(void);
 extern void FrameCountReset(void);
@@ -428,12 +428,12 @@ static void SEQ_search_mboot(void)
 		case STATE_MBOOT_POLL:
 			if(RfuPeers[MbootPeer].sub[0][0]==0x27) {
 				my_state=STATE_DOWNLOAD_START;
-				RfuPeerUpdateFlags(4,MbootPeer);
+				rfu_clearSlot(4,MbootPeer);
 			}
 			if(RfuPeers[MbootPeer].sub[0][1]>0xfa) {
 				SearchMenuErrorMsg=0;  // CONNECTION ATTEMPT FAILED!
 				my_state=STATE_DOWNLOAD_FAILED;
-				RfuPeerUpdateFlags(4,MbootPeer);
+				rfu_clearSlot(4,MbootPeer);
 			}
 			
 			if(my_state!=STATE_MBOOT_POLL)
@@ -478,7 +478,7 @@ static void SEQ_search_dl(void)
 					SearchMenuErrorMsg=2;  // INVALID DATA RECEIVED!
 					my_state=STATE_CONNECTION_ERROR;
 				}
-				RfuPeerUpdateFlags(0xc,MbootPeer);
+				rfu_clearSlot(0xc,MbootPeer);
 				RfuWaitData();
 			}
 			else if(data[1]>0xfa||data[0]==0x49) {

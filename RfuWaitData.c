@@ -1,10 +1,10 @@
 #include <Agb.h>
 
-extern u8 RfuWaitDataStart(u8 param_1);
-extern u8 RfuWaitDataDone(void);
+extern u8 rfu_REQ_changeMasterSlave(u8 param_1);
+extern u8 rfu_getMasterSlave(void);
 
 void RfuWaitData(void)
 {
-    RfuWaitDataStart(1);
-    while (!RfuWaitDataDone());
+    rfu_REQ_changeMasterSlave(1);
+    while (!rfu_getMasterSlave());
 }

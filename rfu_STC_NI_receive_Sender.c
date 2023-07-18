@@ -5,7 +5,7 @@
 extern struct RfuPeer RfuPeers[4];
 extern struct rfuStatic rfuStatic;
 
-void RfuDataRecvHandle1(u8 Peer, u8 param_2, u8 *param_3)
+void rfu_STC_NI_receive_Sender(u8 Peer, u8 param_2, u8 *param_3)
 {
     u8 x;
     struct RfuPeerSub *sub;

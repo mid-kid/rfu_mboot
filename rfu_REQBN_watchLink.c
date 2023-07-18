@@ -9,9 +9,9 @@ extern struct rfuFixed {
 extern struct rfuLinkStatus rfuLinkStatus;
 extern struct rfuStatic rfuStatic;
 extern u16 STWI_send_LinkStatusREQ(void);
-extern void RfuDisconnect(u8 Peer, u8 param_2);
+extern void rfu_REQ_disconnect(u8 Peer, u8 param_2);
 
-u32 RfuStatus(u8 *PeersLost, u8 *Connected, u8 *PeersSeen)
+u32 rfu_REQBN_watchLink(u8 *PeersLost, u8 *Connected, u8 *PeersSeen)
 {
     u8 *puVar6;
 
@@ -66,7 +66,7 @@ u32 RfuStatus(u8 *PeersLost, u8 *Connected, u8 *PeersSeen)
 
         for (x = 0; x < 4; x++) {
             if (rfuLinkStatus.peersConn & (1 << x) && *PeersLost & (1 << x)) {
-                RfuDisconnect(x, FALSE);
+                rfu_REQ_disconnect(x, FALSE);
             }
         }
     }

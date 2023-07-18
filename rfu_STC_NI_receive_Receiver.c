@@ -4,14 +4,14 @@
 #include "rfuStatic.h"
 extern struct RfuPeer RfuPeers[4];
 extern struct rfuStatic rfuStatic;
-extern u32 RfuDataRecvWrite1(u8 Peer, struct RfuPeerSub *Sub);
-extern u16 RfuDataRecvWrite2(u8 Peer, struct RfuPeerSub *Sub);
+extern u32 rfu_STC_NI_initSlot_asRecvControllData(u8 Peer, struct RfuPeerSub *Sub);
+extern u16 rfu_STC_NI_initSlot_asRecvDataEntity(u8 Peer, struct RfuPeerSub *Sub);
 extern struct rfuFixed {
     u8 *recv;
     u8 *send;
 } rfuFixed;
 
-void RfuDataRecvHandle2(u8 Peer, u8 *param_2, u8 *param_3)
+void rfu_STC_NI_receive_Receiver(u8 Peer, u8 *param_2, u8 *param_3)
 {
     u8 cont;
     struct RfuPeerSub *sub;
@@ -36,14 +36,14 @@ void RfuDataRecvHandle2(u8 Peer, u8 *param_2, u8 *param_3)
         }
     } else if (param_2[2] == 2) {
         if (sub->unk_01[0] == 0x8041 && sub->unk_03 == 0) {
-            sub->unk_01[0] = RfuDataRecvWrite2(Peer, sub);
+            sub->unk_01[0] = rfu_STC_NI_initSlot_asRecvDataEntity(Peer, sub);
         }
         if (sub->unk_01[0] == 0x8042) {
             cont = TRUE;
         }
     } else if (param_2[2] == 1) {
         if (!(sub->unk_01[0] & 0x8000)) {
-            sub->unk_01[0] = RfuDataRecvWrite1(Peer, sub);
+            sub->unk_01[0] = rfu_STC_NI_initSlot_asRecvControllData(Peer, sub);
         }
         if (sub->unk_01[0] == 0x8041) {
             cont = TRUE;
