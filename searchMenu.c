@@ -42,7 +42,7 @@ extern void SEQ_title_init(void);
 extern void SearchMenuClearGame(void);
 extern void SearchMenuDrawList(u8 Blink);
 extern void SearchMenuErrorBeep(void);
-extern void SearchMenuErrorCheck(u16 State);
+extern void checkAPI_Error(u16 State);
 extern void Sio32IntrProcSet(void (*Func)());
 extern void SoundPlaySfx(u8 Num);
 extern void WinFade(u8 Dir);
@@ -89,11 +89,11 @@ enum {
 	STATE_EXEC = 0xc7
 };
 
-static void SearchMenuDrawListTitle(u16 Pos,u8 Len,u16 CharNo);
-static void SearchMenuMbootDL(void);
-static void SearchMenuMbootStart(void);
+static void my_drawListTitle(u16 Pos,u8 Len,u16 CharNo);
+static void SEQ_search_dl(void);
+static void SEQ_search_mboot(void);
 
-void SearchMenuInit(void)
+void SEQ_search_init(void)
 {
 	u8 x;
 	
@@ -111,12 +111,12 @@ void SearchMenuInit(void)
 	*(vu16 *)REG_DISPCNT|=DISP_BG2_ON;
 	
 	if(Lang==0) {
-		SearchMenuDrawListTitle(0xa6,8,0x151);
-		SearchMenuDrawListTitle(0xb2,8,0x159);
+		my_drawListTitle(0xa6,8,0x151);
+		my_drawListTitle(0xb2,8,0x159);
 	}
 	else {
-		SearchMenuDrawListTitle(0xa7,6,0x161);
-		SearchMenuDrawListTitle(0xb3,7,0x167);
+		my_drawListTitle(0xa7,6,0x161);
+		my_drawListTitle(0xb3,7,0x167);
 	}
 	
 	for(x=0;x<4;x++)
@@ -130,9 +130,7 @@ void SearchMenuInit(void)
 	GameNameInit();
 }
 
-extern u16 Bg0Bak[32*20];
-
-static void SearchMenuDrawListTitle(u16 Pos,u8 Len,u16 CharNo)
+static void my_drawListTitle(u16 Pos,u8 Len,u16 CharNo)
 {
 	u16 *bg;
 	
@@ -146,7 +144,7 @@ static void SearchMenuDrawListTitle(u16 Pos,u8 Len,u16 CharNo)
 		*bg++=CharNo++;
 }
 
-void SearchMenu(void)
+void SEQ_search(void)
 {
 	u16 procRes=0;
 	
@@ -225,6 +223,7 @@ void SearchMenu(void)
 			break;
 			
 		case STATE_RESET:
+            // Restart from scratch
 			if(procRes==0) {
 				SearchMenuErrorMsg=-1;
 				if(SearchMenuEnd!=FALSE)
@@ -237,6 +236,7 @@ void SearchMenu(void)
 			break;
 			
 		case STATE_CONFIG_SYSTEM:
+            // Configure the radio
 			if(procRes==0) {
 				my_state=STATE_SP_START;
 				FrameCountReset();
@@ -245,7 +245,7 @@ void SearchMenu(void)
 			break;
 			
 		case STATE_SP_START:
-			// Starts game discovery
+			// Search a parent
 			if(procRes==0) {
 				my_state=STATE_WAIT_SP;
 				MbootBeaconID=0;
@@ -254,7 +254,7 @@ void SearchMenu(void)
 			break;
 			
 		case STATE_WAIT_SP:
-			// Wait one second for discovery to finish
+			// Wait one second for parent search to finish
 			if(GameListBits) {
 				MenuMsgSet(9,0);  // SELECT A GAME
 			}
@@ -303,7 +303,7 @@ void SearchMenu(void)
 			break;
 			
 		case STATE_CP_START:
-			// Start connecting to a game
+			// Start connecting to a parent
 			if(procRes==0) {
 				mf_clearRect(0x200,2,0x20);
 				SearchMenuTimer=2*60;
@@ -334,7 +334,7 @@ void SearchMenu(void)
 			break;
 			
 		case STATE_CP_END:
-			// Initialize multiboot download
+			// Finalize connection
 			if(procRes==0) {
 				if(SearchMenuTimer>0&&RfuBuf.recv[7]==0) {
 					SearchMenuClearGame();
@@ -358,7 +358,7 @@ void SearchMenu(void)
 			break;
 			
 		case STATE_LINK_STATUS:
-			// Check if peer is still connected
+			// Check if parent is still connected
 			if(procRes==0) {
 				if(RfuBuf.recv[4+MbootPeer]) {
 					my_state=STATE_CHANGE_CLOCK_SLAVE;
@@ -375,6 +375,7 @@ void SearchMenu(void)
 			break;
 			
 		case STATE_CHANGE_CLOCK_SLAVE:
+            // Switch to slave clock
 			if(procRes==0) {
 				FrameCountReset();
 				my_state=STATE_MBOOT_START;
@@ -382,7 +383,7 @@ void SearchMenu(void)
 			break;
 			
 		case STATE_RETURN_TITLE:
-			// Return to main menu
+			// Return to the title screen
 			if(procRes==0) {
 				SEQ_title_init();
 				nowProcess=SEQ_title;
@@ -411,12 +412,12 @@ void SearchMenu(void)
 			break;
 	}
 	
-	SearchMenuMbootStart();
-	SearchMenuMbootDL();
-	SearchMenuErrorCheck(procRes);
+	SEQ_search_mboot();
+	SEQ_search_dl();
+	checkAPI_Error(procRes);
 }
 
-static void SearchMenuMbootStart(void)
+static void SEQ_search_mboot(void)
 {
 	switch(my_state) {
 		case STATE_MBOOT_START:
@@ -440,7 +441,7 @@ static void SearchMenuMbootStart(void)
 	}
 }
 
-static void SearchMenuMbootDL(void)
+static void SEQ_search_dl(void)
 {
 	u16 x;
 	u16 *data;

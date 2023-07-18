@@ -42,8 +42,8 @@ extern void FrameCountReset(void);
 extern void MenuMsgBlink(u8 Msg,u8 Rate);
 extern void RfuInit(void);
 extern void RfuSetUnk04(u8 param_1);
-extern void SearchMenu(void);
-extern void SearchMenuInit(void);
+extern void SEQ_search(void);
+extern void SEQ_search_init(void);
 extern void SoundInit(void);
 extern void SoundPlaySfx(u8 Num);
 extern void WinFade(u8 Dir);
@@ -190,8 +190,8 @@ void SEQ_title(void)
 	if(key.Trg & A_BUTTON) {
 		MenuMsgInit();
 		SoundPlaySfx(2);
-		SearchMenuInit();
-		nowProcess=SearchMenu;
+		SEQ_search_init();
+		nowProcess=SEQ_search;
 	}
 }
 
