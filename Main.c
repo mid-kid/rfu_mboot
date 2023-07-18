@@ -40,7 +40,7 @@ static void MenuMsgInit(void);
 
 extern void FrameCountReset(void);
 extern void MenuMsgBlink(u8 Msg,u8 Rate);
-extern void RfuInit(void);
+extern void rfu_initializeAPI(void);
 extern void RfuSetUnk04(u8 param_1);
 extern void SEQ_search(void);
 extern void SEQ_search_init(void);
@@ -106,7 +106,7 @@ void AgbMain(void)
 	*(vu16 *)REG_DISPCNT=DISP_BG0_ON | DISP_BG3_ON;
 	
 // Initialize
-	RfuInit();
+	rfu_initializeAPI();
 	
 // INTERRUPT ENABLE
 	*(vu16 *)REG_IE=SIO_INTR_FLAG | V_BLANK_INTR_FLAG;

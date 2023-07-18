@@ -13,10 +13,10 @@ extern u8 STWI_buffer_recv[0x120];
 extern struct RfuPeer RfuPeers[4];
 extern void STWI_init_all(void);
 extern void rfu_STC_clearAPIVariables(void);
-extern void RfuMemcpy(u32 *Src, u32 *Dst, int Size);
+extern void rfu_STC_fastCopy(u32 *Src, u32 *Dst, int Size);
 extern void RfuMemcpyEnd();
 
-void RfuInit(void)
+void rfu_initializeAPI(void)
 {
     u16 peer;
     u16 size;
@@ -33,9 +33,9 @@ void RfuInit(void)
         RfuPeers[peer].mbootSize = 0;
     }
 
-    src = (u16 *)((u32)RfuMemcpy & ~1);
+    src = (u16 *)((u32)rfu_STC_fastCopy & ~1);
     dst = (u16 *)rfuFixed.func;
-    size = (u16 *)RfuMemcpyEnd - (u16 *)RfuMemcpy;
+    size = (u16 *)RfuMemcpyEnd - (u16 *)rfu_STC_fastCopy;
     while (--size != (u16)-1) {
         *dst++ = *src++;
     }

@@ -1,10 +1,10 @@
 #include <Agb.h>
 
 extern void RfuResetAdapter(void);
-extern u32 RfuHandshake(void);
+extern u32 AgbRFU_checkID(void);
 
 u32 RfuBoot(void)
 {
     RfuResetAdapter();
-    return RfuHandshake();
+    return AgbRFU_checkID();
 }

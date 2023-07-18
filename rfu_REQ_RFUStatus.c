@@ -6,7 +6,7 @@ extern struct rfuFixed {
 } rfuFixed;
 extern u16 STWI_send_SystemStatusREQ(void);
 
-u32 Rfu0x13(u8 *Recv)
+u32 rfu_REQ_RFUStatus(u8 *Recv)
 {
     u16 ret;
 

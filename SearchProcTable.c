@@ -1,6 +1,6 @@
 #include <Agb.h>
 
-extern u16 RfuStart(void);
+extern u16 rfu_REQ_reset(void);
 extern u16 SearchProc_RadioCfg(void);
 extern u16 SearchProc_GameInfoSet(void);
 extern u16 RfuDiscoveryStart(void);
@@ -16,7 +16,7 @@ extern u16 STWI_send_LinkStatusREQ(void);
 extern u16 STWI_send_SystemStatusREQ(void);
 
 u16 (*const SearchProcTable[])(void) = {
-    RfuStart,
+    rfu_REQ_reset,
     SearchProc_RadioCfg,
     SearchProc_GameInfoSet,
     RfuDiscoveryStart,

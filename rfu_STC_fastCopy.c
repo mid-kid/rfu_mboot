@@ -1,6 +1,6 @@
 #include <Agb.h>
 
-void RfuMemcpy(u8 **Src, u8 **Dst, int Size)
+void rfu_STC_fastCopy(u8 **Src, u8 **Dst, int Size)
 {
     u8 *src = *Src;
     u8 *dst = *Dst;

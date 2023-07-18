@@ -2,7 +2,7 @@
 
 extern char Sio32[12];
 
-void Sio32Init(void)
+void Sio32IDInit(void)
 {
     *(vu16 *)REG_IME = 0;
     *(vu16 *)REG_IE &= ~(SIO_INTR_FLAG | TIMER3_INTR_FLAG);

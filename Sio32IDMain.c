@@ -3,7 +3,7 @@
 #include "Sio32.h"
 extern struct Sio32 Sio32;
 
-u32 Sio32InitUpdate(void)
+u32 Sio32IDMain(void)
 {
     switch (Sio32.state) {
     case 0:
