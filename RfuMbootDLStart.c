@@ -29,7 +29,7 @@ RfuMbootDLStart:
 .L38:
 	.align	2
 .L37:
-	.word	Mboot
+	.word	rfuLinkStatus
 	.word	1282
 .L3:
 	mov	r0, #15
@@ -233,9 +233,9 @@ RfuMbootDLStart:
 
 #include <Agb.h>
 
-#include "Mboot.h"
+#include "rfuLinkStatus.h"
 #include "RfuPeer.h"
-extern struct Mboot Mboot;
+extern struct rfuLinkStatus rfuLinkStatus;
 extern u8 RfuEncTable[2][16];
 extern struct RfuPeer RfuPeers[4];
 
@@ -246,20 +246,20 @@ u16 RfuMbootDLStart(u8 param_1, u8 param_2, u16 param_3, u16 *GameID, u32 param_
     u8 *min;
     struct RfuPeerSub *sub;
 
-    if (Mboot.mode == 0xff) {
+    if (rfuLinkStatus.mode == 0xff) {
         return 0x502;
     } else if ((param_2 & 0xf) == 0) {
         return 0x601;
-    } else if ((Mboot.peersConn & param_2) != param_2) {
+    } else if ((rfuLinkStatus.peersConn & param_2) != param_2) {
         return 0x602;
-    } else if ((Mboot.unk_04 & param_2) != 0) {
+    } else if ((rfuLinkStatus.unk_04 & param_2) != 0) {
         return 0x603;
     } else {
         for (peer = 0; peer < 4; peer++) {
             if (param_2 >> peer & 1) break;
         }
-        min = &Mboot.unk_10[peer];
-        max = RfuEncTable[Mboot.mode][0];
+        min = &rfuLinkStatus.unk_10[peer];
+        max = RfuEncTable[rfuLinkStatus.mode][0];
         if (param_3 > *min || param_3 <= max) {
             return 0x700;
         } else {
@@ -291,7 +291,7 @@ u16 RfuMbootDLStart(u8 param_1, u8 param_2, u16 param_3, u16 *GameID, u32 param_
                         RfuPeers[peer].sub[0].unk_01[1] = 0;
                     }
                 }
-                Mboot.unk_04 |= param_2;
+                rfuLinkStatus.unk_04 |= param_2;
                 *min -= param_3;
                 sub->unk_01[0] = 0x8021;
             }

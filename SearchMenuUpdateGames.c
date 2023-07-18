@@ -1,11 +1,11 @@
 #include <Agb.h>
 #include "myFunc.h"
 
-#include "Mboot.h"
+#include "rfuLinkStatus.h"
 #include "GameInfo.h"
 extern void SoundPlaySfx(u8 Num);
 extern void SearchMenuDrawGame(u16 Pos, struct GameInfo *Game);
-extern struct Mboot Mboot;
+extern struct rfuLinkStatus rfuLinkStatus;
 extern struct GameInfo GameList[4];
 extern u8 GameListBitsNew;
 
@@ -20,13 +20,13 @@ u8 SearchMenuUpdateGames(void)
     // Find out which games are already in the list, and which ones aren't
     GamesOld = 0;
     GamesNew = 0;
-    for (x = 0; x < Mboot.gamesCount; x++) {
-        if (Mboot.games[x].beaconID &&
-                Mboot.games[x].isMultiboot &&
-                Mboot.games[x].playerNum < 4) {
+    for (x = 0; x < rfuLinkStatus.gamesCount; x++) {
+        if (rfuLinkStatus.games[x].beaconID &&
+                rfuLinkStatus.games[x].isMultiboot &&
+                rfuLinkStatus.games[x].playerNum < 4) {
 
             for (y = 0; y < 4; y++) {
-                if (GameList[y].beaconID != Mboot.games[x].beaconID) continue;
+                if (GameList[y].beaconID != rfuLinkStatus.games[x].beaconID) continue;
                 GamesOld |= 1 << y;
                 break;
             }
@@ -47,7 +47,7 @@ u8 SearchMenuUpdateGames(void)
         if (!(GamesNew & 1 << x)) continue;
         for (y = 0; y < 4; y++) {
             if (GameList[y].beaconID) continue;
-            CpuCopy(&Mboot.games[x], &GameList[y], sizeof(struct GameInfo), 16);
+            CpuCopy(&rfuLinkStatus.games[x], &GameList[y], sizeof(struct GameInfo), 16);
             GameListBitsNew |= 1 << y;
             break;
         }

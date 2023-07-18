@@ -1,9 +1,9 @@
 #include <Agb.h>
 
-#include "Mboot.h"
+#include "rfuLinkStatus.h"
 extern void RfuDataRecvHandle2(u8 param_1, u8 *param_2, u8 *param_3);
 extern void RfuDataRecvHandle1(u8 param_1, u8 param_2, u8 *param_3, u8 *param_4);
-extern struct Mboot Mboot;
+extern struct rfuLinkStatus rfuLinkStatus;
 extern struct RfuEnc {
     u8 unk_01;
     u8 unk_02;
@@ -30,7 +30,7 @@ u16 RfuDataRecvParse(u32 unused, u8 *Srcp, u16 Size)
     u16 ret;
     u8 mode;
 
-    mode = ~Mboot.mode & 1;
+    mode = ~rfuLinkStatus.mode & 1;
     enc = &RfuEncTable[mode];
     if (Size < enc->unk_01) return Size;
 
@@ -49,13 +49,13 @@ u16 RfuDataRecvParse(u32 unused, u8 *Srcp, u16 Size)
     ret = fields._7 + enc->unk_01;
 
     if (fields._1 == 0) {
-        int temp = Mboot.peersConn & (fields._2);
+        int temp = rfuLinkStatus.peersConn & (fields._2);
         if(temp) {
             for (x = 0; x < 4; x++) {
                 if(!(temp >> x & 1)) continue;
                 if ((fields._4) == 0) {
                     RfuDataRecvHandle2(x, (u8 *)&fields, Srcp);
-                } else if (Mboot.unk_04 & (1 << x)) {
+                } else if (rfuLinkStatus.unk_04 & (1 << x)) {
                     RfuDataRecvHandle1(x, x, (u8 *)&fields, Srcp);
                 }
             }

@@ -1,22 +1,22 @@
 #include <Agb.h>
 
-#include "Mboot.h"
-extern struct Mboot Mboot;
+#include "rfuLinkStatus.h"
+extern struct rfuLinkStatus rfuLinkStatus;
 
 void RfuDisconnect(u8 Peer, u8 Clear)
 {
     u8 bit;
 
     bit = 1 << Peer;
-    if (Mboot.peersConn & bit) {
-        if (Mboot.unk_01) Mboot.unk_01--;
+    if (rfuLinkStatus.peersConn & bit) {
+        if (rfuLinkStatus.unk_01) rfuLinkStatus.unk_01--;
     }
 
-    Mboot.peersConn &= ~bit;
-    Mboot.peersSeen |= bit;
-    if (Mboot.mode == 0 && Mboot.peersConn == 0) {
-        Mboot.mode = -1;
+    rfuLinkStatus.peersConn &= ~bit;
+    rfuLinkStatus.peersSeen |= bit;
+    if (rfuLinkStatus.mode == 0 && rfuLinkStatus.peersConn == 0) {
+        rfuLinkStatus.mode = -1;
     }
 
-    if (Clear) CpuClear(0, Mboot.games + Peer, sizeof(struct GameInfo), 16);
+    if (Clear) CpuClear(0, rfuLinkStatus.games + Peer, sizeof(struct GameInfo), 16);
 }

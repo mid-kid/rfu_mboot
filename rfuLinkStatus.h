@@ -3,7 +3,7 @@
 
 #include "GameInfo.h"
 
-struct Mboot {
+struct rfuLinkStatus {
     u8 mode;
     u8 unk_01;
     u8 peersConn;

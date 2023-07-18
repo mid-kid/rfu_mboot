@@ -1,8 +1,8 @@
 #include <Agb.h>
 
 #include "RfuPeer.h"
-#include "Mboot.h"
-extern struct Mboot Mboot;
+#include "rfuLinkStatus.h"
+extern struct rfuLinkStatus rfuLinkStatus;
 
 u32 RfuDataRecvWrite1(u8 Peer, struct RfuPeerSub *Sub)
 {
@@ -10,7 +10,7 @@ u32 RfuDataRecvWrite1(u8 Peer, struct RfuPeerSub *Sub)
     u8 *ptr;
 
     max = 2;
-    ptr = &Mboot.unk_10[Peer];
+    ptr = &rfuLinkStatus.unk_10[Peer];
 
     if (*ptr < max) {
         Sub->unk_04 = 0x405;
@@ -24,6 +24,6 @@ u32 RfuDataRecvWrite1(u8 Peer, struct RfuPeerSub *Sub)
     Sub->unk_03 = 7;
     Sub->unk_10 = 1;
     Sub->unk_21 = 0;
-    Mboot.unk_05 |= 1 << Peer;
+    rfuLinkStatus.unk_05 |= 1 << Peer;
     return 0x8041;
 }

@@ -1,11 +1,11 @@
 #include <Agb.h>
 
 #include "RfuPeer.h"
-#include "Mboot.h"
+#include "rfuLinkStatus.h"
 extern u16 RfuDataSendPreparePeer(u8 Peer, u8 **Destp, struct RfuPeerSub *PeerSub);
 extern u8 RfuDataSendBuf[];
 extern struct RfuPeer RfuPeers[4];
-extern struct Mboot Mboot;
+extern struct rfuLinkStatus rfuLinkStatus;
 
 u32 RfuDataSendPrepare(void)
 {
@@ -29,7 +29,7 @@ u32 RfuDataSendPrepare(void)
         }
 
         if (peersize != 0) {
-            if (Mboot.mode == 1) {
+            if (rfuLinkStatus.mode == 1) {
                 size += peersize;
             } else {
                 size |= peersize << (x * 5 + 8);
@@ -41,7 +41,7 @@ u32 RfuDataSendPrepare(void)
         while ((u32)data & 3) *data++ = 0;
         *(u32 *)RfuDataSendBuf = size;
 
-        if (Mboot.mode == 0) {
+        if (rfuLinkStatus.mode == 0) {
             size = data - 4 - RfuDataSendBuf;
         }
     }

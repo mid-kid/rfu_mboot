@@ -1,9 +1,9 @@
 #include <Agb.h>
 
 #include "RfuPeer.h"
-#include "MbootTmp.h"
+#include "rfuStatic.h"
 extern struct RfuPeer RfuPeers[4];
-extern struct MbootTmp MbootTmp;
+extern struct rfuStatic rfuStatic;
 extern u32 RfuDataRecvWrite1(u8 Peer, struct RfuPeerSub *Sub);
 extern u16 RfuDataRecvWrite2(u8 Peer, struct RfuPeerSub *Sub);
 extern struct RfuBuf {
@@ -27,7 +27,7 @@ void RfuDataRecvHandle2(u8 Peer, u8 *param_2, u8 *param_3)
     if (sub->unk_01[0] == 0x46 || sub->unk_01[0] == 0x47) return;
 
     if (param_2[2] == 3) {
-        MbootTmp.unk_05 |= 1 << Peer;
+        rfuStatic.unk_05 |= 1 << Peer;
         ptr_unk_11 = &sub->unk_11;
         if (sub->unk_01[0] == 0x8042) {
             *ptr_unk_11 = 0;
@@ -64,7 +64,7 @@ void RfuDataRecvHandle2(u8 Peer, u8 *param_2, u8 *param_3)
     if (sub->unk_01[0] != save_unk_01 ||
             sub->unk_12[param_2[4]] != save_unk_12 ||
             sub->unk_12[param_2[4]] == param_2[5]) {
-        MbootTmp.unk_06 |= 1 << Peer;
+        rfuStatic.unk_06 |= 1 << Peer;
         sub->unk_01[1] = 0;
     }
 }

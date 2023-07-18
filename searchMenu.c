@@ -2,10 +2,10 @@
 #include "myFunc.h"
 
 #include "GameInfo.h"
-#include "Mboot.h"
+#include "rfuLinkStatus.h"
 extern const u8 GameLogoInitial[10];
 extern struct GameInfo GameList[4];
-extern struct Mboot Mboot;
+extern struct rfuLinkStatus rfuLinkStatus;
 extern u16 (*SearchProcTable[])(void);
 extern u16 Bg0Bak[32*20];
 extern u16 MbootBeaconID;
@@ -148,7 +148,7 @@ void SEQ_search(void)
 {
 	u16 procRes=0;
 	
-	if(Mboot.mode==0) {
+	if(rfuLinkStatus.mode==0) {
 		RfuReset();
 		
 		if(my_state!=STATE_DOWNLOAD_SUCCESS) {
@@ -362,7 +362,7 @@ void SEQ_search(void)
 			if(procRes==0) {
 				if(RfuBuf.recv[4+MbootPeer]) {
 					my_state=STATE_CHANGE_CLOCK_SLAVE;
-					mf_drawString(0x6b,2,Mboot.curGame.userName);
+					mf_drawString(0x6b,2,rfuLinkStatus.curGame.userName);
 					break;
 				}
 			}
@@ -495,7 +495,7 @@ static void SEQ_search_dl(void)
 	}
 	
 	if(my_state==STATE_EXEC) {
-		CpuCopy(&Mboot,CPU_WRAM+0,sizeof(Mboot),16);
+		CpuCopy(&rfuLinkStatus,CPU_WRAM+0,sizeof(rfuLinkStatus),16);
 		CpuCopy(GameLogoInitial,CPU_WRAM+0xf0,sizeof(GameLogoInitial),16);
 		
 		header=(vu16 *)CPU_WRAM;

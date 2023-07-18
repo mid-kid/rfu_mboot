@@ -1,8 +1,8 @@
 #include <Agb.h>
 
-#include "Mboot.h"
+#include "rfuLinkStatus.h"
 extern u16 STWI_send_GameConfigREQ(char *GameData, char *UserName);
-extern struct Mboot Mboot;
+extern struct rfuLinkStatus rfuLinkStatus;
 
 u16 RfuGameInfoSet(u8 IsMultiboot, u16 GameID, char *GameName, char *UserName)
 {
@@ -24,11 +24,11 @@ u16 RfuGameInfoSet(u8 IsMultiboot, u16 GameID, char *GameName, char *UserName)
     ret = STWI_send_GameConfigREQ(GameNameTmp, UserName);
     if (ret != 0) return ret;
 
-    Mboot.curGame.isMultiboot = IsMultiboot;
-    Mboot.curGame.gameID = GameID;
+    rfuLinkStatus.curGame.isMultiboot = IsMultiboot;
+    rfuLinkStatus.curGame.gameID = GameID;
 
-    GameNameCur = Mboot.curGame.gameName;
-    UserNameCur = Mboot.curGame.userName;
+    GameNameCur = rfuLinkStatus.curGame.gameName;
+    UserNameCur = rfuLinkStatus.curGame.userName;
     GameNameNew = GameNameTmp + 2;
 
     for (x = 0; x < 0xe; x++) {

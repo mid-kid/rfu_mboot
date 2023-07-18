@@ -1,9 +1,9 @@
 #include <Agb.h>
 #include <stddef.h>
 
-#include "Mboot.h"
+#include "rfuLinkStatus.h"
 #include "RfuPeer.h"
-extern struct Mboot Mboot;
+extern struct rfuLinkStatus rfuLinkStatus;
 extern struct RfuBuf {
     u8 *recv;
     u8 *send;
@@ -12,7 +12,7 @@ extern struct RfuBuf {
 extern u8 STWI_buffer_recv[0x120];
 extern struct RfuPeer RfuPeers[4];
 extern void RfuCmdInit(void);
-extern void MbootInit(void);
+extern void rfu_STC_clearAPIVariables(void);
 extern void RfuMemcpy(u32 *Src, u32 *Dst, int Size);
 extern void RfuMemcpyEnd();
 
@@ -24,8 +24,8 @@ void RfuInit(void)
     u16 *dst;
 
     RfuCmdInit();
-    MbootInit();
-    Mboot.unk_09 = 0;
+    rfu_STC_clearAPIVariables();
+    rfuLinkStatus.unk_09 = 0;
     RfuBuf.recv = STWI_buffer_recv;
 
     for (peer = 0; peer < 4; peer++) {

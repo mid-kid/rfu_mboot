@@ -1,12 +1,12 @@
 #include <Agb.h>
 
-#include "MbootTmp.h"
+#include "rfuStatic.h"
 extern u16 RfuDataRecvParse(u32 unused, u8 *Srcp, u16 Size);
 extern struct RfuBuf {
     u8 *recv;
     u8 *send;
 } RfuBuf;
-extern struct MbootTmp MbootTmp;
+extern struct rfuStatic rfuStatic;
 
 void RfuCmd_DataRecv_Parse(void)
 {
@@ -17,7 +17,7 @@ void RfuCmd_DataRecv_Parse(void)
     size = *(u16 *)(RfuBuf.recv + 4) & 0x7f;
     Srcp = RfuBuf.recv + 8;
 
-    if (size == 0) MbootTmp.unk_05 = 0xf;
+    if (size == 0) rfuStatic.unk_05 = 0xf;
 
     while (size != 0) {
         done = RfuDataRecvParse(0, Srcp, (u16)size);

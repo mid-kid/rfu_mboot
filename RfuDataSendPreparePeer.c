@@ -1,15 +1,15 @@
 #include <Agb.h>
 
 #include "RfuPeer.h"
-#include "Mboot.h"
-#include "MbootTmp.h"
-extern struct Mboot Mboot;
+#include "rfuLinkStatus.h"
+#include "rfuStatic.h"
+extern struct rfuLinkStatus rfuLinkStatus;
 extern u8 RfuEncTable[2][16];
 extern struct RfuBuf {
     u8 *recv;
     u8 *send;
 } RfuBuf;
-extern struct MbootTmp MbootTmp;
+extern struct rfuStatic rfuStatic;
 
 u16 RfuDataSendPreparePeer(u8 Peer, u8 **Destp, struct RfuPeerSub *PeerSub)
 {
@@ -21,7 +21,7 @@ u16 RfuDataSendPreparePeer(u8 Peer, u8 **Destp, struct RfuPeerSub *PeerSub)
     u8 *flags_ptr;
     u8 *temp_ptr;
 
-    enc = RfuEncTable[Mboot.mode];
+    enc = RfuEncTable[rfuLinkStatus.mode];
 
     if (PeerSub->unk_01[0] == 0x8022) {
         ptr = &PeerSub->unk_11;
@@ -55,7 +55,7 @@ u16 RfuDataSendPreparePeer(u8 Peer, u8 **Destp, struct RfuPeerSub *PeerSub)
         PeerSub->unk_12[PeerSub->unk_11] << enc[6] |
         size;
 
-    if (Mboot.mode == 1) {
+    if (rfuLinkStatus.mode == 1) {
         flags |= PeerSub->unk_05 << 18;
     }
 
@@ -72,7 +72,7 @@ u16 RfuDataSendPreparePeer(u8 Peer, u8 **Destp, struct RfuPeerSub *PeerSub)
         if (++(*ptr) == 4) PeerSub->unk_11 = 0;
     }
 
-    MbootTmp.unk_12 |= 1 << Peer;
+    rfuStatic.unk_12 |= 1 << Peer;
 
     return size + enc[0];
 }

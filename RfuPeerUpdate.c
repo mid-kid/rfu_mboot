@@ -1,11 +1,11 @@
 #include <Agb.h>
 
-#include "Mboot.h"
+#include "rfuLinkStatus.h"
 #include "RfuPeer.h"
-extern struct Mboot Mboot;
+extern struct rfuLinkStatus rfuLinkStatus;
 
 void RfuPeerUpdate(u8 Peer, u8 Recv, struct RfuPeerSub *Sub)
 {
-    if (!Recv) Mboot.unk_10[Peer] += Sub->unk_21;
-    Mboot.unk_10[Peer] += 2;
+    if (!Recv) rfuLinkStatus.unk_10[Peer] += Sub->unk_21;
+    rfuLinkStatus.unk_10[Peer] += 2;
 }

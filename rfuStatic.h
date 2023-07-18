@@ -1,7 +1,7 @@
 #ifndef MbootTmp_h
 #define MbootTmp_h
 
-struct MbootTmp {
+struct rfuStatic {
     u8 unk_01;
     u8 unk_02;
     u8 unk_03;

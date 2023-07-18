@@ -1,10 +1,10 @@
 #include <Agb.h>
 
-#include "Mboot.h"
-#include "MbootTmp.h"
+#include "rfuLinkStatus.h"
+#include "rfuStatic.h"
 #include "RfuPeer.h"
-extern struct Mboot Mboot;
-extern struct MbootTmp MbootTmp;
+extern struct rfuLinkStatus rfuLinkStatus;
+extern struct rfuStatic rfuStatic;
 extern struct RfuPeer RfuPeers[4];
 
 void RfuResetSub(u8 param_1)
@@ -15,11 +15,11 @@ void RfuResetSub(u8 param_1)
     u8 *puVar4;
 
     if (param_1 == 0) {
-        puVar4 = &Mboot.unk_04;
-        puVar3 = &MbootTmp.unk_07;
+        puVar4 = &rfuLinkStatus.unk_04;
+        puVar3 = &rfuStatic.unk_07;
     } else {
-        puVar4 = &Mboot.unk_05;
-        puVar3 = &MbootTmp.unk_06;
+        puVar4 = &rfuLinkStatus.unk_05;
+        puVar3 = &rfuStatic.unk_06;
     }
 
     for (x = 0; x < 4; x++) {

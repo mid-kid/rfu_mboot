@@ -2,8 +2,8 @@
 #include <Agb.h>
 
 #include "RfuPeer.h"
-#include "Mboot.h"
-extern struct Mboot Mboot;
+#include "rfuLinkStatus.h"
+extern struct rfuLinkStatus rfuLinkStatus;
 extern struct RfuPeer RfuPeers[4];
 
 u16 RfuDataRecvWrite2(u8 Peer, struct RfuPeerSub *Sub)
@@ -11,15 +11,15 @@ u16 RfuDataRecvWrite2(u8 Peer, struct RfuPeerSub *Sub)
     u8 x;
 
     if (Sub->unk_20 == 1) {
-        Sub->unk_02[0] = (u8 *)&Mboot.games[Peer].gameID;
+        Sub->unk_02[0] = (u8 *)&rfuLinkStatus.games[Peer].gameID;
     } else {
         if (RfuPeers[Peer].mbootDest == NULL) {
-            Mboot.unk_05 &= ~(1 << Peer);
+            rfuLinkStatus.unk_05 &= ~(1 << Peer);
             Sub->unk_04 = 0x401;
             return 0x49;
         }
         if (Sub->unk_22 > RfuPeers[Peer].mbootSize) {
-            Mboot.unk_05 &= ~(1 << Peer);
+            rfuLinkStatus.unk_05 &= ~(1 << Peer);
             Sub->unk_04 = 0x402;
             return 0x49;
         }

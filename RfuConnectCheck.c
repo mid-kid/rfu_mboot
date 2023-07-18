@@ -89,9 +89,9 @@ RfuConnectCheck:
 	add	r7, #20
 	b	.L7
 .L15:
-	.word	Mboot
+	.word	rfuLinkStatus
 	.word	67109384
-	.word	MbootTmp
+	.word	rfuStatic
 .L9:
 	mov	r7, sp
 	lsl	r0, r6, #5
@@ -113,7 +113,7 @@ RfuConnectCheck:
 .L21:
 	.align	2
 .L20:
-	.word	Mboot+0x14
+	.word	rfuLinkStatus+0x14
 	.word	16777280
 .L8:
 	add	r0, r6, #1
@@ -166,7 +166,7 @@ RfuConnectCheck:
 .L23:
 	.align	2
 .L22:
-	.word	Mboot+20
+	.word	rfuLinkStatus+20
 	.word	67109384
 .Lfe1:
 	.size	 RfuConnectCheck,.Lfe1-RfuConnectCheck
@@ -176,12 +176,12 @@ RfuConnectCheck:
 #include <Agb.h>
 
 #include "GameInfo.h"
-#include "Mboot.h"
-#include "MbootTmp.h"
+#include "rfuLinkStatus.h"
+#include "rfuStatic.h"
 extern u16 STWI_send_CP_PollingREQ(void);
 extern void RfuCmd_ConnectCheck_Parse(u8 *Busy, u8 *PlayerNum, u16 *ID);
-extern struct Mboot Mboot;
-extern struct MbootTmp MbootTmp;
+extern struct rfuLinkStatus rfuLinkStatus;
+extern struct rfuStatic rfuStatic;
 
 u16 RfuConnectCheck(u8 *Busy, u8 *PlayerNum)
 {
@@ -204,36 +204,36 @@ u16 RfuConnectCheck(u8 *Busy, u8 *PlayerNum)
     if (*Busy != 0) return 0;
 
     bit = 1 << *PlayerNum;
-    if (Mboot.peersConn & bit) return 0;
+    if (rfuLinkStatus.peersConn & bit) return 0;
 
     ime = *(vu16 *)REG_IME;
     *(vu16 *)REG_IME = 0;
 
-    Mboot.peersConn |= bit;
-    Mboot.peersSeen &= ~bit;
+    rfuLinkStatus.peersConn |= bit;
+    rfuLinkStatus.peersSeen &= ~bit;
 
-    Mboot.curGame.beaconID = ID;
-    Mboot.unk_01++;
-    Mboot.unk_0a[*PlayerNum] = -1;
-    Mboot.mode = 0;
+    rfuLinkStatus.curGame.beaconID = ID;
+    rfuLinkStatus.unk_01++;
+    rfuLinkStatus.unk_0a[*PlayerNum] = -1;
+    rfuLinkStatus.mode = 0;
 
     for (x = 0; x < 4; x++) {
-        if (Mboot.games[x].beaconID == MbootTmp.beaconID) {
-            if (Mboot.gamesCount == 0) {
-                GameSrc = Mboot.games;
+        if (rfuLinkStatus.games[x].beaconID == rfuStatic.beaconID) {
+            if (rfuLinkStatus.gamesCount == 0) {
+                GameSrc = rfuLinkStatus.games;
             } else {
                 GameSrc = &GameTmp;
-                CpuCopy(Mboot.games + x, &GameTmp, 0x10*2, 16);
-                CpuArrayClear(0, Mboot.games, 16);
-                Mboot.gamesCount = 0;
+                CpuCopy(rfuLinkStatus.games + x, &GameTmp, 0x10*2, 16);
+                CpuArrayClear(0, rfuLinkStatus.games, 16);
+                rfuLinkStatus.gamesCount = 0;
             }
             break;
         }
     }
 
     if (x < 4) {
-        CpuCopy(GameSrc, Mboot.games + *PlayerNum, 0x10*2, 16);
-        Mboot.games[*PlayerNum].playerNum = *PlayerNum;
+        CpuCopy(GameSrc, rfuLinkStatus.games + *PlayerNum, 0x10*2, 16);
+        rfuLinkStatus.games[*PlayerNum].playerNum = *PlayerNum;
     }
 
     *(vu16 *)REG_IME = ime;

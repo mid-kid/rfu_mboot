@@ -1,15 +1,15 @@
 #include <Agb.h>
 
-#include "Mboot.h"
-#include "MbootTmp.h"
-extern struct Mboot Mboot;
-extern struct MbootTmp MbootTmp;
+#include "rfuLinkStatus.h"
+#include "rfuStatic.h"
+extern struct rfuLinkStatus rfuLinkStatus;
+extern struct rfuStatic rfuStatic;
 extern void Sio32VBlank(void);
 
 void RfuVBlank(void)
 {
-    if (Mboot.mode != (u8)-1) {
-        if (MbootTmp.unk_04) MbootTmp.unk_04--;
+    if (rfuLinkStatus.mode != (u8)-1) {
+        if (rfuStatic.unk_04) rfuStatic.unk_04--;
     }
     Sio32VBlank();
 }

@@ -52,7 +52,7 @@ SECTIONS {
         RfuIntrHandshake.o(.text)
         Rfu0x13.o(.text)
         RfuInit.o(.text)
-        MbootInit.o(.text)
+        rfu_STC_clearAPIVariables.o(.text)
         RfuStart.o(.text)
         RfuGameInfoSet.o(.text)
         RfuRadioCfg.o(.text)

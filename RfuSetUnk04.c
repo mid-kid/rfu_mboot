@@ -1,13 +1,13 @@
 #include <Agb.h>
 
-#include "Mboot.h"
-#include "MbootTmp.h"
-extern struct Mboot Mboot;
-extern struct MbootTmp MbootTmp;
+#include "rfuLinkStatus.h"
+#include "rfuStatic.h"
+extern struct rfuLinkStatus rfuLinkStatus;
+extern struct rfuStatic rfuStatic;
 
 void RfuSetUnk04(u8 val)
 {
-    struct Mboot *ptr = &Mboot;
-    MbootTmp.unk_04 = val;
+    struct rfuLinkStatus *ptr = &rfuLinkStatus;
+    rfuStatic.unk_04 = val;
     ptr->unk_09 = val;
 }

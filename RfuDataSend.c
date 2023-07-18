@@ -1,13 +1,13 @@
 #include <Agb.h>
 
 #include "RfuPeer.h"
-#include "Mboot.h"
-#include "MbootTmp.h"
+#include "rfuLinkStatus.h"
+#include "rfuStatic.h"
 extern u32 RfuDataSendPrepare(void);
 extern u16 STWI_send_DataTxREQ(u8 *Srcp, u8 Size);
 extern void RfuPeerUpdate(u8 param_1, u8 param_2, struct RfuPeerSub *param_3);
-extern struct Mboot Mboot;
-extern struct MbootTmp MbootTmp;
+extern struct rfuLinkStatus rfuLinkStatus;
+extern struct rfuStatic rfuStatic;
 extern u8 RfuDataSendBuf[];
 extern struct RfuPeer RfuPeers[4];
 
@@ -19,11 +19,11 @@ u16 RfuDataSend(void)
     struct RfuPeerSub *sub;
 
     res = 0;
-    if (Mboot.mode == (u8)-1) return 0;
+    if (rfuLinkStatus.mode == (u8)-1) return 0;
 
-    MbootTmp.unk_12 = 0;
+    rfuStatic.unk_12 = 0;
     size = RfuDataSendPrepare();
-    if (MbootTmp.unk_12 != 0) {
+    if (rfuStatic.unk_12 != 0) {
         res = STWI_send_DataTxREQ(RfuDataSendBuf, size + 4);
     }
 
@@ -35,8 +35,8 @@ u16 RfuDataSend(void)
 
             RfuPeerUpdate(x, FALSE, sub);
 
-            Mboot.unk_04 &= ~sub->unk_05;
-            if (sub->unk_20 == 1) Mboot.unk_07 |= 1 << x;
+            rfuLinkStatus.unk_04 &= ~sub->unk_05;
+            if (sub->unk_20 == 1) rfuLinkStatus.unk_07 |= 1 << x;
             sub->unk_01[0] = 0x27;
         }
     }
