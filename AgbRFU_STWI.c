@@ -2,8 +2,8 @@
 
 #include "STWI_status.h"
 extern u32 STWI_init(void);
-extern u16 STWI_start_Command(void);
-extern u16 RfuCmdRecv(u32 Cmd, u8 VarSize);
+extern u16 STWI_poll_CommandEnd(void);
+extern u16 STWI_check_Command(u32 Cmd, u8 VarSize);
 extern u8 STWI_buffer_send[0x120];
 extern struct STWI_status STWI_status;
 
@@ -13,10 +13,10 @@ u16 STWI_send_ResetREQ(void)
     *(u32 *)(STWI_buffer_send + 0) = 0x99660010;
     STWI_status.cmdSize = 0;
 
-    if (STWI_start_Command() == 1) {
+    if (STWI_poll_CommandEnd() == 1) {
         return 5;
     } else {
-        return RfuCmdRecv(0x99660090, FALSE);
+        return STWI_check_Command(0x99660090, FALSE);
     }
 }
 
@@ -26,10 +26,10 @@ u16 STWI_send_LinkStatusREQ(void)
     *(u32 *)(STWI_buffer_send + 0) = 0x99660011;
     STWI_status.cmdSize = 0;
 
-    if (STWI_start_Command() == 1) {
+    if (STWI_poll_CommandEnd() == 1) {
         return 5;
     } else {
-        return RfuCmdRecv(0x99660191, FALSE);
+        return STWI_check_Command(0x99660191, FALSE);
     }
 }
 
@@ -39,10 +39,10 @@ u16 STWI_send_SystemStatusREQ(void)
     *(u32 *)(STWI_buffer_send + 0) = 0x99660013;
     STWI_status.cmdSize = 0;
 
-    if (STWI_start_Command() == 1) {
+    if (STWI_poll_CommandEnd() == 1) {
         return 5;
     } else {
-        return RfuCmdRecv(0x99660193, FALSE);
+        return STWI_check_Command(0x99660193, FALSE);
     }
 }
 
@@ -107,14 +107,14 @@ STWI_send_GameConfigREQ:
 .LL9:
 	mov	r0, #6
 	strb	r0, [r3, #8]
-	bl	STWI_start_Command
+	bl	STWI_poll_CommandEnd
 	lsl	r0, r0, #16
 	lsr	r0, r0, #16
 	cmp	r0, #1
 	beq	.LL19	@cond_branch
 	ldr	r0, .LL24
 	mov	r1, #0
-	bl	RfuCmdRecv
+	bl	STWI_check_Command
 	lsl	r0, r0, #16
 	lsr	r0, r0, #16
 	b	.LL21
@@ -157,10 +157,10 @@ u16 STWI_send_GameConfigREQ(char *GameData, char *UserName)
     }
 
     STWI_status.cmdSize = 6;
-    if (STWI_start_Command() == 1) {
+    if (STWI_poll_CommandEnd() == 1) {
         return 5;
     } else {
-        return RfuCmdRecv(0x99660096, FALSE);
+        return STWI_check_Command(0x99660096, FALSE);
     }
 }
 #endif
@@ -174,10 +174,10 @@ u16 STWI_send_SystemConfigREQ(u16 param_1, u8 param_2, u8 param_3)
     *(u16 *)(STWI_buffer_send + 6) = param_1;
     STWI_status.cmdSize = 1;
 
-    if (STWI_start_Command() == 1) {
+    if (STWI_poll_CommandEnd() == 1) {
         return 5;
     } else {
-        return RfuCmdRecv(0x99660097, FALSE);
+        return STWI_check_Command(0x99660097, FALSE);
     }
 }
 
@@ -187,10 +187,10 @@ u16 STWI_send_SP_StartREQ(void)
     *(u32 *)(STWI_buffer_send + 0) = 0x9966001c;
     STWI_status.cmdSize = 0;
 
-    if (STWI_start_Command() == 1) {
+    if (STWI_poll_CommandEnd() == 1) {
         return 5;
     } else {
-        return RfuCmdRecv(0x9966009c, FALSE);
+        return STWI_check_Command(0x9966009c, FALSE);
     }
 }
 
@@ -200,10 +200,10 @@ u16 STWI_send_SP_PollingREQ(void)
     *(u32 *)(STWI_buffer_send + 0) = 0x9966001d;
     STWI_status.cmdSize = 0;
 
-    if (STWI_start_Command() == 1) {
+    if (STWI_poll_CommandEnd() == 1) {
         return 5;
     } else {
-        return RfuCmdRecv(0x9966009d, TRUE);
+        return STWI_check_Command(0x9966009d, TRUE);
     }
 }
 
@@ -213,10 +213,10 @@ u16 STWI_send_SP_EndREQ(void)
     *(u32 *)(STWI_buffer_send + 0) = 0x9966001e;
     STWI_status.cmdSize = 0;
 
-    if (STWI_start_Command() == 1) {
+    if (STWI_poll_CommandEnd() == 1) {
         return 5;
     } else {
-        return RfuCmdRecv(0x9966009e, TRUE);
+        return STWI_check_Command(0x9966009e, TRUE);
     }
 }
 
@@ -227,10 +227,10 @@ u16 STWI_send_CP_StartREQ(u16 BeaconID)
     *(u32 *)(STWI_buffer_send + 4) = BeaconID;
     STWI_status.cmdSize = 1;
 
-    if (STWI_start_Command() == 1) {
+    if (STWI_poll_CommandEnd() == 1) {
         return 5;
     } else {
-        return RfuCmdRecv(0x9966009f, FALSE);
+        return STWI_check_Command(0x9966009f, FALSE);
     }
 }
 
@@ -240,10 +240,10 @@ u16 STWI_send_CP_PollingREQ(void)
     *(u32 *)(STWI_buffer_send + 0) = 0x99660020;
     STWI_status.cmdSize = 0;
 
-    if (STWI_start_Command() == 1) {
+    if (STWI_poll_CommandEnd() == 1) {
         return 5;
     } else {
-        return RfuCmdRecv(0x996601a0, FALSE);
+        return STWI_check_Command(0x996601a0, FALSE);
     }
 }
 
@@ -253,10 +253,10 @@ u16 STWI_send_CP_EndREQ(void)
     *(u32 *)(STWI_buffer_send + 0) = 0x99660021;
     STWI_status.cmdSize = 0;
 
-    if (STWI_start_Command() == 1) {
+    if (STWI_poll_CommandEnd() == 1) {
         return 5;
     } else {
-        return RfuCmdRecv(0x996601a1, FALSE);
+        return STWI_check_Command(0x996601a1, FALSE);
     }
 }
 
@@ -274,10 +274,10 @@ u16 STWI_send_DataTxREQ(u8 *Srcp, u8 Size)
     *(u32 *)(STWI_buffer_send + 0) = 0x99660024 + CmdSize;
     CpuSet(Srcp, STWI_buffer_send + 4, STWI_status.cmdSize | DMA_32BIT_BUS);
 
-    if (STWI_start_Command() == 1) {
+    if (STWI_poll_CommandEnd() == 1) {
         return 5;
     } else {
-        return RfuCmdRecv(0x996600a4, TRUE);
+        return STWI_check_Command(0x996600a4, TRUE);
     }
 }
 
@@ -287,10 +287,10 @@ u16 STWI_send_DataRxREQ(void)
     *(u32 *)(STWI_buffer_send + 0) = 0x99660026;
     STWI_status.cmdSize = 0;
 
-    if (STWI_start_Command() == 1) {
+    if (STWI_poll_CommandEnd() == 1) {
         return 5;
     } else {
-        return RfuCmdRecv(0x996600a6, TRUE);
+        return STWI_check_Command(0x996600a6, TRUE);
     }
 }
 
@@ -300,10 +300,10 @@ u16 STWI_send_MS_ChangeREQ(void)
     *(u32 *)(STWI_buffer_send + 0) = 0x99660027;
     STWI_status.cmdSize = 0;
 
-    if (STWI_start_Command() == 1) {
+    if (STWI_poll_CommandEnd() == 1) {
         return 5;
     } else {
-        return RfuCmdRecv(0x996600a7, FALSE);
+        return STWI_check_Command(0x996600a7, FALSE);
     }
 }
 
@@ -314,10 +314,10 @@ u16 STWI_send_DisconnectREQ(u8 param_1)
     *(u32 *)(STWI_buffer_send + 4) = param_1;
     STWI_status.cmdSize = 1;
 
-    if (STWI_start_Command() == 1) {
+    if (STWI_poll_CommandEnd() == 1) {
         return 5;
     } else {
-        return RfuCmdRecv(0x996600b0, FALSE);
+        return STWI_check_Command(0x996600b0, FALSE);
     }
 }
 
@@ -327,9 +327,9 @@ u16 STWI_send_StopModeREQ(void)
     *(u32 *)(STWI_buffer_send + 0) = 0x9966003d;
     STWI_status.cmdSize = 0;
 
-    if (STWI_start_Command() == 1) {
+    if (STWI_poll_CommandEnd() == 1) {
         return 5;
     } else {
-        return RfuCmdRecv(0x996600bd, FALSE);
+        return STWI_check_Command(0x996600bd, FALSE);
     }
 }

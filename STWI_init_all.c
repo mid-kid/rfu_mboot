@@ -4,7 +4,7 @@
 extern struct STWI_status STWI_status;
 void STWI_init(void);
 
-u32 RfuCmdInit(void)
+u32 STWI_init_all(void)
 {
     STWI_init();
     STWI_status.unk_09 = 8;

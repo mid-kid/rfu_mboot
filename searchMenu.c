@@ -24,7 +24,7 @@ extern u8 SearchMenuErrorTimer;
 extern void (*nowProcess)();
 
 extern u16  MbootDLStart2(u8 Peer,u16 param_2);
-extern u32  MbootReset(void);
+extern u32  rfu_clearAllSlot(void);
 extern u32  RfuMbootCfg(u32 param_1,u8 Client,void *Dest,u32 Size);
 extern u32  RfuPeerUpdateFlags(u8 param_1,u8 Peer);
 extern u8   RfuStrcmp(const char *Str1,const char *Str2);
@@ -121,7 +121,7 @@ void SEQ_search_init(void)
 	
 	for(x=0;x<4;x++)
 		GameList[x].beaconID=0;
-	MbootReset();
+	rfu_clearAllSlot();
 	SearchMenuEnd=FALSE;
 	SearchMenuCursor=0;
 	SearchMenuErrorTimer=0;

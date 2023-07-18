@@ -4,7 +4,7 @@
 #include "rfuStatic.h"
 extern struct rfuLinkStatus rfuLinkStatus;
 extern struct rfuStatic rfuStatic;
-extern u32 MbootReset(void);
+extern u32 rfu_clearAllSlot(void);
 
 void rfu_STC_clearAPIVariables(void)
 {
@@ -16,5 +16,5 @@ void rfu_STC_clearAPIVariables(void)
     rfuStatic.unk_04 = save;
     rfuLinkStatus.unk_09 = save;
     rfuLinkStatus.mode = 0xff;
-    MbootReset();
+    rfu_clearAllSlot();
 }

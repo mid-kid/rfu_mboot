@@ -7,7 +7,7 @@ extern struct RfuPeer RfuPeers[4];
 extern struct rfuLinkStatus rfuLinkStatus;
 extern struct rfuStatic rfuStatic;
 
-u32 MbootReset(void)
+u32 rfu_clearAllSlot(void)
 {
     u16 x;
 

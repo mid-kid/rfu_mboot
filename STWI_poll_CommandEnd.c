@@ -2,10 +2,10 @@
 __asm__("
 .text
 	.align	2
-	.globl	STWI_start_Command
-	.type	 STWI_start_Command,function
+	.globl	STWI_poll_CommandEnd
+	.type	 STWI_poll_CommandEnd,function
 	.thumb_func
-STWI_start_Command:
+STWI_poll_CommandEnd:
 	push	{r4, r5, lr}
 	ldr	r0, .LA21
 	ldrb	r0, [r0, #11]
@@ -112,7 +112,7 @@ STWI_start_Command:
 	.word	33023
 	.word	20483
 .LAfe1:
-	.size	 STWI_start_Command,.LAfe1-STWI_start_Command
+	.size	 STWI_poll_CommandEnd,.LAfe1-STWI_poll_CommandEnd
 ");
 #else
 
@@ -123,7 +123,7 @@ extern u32 STWI_init(void);
 extern struct STWI_status STWI_status;
 extern u8 STWI_buffer_send[0x120];
 
-u16 STWI_start_Command(void)
+u16 STWI_poll_CommandEnd(void)
 {
     int x;
     u8 tmp;

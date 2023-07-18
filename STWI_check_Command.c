@@ -4,7 +4,7 @@
 extern struct STWI_status STWI_status;
 extern u8 STWI_buffer_recv[0x120];
 
-u16 RfuCmdRecv(u32 Cmd, u8 VarSize)
+u16 STWI_check_Command(u32 Cmd, u8 VarSize)
 {
     u32 Head;
 
