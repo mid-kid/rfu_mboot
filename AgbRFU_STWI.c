@@ -2,42 +2,42 @@
 
 #include "STWI_status.h"
 extern u16 STWI_poll_CommandEnd(void);
-extern u16 STWI_check_Command(u32 Cmd, u8 VarSize);
+extern u16 STWI_check_Command(u32 Cmd,u8 VarSize);
 extern u8 STWI_buffer_send[0x120];
 extern u8 STWI_buffer_recv[0x120];
 extern struct STWI_status STWI_status;
 
 u32 STWI_init(void)
 {
-    *(vu16 *)REG_RCNT = 0x100;
-    *(vu16 *)REG_SIOCNT = 0x5003;
-    STWI_status.modeMaster = TRUE;
-    STWI_status.state = 0;
-    STWI_status.cmdHeader = 0;
-    STWI_status.cmdSize = 0;
-    STWI_status.field3_0x9 = 0;
-    STWI_status.error = 0;
-    STWI_status.modeMaster = TRUE;
-    STWI_status.unk_07 = 0;
-    STWI_status.unk_08 = 0;
-    STWI_status.timer = -1;
-    STWI_status.unk_11 = 0;
-    return 0;
+	*(vu16 *)REG_RCNT=0x100;
+	*(vu16 *)REG_SIOCNT=0x5003;
+	STWI_status.modeMaster=TRUE;
+	STWI_status.state=0;
+	STWI_status.cmdHeader=0;
+	STWI_status.cmdSize=0;
+	STWI_status.field3_0x9=0;
+	STWI_status.error=0;
+	STWI_status.modeMaster=TRUE;
+	STWI_status.unk_07=0;
+	STWI_status.unk_08=0;
+	STWI_status.timer=-1;
+	STWI_status.unk_11=0;
+	return 0;
 }
 
 u32 STWI_init_all(void)
 {
-    STWI_init();
-    STWI_status.unk_09 = 8;
-    STWI_status.unk_12 = 1;
-    *(vu16 *)REG_IME = 0;
-    *(vu16 *)REG_IE |= 0x81;
-    *(vu16 *)REG_IME = 1;
-    return 0;
+	STWI_init();
+	STWI_status.unk_09=8;
+	STWI_status.unk_12=1;
+	*(vu16 *)REG_IME=0;
+	*(vu16 *)REG_IE|=0x81;
+	*(vu16 *)REG_IME=1;
+	return 0;
 }
 
 #ifndef NONMATCHING
-__asm__("
+__asm__ ("
 .text
 	.align	2
 	.globl	STWI_poll_CommandEnd
@@ -155,129 +155,137 @@ STWI_poll_CommandEnd:
 #else
 u16 STWI_poll_CommandEnd(void)
 {
-    int x;
-    u8 tmp;
-    u8 *ptr8;
-    u16 val;
-
-    if (!STWI_status.modeMaster) return 1;
-
+	int x;
+	u8 tmp;
+	u8 *ptr8;
+	u16 val;
+	
+	if(!STWI_status.modeMaster)
+		return 1;
+	
 retry:
-    *(vu32 *)REG_SIODATA32 = *(u32 *)STWI_buffer_send;
-    STWI_status.cmdHeader = *(u32 *)STWI_buffer_send;
-    STWI_status.field3_0x9 = 1;
-    *(vu16 *)REG_SIOCNT = 0x5083;
-
-    ptr8 = &STWI_status.unk_07;
+	*(vu32 *)REG_SIODATA32=*(u32 *)STWI_buffer_send;
+	STWI_status.cmdHeader=*(u32 *)STWI_buffer_send;
+	STWI_status.field3_0x9=1;
+	*(vu16 *)REG_SIOCNT=0x5083;
+	
+	ptr8=&STWI_status.unk_07;
 wait:
-    if (*ptr8 == 0) goto wait;
-
-    if ((u8)(STWI_status.unk_08 - 1) <= 1) {
-        for (x = 0; x < STWI_status.unk_09; x++) VBlankIntrWait();
-
-        tmp = STWI_status.unk_08;
-        STWI_init();
-        STWI_status.unk_08 = tmp;
-        STWI_status.error = 2;
-        goto retry;
-    }
-
-    if (STWI_status.unk_08 != 3) return 0;
-
-    *(vu16 *)REG_RCNT = 0x8000;
-    val = 0x80ff;
-    for (x = 1000; x; x--) *(u16 *)REG_RCNT = val;
-    *(vu16 *)REG_RCNT = 0x8000;
-    val = 0;
-
-    *(vu16 *)REG_RCNT = 0;
-    *(vu16 *)REG_SIOCNT = 0x5003;
-
-    return 0;
+	if(*ptr8==0)
+		goto wait;
+	
+	if((u8)(STWI_status.unk_08-1)<=1) {
+		for(x=0;x<STWI_status.unk_09;x++)
+			VBlankIntrWait();
+		
+		tmp=STWI_status.unk_08;
+		STWI_init();
+		STWI_status.unk_08=tmp;
+		STWI_status.error=2;
+		goto retry;
+	}
+	
+	if(STWI_status.unk_08!=3)
+		return 0;
+	
+	*(vu16 *)REG_RCNT=0x8000;
+	val=0x80ff;
+	for(x=1000;x;x--)
+		*(u16 *)REG_RCNT=val;
+	*(vu16 *)REG_RCNT=0x8000;
+	val=0;
+	
+	*(vu16 *)REG_RCNT=0;
+	*(vu16 *)REG_SIOCNT=0x5003;
+	
+	return 0;
 }
 #endif
 
-u16 STWI_check_Command(u32 Cmd, u8 VarSize)
+u16 STWI_check_Command(u32 Cmd,u8 VarSize)
 {
-    u32 Head;
-
-    // An error happened locally
-    if (STWI_status.error != 0) return STWI_status.error;
-
-    // An error has been received
-    if (*(u32 *)STWI_buffer_recv == 0x996601ee) return 4;
-
-    Head = *(u32 *)STWI_buffer_recv;
-    if (VarSize == TRUE) Head = Head & 0xffff00ff;
-    if (Head == Cmd) return 0;
-    return 6;
+	u32 Head;
+	
+	// An error happened locally
+	if(STWI_status.error!=0)
+		return STWI_status.error;
+	
+	// An error has been received
+	if(*(u32 *)STWI_buffer_recv==0x996601ee)
+		return 4;
+	
+	Head=*(u32 *)STWI_buffer_recv;
+	if(VarSize==TRUE)
+		Head=Head & 0xffff00ff;
+	if(Head==Cmd)
+		return 0;
+	return 6;
 }
 
 u32 STWI_intr_vblank(void)
 {
-    if (STWI_status.modeMaster == TRUE) return 0;
-
-    if (STWI_status.timer != (u8)-1) STWI_status.timer++;
-
-    if (STWI_status.timer == 6) {
-        STWI_status.state = 5;
-        STWI_status.cmdHeader = 0;
-        STWI_status.cmdSize = 0;
-        STWI_status.field3_0x9 = 0;
-        STWI_status.error = 0;
-        STWI_status.unk_07 = 0;
-        STWI_status.unk_08 = 0;
-        *(vu32 *)REG_SIODATA32 = 0x80000000;
-        *(vu16 *)REG_SIOCNT = 0;
-        *(vu16 *)REG_SIOCNT = 0x5003;
-        *(vu16 *)REG_SIOCNT = 0x5082;
-        STWI_status.timer = -1;
-        return 1;
-    }
-    return 0;
+	if(STWI_status.modeMaster==TRUE)
+		return 0;
+	
+	if(STWI_status.timer!=(u8)-1)
+		STWI_status.timer++;
+	
+	if(STWI_status.timer==6) {
+		STWI_status.state=5;
+		STWI_status.cmdHeader=0;
+		STWI_status.cmdSize=0;
+		STWI_status.field3_0x9=0;
+		STWI_status.error=0;
+		STWI_status.unk_07=0;
+		STWI_status.unk_08=0;
+		*(vu32 *)REG_SIODATA32=0x80000000;
+		*(vu16 *)REG_SIOCNT=0;
+		*(vu16 *)REG_SIOCNT=0x5003;
+		*(vu16 *)REG_SIOCNT=0x5082;
+		STWI_status.timer=-1;
+		return 1;
+	}
+	return 0;
 }
 
 u16 STWI_send_ResetREQ(void)
 {
-    STWI_init();
-    *(u32 *)(STWI_buffer_send + 0) = 0x99660010;
-    STWI_status.cmdSize = 0;
-
-    if (STWI_poll_CommandEnd() == 1) {
-        return 5;
-    } else {
-        return STWI_check_Command(0x99660090, FALSE);
-    }
+	STWI_init();
+	*(u32 *)(STWI_buffer_send+0)=0x99660010;
+	STWI_status.cmdSize=0;
+	
+	if(STWI_poll_CommandEnd()==1)
+		return 5;
+	else
+		return STWI_check_Command(0x99660090,FALSE);
 }
 
 u16 STWI_send_LinkStatusREQ(void)
 {
-    STWI_init();
-    *(u32 *)(STWI_buffer_send + 0) = 0x99660011;
-    STWI_status.cmdSize = 0;
-
-    if (STWI_poll_CommandEnd() == 1) {
-        return 5;
-    } else {
-        return STWI_check_Command(0x99660191, FALSE);
-    }
+	STWI_init();
+	*(u32 *)(STWI_buffer_send+0)=0x99660011;
+	STWI_status.cmdSize=0;
+	
+	if(STWI_poll_CommandEnd()==1)
+		return 5;
+	else
+		return STWI_check_Command(0x99660191,FALSE);
 }
 
 u16 STWI_send_SystemStatusREQ(void)
 {
-    STWI_init();
-    *(u32 *)(STWI_buffer_send + 0) = 0x99660013;
-    STWI_status.cmdSize = 0;
-
-    if (STWI_poll_CommandEnd() == 1) {
-        return 5;
-    } else {
-        return STWI_check_Command(0x99660193, FALSE);
-    }
+	STWI_init();
+	*(u32 *)(STWI_buffer_send+0)=0x99660013;
+	STWI_status.cmdSize=0;
+	
+	if(STWI_poll_CommandEnd()==1)
+		return 5;
+	else
+		return STWI_check_Command(0x99660193,FALSE);
 }
 
 #ifndef NONMATCHING
-__asm__("
+__asm__ ("
 .text
 	.align	2
 	.globl	STWI_send_GameConfigREQ
@@ -362,204 +370,195 @@ STWI_send_GameConfigREQ:
 	.size	 STWI_send_GameConfigREQ,.LLfe1-STWI_send_GameConfigREQ
 ");
 #else
-u16 STWI_send_GameConfigREQ(char *GameData, char *UserName)
+u16 STWI_send_GameConfigREQ(char *GameData,char *UserName)
 {
-    u8 *dst;
-    u8 *src;
-    int x;
-
-    STWI_init();
-
-    dst = STWI_buffer_send;
-    *((u32 *)dst)++ = 0x99660616;
-    *((u16 *)dst)++ = *(u16 *)GameData;
-
-    src = GameData + 2;
-    for (x = 0; x < 14; x++) *dst++ = *src++;
-
-    src = UserName;
-    for (x = 0; x < 8; x++) {
-        if (!*src) {
-            for (; x < 8; x++) *dst++ = '\0';
-            break;
-        }
-        *dst++ = *src++;
-    }
-
-    STWI_status.cmdSize = 6;
-    if (STWI_poll_CommandEnd() == 1) {
-        return 5;
-    } else {
-        return STWI_check_Command(0x99660096, FALSE);
-    }
+	u8 *dst;
+	u8 *src;
+	int x;
+	
+	STWI_init();
+	
+	dst=STWI_buffer_send;
+	*((u32 *)dst)++=0x99660616;
+	*((u16 *)dst)++=*(u16 *)GameData;
+	
+	src=GameData+2;
+	for(x=0;x<14;x++)
+		*dst++=*src++;
+	
+	src=UserName;
+	for(x=0;x<8;x++) {
+		if(!*src) {
+			for(;x<8;x++)
+				*dst++='\0';
+			break;
+		}
+		*dst++=*src++;
+	}
+	
+	STWI_status.cmdSize=6;
+	if(STWI_poll_CommandEnd()==1)
+		return 5;
+	else
+		return STWI_check_Command(0x99660096,FALSE);
 }
 #endif
 
-u16 STWI_send_SystemConfigREQ(u16 param_1, u8 param_2, u8 param_3)
+u16 STWI_send_SystemConfigREQ(u16 param_1,u8 param_2,u8 param_3)
 {
-    STWI_init();
-    *(u32 *)(STWI_buffer_send + 0) = 0x99660117;
-    *(u8 *)(STWI_buffer_send + 4) = param_3;
-    *(u8 *)(STWI_buffer_send + 5) = param_2;
-    *(u16 *)(STWI_buffer_send + 6) = param_1;
-    STWI_status.cmdSize = 1;
-
-    if (STWI_poll_CommandEnd() == 1) {
-        return 5;
-    } else {
-        return STWI_check_Command(0x99660097, FALSE);
-    }
+	STWI_init();
+	*(u32 *)(STWI_buffer_send+0)=0x99660117;
+	*(u8 *)(STWI_buffer_send+4)=param_3;
+	*(u8 *)(STWI_buffer_send+5)=param_2;
+	*(u16 *)(STWI_buffer_send+6)=param_1;
+	STWI_status.cmdSize=1;
+	
+	if(STWI_poll_CommandEnd()==1)
+		return 5;
+	else
+		return STWI_check_Command(0x99660097,FALSE);
 }
 
 u16 STWI_send_SP_StartREQ(void)
 {
-    STWI_init();
-    *(u32 *)(STWI_buffer_send + 0) = 0x9966001c;
-    STWI_status.cmdSize = 0;
-
-    if (STWI_poll_CommandEnd() == 1) {
-        return 5;
-    } else {
-        return STWI_check_Command(0x9966009c, FALSE);
-    }
+	STWI_init();
+	*(u32 *)(STWI_buffer_send+0)=0x9966001c;
+	STWI_status.cmdSize=0;
+	
+	if(STWI_poll_CommandEnd()==1)
+		return 5;
+	else
+		return STWI_check_Command(0x9966009c,FALSE);
 }
 
 u16 STWI_send_SP_PollingREQ(void)
 {
-    STWI_init();
-    *(u32 *)(STWI_buffer_send + 0) = 0x9966001d;
-    STWI_status.cmdSize = 0;
-
-    if (STWI_poll_CommandEnd() == 1) {
-        return 5;
-    } else {
-        return STWI_check_Command(0x9966009d, TRUE);
-    }
+	STWI_init();
+	*(u32 *)(STWI_buffer_send+0)=0x9966001d;
+	STWI_status.cmdSize=0;
+	
+	if(STWI_poll_CommandEnd()==1)
+		return 5;
+	else
+		return STWI_check_Command(0x9966009d,TRUE);
 }
 
 u16 STWI_send_SP_EndREQ(void)
 {
-    STWI_init();
-    *(u32 *)(STWI_buffer_send + 0) = 0x9966001e;
-    STWI_status.cmdSize = 0;
-
-    if (STWI_poll_CommandEnd() == 1) {
-        return 5;
-    } else {
-        return STWI_check_Command(0x9966009e, TRUE);
-    }
+	STWI_init();
+	*(u32 *)(STWI_buffer_send+0)=0x9966001e;
+	STWI_status.cmdSize=0;
+	
+	if(STWI_poll_CommandEnd()==1)
+		return 5;
+	else
+		return STWI_check_Command(0x9966009e,TRUE);
 }
 
 u16 STWI_send_CP_StartREQ(u16 BeaconID)
 {
-    STWI_init();
-    *(u32 *)(STWI_buffer_send + 0) = 0x9966011f;
-    *(u32 *)(STWI_buffer_send + 4) = BeaconID;
-    STWI_status.cmdSize = 1;
-
-    if (STWI_poll_CommandEnd() == 1) {
-        return 5;
-    } else {
-        return STWI_check_Command(0x9966009f, FALSE);
-    }
+	STWI_init();
+	*(u32 *)(STWI_buffer_send+0)=0x9966011f;
+	*(u32 *)(STWI_buffer_send+4)=BeaconID;
+	STWI_status.cmdSize=1;
+	
+	if(STWI_poll_CommandEnd()==1)
+		return 5;
+	else
+		return STWI_check_Command(0x9966009f,FALSE);
 }
 
 u16 STWI_send_CP_PollingREQ(void)
 {
-    STWI_init();
-    *(u32 *)(STWI_buffer_send + 0) = 0x99660020;
-    STWI_status.cmdSize = 0;
-
-    if (STWI_poll_CommandEnd() == 1) {
-        return 5;
-    } else {
-        return STWI_check_Command(0x996601a0, FALSE);
-    }
+	STWI_init();
+	*(u32 *)(STWI_buffer_send+0)=0x99660020;
+	STWI_status.cmdSize=0;
+	
+	if(STWI_poll_CommandEnd()==1)
+		return 5;
+	else
+		return STWI_check_Command(0x996601a0,FALSE);
 }
 
 u16 STWI_send_CP_EndREQ(void)
 {
-    STWI_init();
-    *(u32 *)(STWI_buffer_send + 0) = 0x99660021;
-    STWI_status.cmdSize = 0;
-
-    if (STWI_poll_CommandEnd() == 1) {
-        return 5;
-    } else {
-        return STWI_check_Command(0x996601a1, FALSE);
-    }
+	STWI_init();
+	*(u32 *)(STWI_buffer_send+0)=0x99660021;
+	STWI_status.cmdSize=0;
+	
+	if(STWI_poll_CommandEnd()==1)
+		return 5;
+	else
+		return STWI_check_Command(0x996601a1,FALSE);
 }
 
-u16 STWI_send_DataTxREQ(u8 *Srcp, u8 Size)
+u16 STWI_send_DataTxREQ(u8 *Srcp,u8 Size)
 {
-    u16 CmdSize;
-
-    STWI_init();
-
-    CmdSize = Size / 4;
-    if (Size % 4) CmdSize++;
-    STWI_status.cmdSize = CmdSize;
-    CmdSize <<= 8;
-
-    *(u32 *)(STWI_buffer_send + 0) = 0x99660024 + CmdSize;
-    CpuSet(Srcp, STWI_buffer_send + 4, STWI_status.cmdSize | DMA_32BIT_BUS);
-
-    if (STWI_poll_CommandEnd() == 1) {
-        return 5;
-    } else {
-        return STWI_check_Command(0x996600a4, TRUE);
-    }
+	u16 CmdSize;
+	
+	STWI_init();
+	
+	CmdSize=Size/4;
+	if(Size%4)
+		CmdSize++;
+	STWI_status.cmdSize=CmdSize;
+	CmdSize<<=8;
+	
+	*(u32 *)(STWI_buffer_send+0)=0x99660024+CmdSize;
+	CpuSet(Srcp,STWI_buffer_send+4,STWI_status.cmdSize | DMA_32BIT_BUS);
+	
+	if(STWI_poll_CommandEnd()==1)
+		return 5;
+	else
+		return STWI_check_Command(0x996600a4,TRUE);
 }
 
 u16 STWI_send_DataRxREQ(void)
 {
-    STWI_init();
-    *(u32 *)(STWI_buffer_send + 0) = 0x99660026;
-    STWI_status.cmdSize = 0;
-
-    if (STWI_poll_CommandEnd() == 1) {
-        return 5;
-    } else {
-        return STWI_check_Command(0x996600a6, TRUE);
-    }
+	STWI_init();
+	*(u32 *)(STWI_buffer_send+0)=0x99660026;
+	STWI_status.cmdSize=0;
+	
+	if(STWI_poll_CommandEnd()==1)
+		return 5;
+	else
+		return STWI_check_Command(0x996600a6,TRUE);
 }
 
 u16 STWI_send_MS_ChangeREQ(void)
 {
-    STWI_init();
-    *(u32 *)(STWI_buffer_send + 0) = 0x99660027;
-    STWI_status.cmdSize = 0;
-
-    if (STWI_poll_CommandEnd() == 1) {
-        return 5;
-    } else {
-        return STWI_check_Command(0x996600a7, FALSE);
-    }
+	STWI_init();
+	*(u32 *)(STWI_buffer_send+0)=0x99660027;
+	STWI_status.cmdSize=0;
+	
+	if(STWI_poll_CommandEnd()==1)
+		return 5;
+	else
+		return STWI_check_Command(0x996600a7,FALSE);
 }
 
 u16 STWI_send_DisconnectREQ(u8 param_1)
 {
-    STWI_init();
-    *(u32 *)(STWI_buffer_send + 0) = 0x99660130;
-    *(u32 *)(STWI_buffer_send + 4) = param_1;
-    STWI_status.cmdSize = 1;
-
-    if (STWI_poll_CommandEnd() == 1) {
-        return 5;
-    } else {
-        return STWI_check_Command(0x996600b0, FALSE);
-    }
+	STWI_init();
+	*(u32 *)(STWI_buffer_send+0)=0x99660130;
+	*(u32 *)(STWI_buffer_send+4)=param_1;
+	STWI_status.cmdSize=1;
+	
+	if(STWI_poll_CommandEnd()==1)
+		return 5;
+	else
+		return STWI_check_Command(0x996600b0,FALSE);
 }
 
 u16 STWI_send_StopModeREQ(void)
 {
-    STWI_init();
-    *(u32 *)(STWI_buffer_send + 0) = 0x9966003d;
-    STWI_status.cmdSize = 0;
-
-    if (STWI_poll_CommandEnd() == 1) {
-        return 5;
-    } else {
-        return STWI_check_Command(0x996600bd, FALSE);
-    }
+	STWI_init();
+	*(u32 *)(STWI_buffer_send+0)=0x9966003d;
+	STWI_status.cmdSize=0;
+	
+	if(STWI_poll_CommandEnd()==1)
+		return 5;
+	else
+		return STWI_check_Command(0x996600bd,FALSE);
 }
+
