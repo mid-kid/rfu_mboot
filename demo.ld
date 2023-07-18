@@ -144,7 +144,7 @@ SECTIONS {
         MenuBusy = common; common += 4;
         Lang = common; common += 4;
         MenuMsg = common; common += 4;
-        MenuState = common; common += 4;
+        my_state = common; common += 4;
         MainMenuFadeOut = common; common += 4;
 
         bss_6.o(COMMON)

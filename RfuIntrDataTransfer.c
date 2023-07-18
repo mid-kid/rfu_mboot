@@ -53,7 +53,7 @@ RfuIntrDataTransfer:
 	.align	2
 .L17:
 	.word	SearchMenuErrorMsg
-	.word	MenuState
+	.word	my_state
 .L21:
 	ldr	r5, .L19
 	ldrb	r0, [r5]
@@ -85,7 +85,7 @@ RfuIntrDataTransfer:
 .L20:
 	.align	2
 .L19:
-	.word	MenuState
+	.word	my_state
 	.word	SearchMenuErrorMsg
 .Lfe1:
 	.size	 RfuIntrDataTransfer,.Lfe1-RfuIntrDataTransfer
@@ -100,7 +100,7 @@ extern u16 RfuDataRecv(void);
 extern u16 RfuDataSend(void);
 extern u16 RfuWaitDataStartForce(void);
 extern u8 SearchMenuErrorTimer;
-extern u8 MenuState;
+extern u8 my_state;
 extern u8 SearchMenuErrorMsg;
 extern struct RfuPeer RfuPeers[4];
 extern u8 MbootPeer;
@@ -123,7 +123,7 @@ void RfuIntrDataTransfer(void)
             SearchMenuErrorMsg = 3;
         }
     } else {
-        if (MenuState < 0xc6) {
+        if (my_state < 0xc6) {
             RfuDataRecv();
             RfuDataSend();
         }
@@ -134,6 +134,6 @@ void RfuIntrDataTransfer(void)
         SearchMenuErrorMsg = 4;
     }
 
-    MenuState = 0xc1;
+    my_state = 0xc1;
 }
 #endif

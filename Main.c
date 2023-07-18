@@ -26,7 +26,7 @@ extern u8 LZ_460c[];
 extern u8 Lang;
 extern u8 MainMenuFadeOut;
 extern u8 MenuBusy;
-extern u8 MenuState;
+extern u8 my_state;
 extern u8 bss_end[];
 extern u8 bss_start[];
 extern void (*nowProcess)();
@@ -166,7 +166,7 @@ void SEQ_title_init(void)
 	WinFade(1);
 	*(vu16 *)REG_DISPCNT|=DISP_BG2_ON;
 	
-	MenuState=0xc0;
+	my_state=0xc0;
 	FrameCountReset();
 	MainMenuFadeOut=TRUE;
 	MenuBusy=FALSE;

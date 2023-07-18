@@ -16,7 +16,7 @@ extern u8 LZ_450c[];
 extern u8 Lang;
 extern u8 MbootPeer;
 extern u8 MenuBusy;
-extern u8 MenuState;
+extern u8 my_state;
 extern u8 SearchMenuCursor;
 extern u8 SearchMenuEnd;
 extern u8 SearchMenuErrorMsg;
@@ -58,35 +58,35 @@ extern struct RfuPeer {
 	u32 mbootSize;
 } RfuPeers[4];
 
-enum SearchMenuState {
+enum {
 	// Correspond to entries in SearchProcTable
-	SEARCH_START,
-	SEARCH_RADIOCFG,
-	SEARCH_SETGAMEINFO,
-	SEARCH_DISCOSTART,
-	SEARCH_0x1d,
-	SEARCH_DISCORES,
-	SEARCH_CONNECT,
-	SEARCH_CONNCHECK,
-	SEARCH_CONNREADY,
-	SEARCH_WAITDATA,
-	SEARCH_BOOT,
-	SEARCH_END,
-	SEARCH_STATUS,
-	SEARCH_0x13,
+	STATE_RESET,
+	STATE_CONFIG_SYSTEM,
+	STATE_CONFIG_GAME,
+	STATE_SP_START,
+	STATE_SP_POLL,
+	STATE_SP_END,
+	STATE_CP_START,
+	STATE_CP_POLL,
+	STATE_CP_END,
+	STATE_CHANGE_CLOCK_SLAVE,
+	STATE_INIT,
+	STATE_RETURN_TITLE,
+	STATE_LINK_STATUS,
+	STATE_SYSTEM_STATUS,
 	
 	// Standalone states
-	SEARCH_SELECT_DISCO = 0x84,
-	SEARCH_MBOOT_START = 0x90,
-	SEARCH_MBOOT_START_CHECK = 0x91,
-	SEARCH_SELECT = 0x92,
-	SEARCH_MBOOT_DL_START = 0xa0,
-	SEARCH_MBOOT_DL = 0xa1,
-	SEARCH_ERROR_RESTART = 0xc1,
-	SEARCH_ERROR_END = 0xc2,
-	SEARCH_ERROR_REBOOT = 0xc5,
-	SEARCH_MBOOT_DL_COMPLETE = 0xc6,
-	SEARCH_MBOOT_EXEC = 0xc7
+	STATE_WAIT_SP = 0x84,
+	STATE_MBOOT_START = 0x90,
+	STATE_MBOOT_POLL = 0x91,
+	STATE_WAIT = 0x92,
+	STATE_DOWNLOAD_START = 0xa0,
+	STATE_WAIT_DOWNLOAD_END = 0xa1,
+	STATE_CONNECTION_ERROR = 0xc1,
+	STATE_FATAL_ERROR = 0xc2,
+	STATE_DOWNLOAD_FAILED = 0xc5,
+	STATE_DOWNLOAD_SUCCESS = 0xc6,
+	STATE_EXEC = 0xc7
 };
 
 static void SearchMenuDrawListTitle(u16 Pos,u8 Len,u16 CharNo);
@@ -126,7 +126,7 @@ void SearchMenuInit(void)
 	SearchMenuCursor=0;
 	SearchMenuErrorTimer=0;
 	SearchMenuErrorMsg=-1;
-	MenuState=SEARCH_BOOT;
+	my_state=STATE_INIT;
 	GameNameInit();
 }
 
@@ -153,19 +153,19 @@ void SearchMenu(void)
 	if(Mboot.mode==0) {
 		RfuReset();
 		
-		if(MenuState!=SEARCH_MBOOT_DL_COMPLETE) {
+		if(my_state!=STATE_DOWNLOAD_SUCCESS) {
 			*(vu16 *)REG_IME=0;
 			SearchMenuErrorTimer++;
 			if(SearchMenuErrorTimer>4*60) {
 				SearchMenuErrorTimer=0;
-				MenuState=SEARCH_BOOT;
+				my_state=STATE_INIT;
 				SearchMenuErrorMsg=4;  // ERROR OCCURRED!
 			}
 			*(vu16 *)REG_IME=1;
 		}
 	}
 	
-	if(MenuState==SEARCH_SELECT_DISCO||MenuState==SEARCH_SELECT) {
+	if(my_state==STATE_WAIT_SP||my_state==STATE_WAIT) {
 		mf_rapidKey();
 		
 		// Move the cursor
@@ -188,73 +188,72 @@ void SearchMenu(void)
 		if(key.Trg & A_BUTTON&&GameList[SearchMenuCursor].beaconID) {
 			SearchMenuDrawList(FALSE);
 			MbootBeaconID=GameList[SearchMenuCursor].beaconID;
-			if(MenuState==SEARCH_SELECT_DISCO)
-				MenuState=SEARCH_DISCORES;
+			if(my_state==STATE_WAIT_SP)
+				my_state=STATE_SP_END;
 			else
-				MenuState=SEARCH_CONNECT;
+				my_state=STATE_CP_START;
 			SoundPlaySfx(2);
 		}
 	}
 	
 	if(key.Trg & B_BUTTON) {
-		if(MenuState==SEARCH_MBOOT_DL_START) {
+		if(my_state==STATE_DOWNLOAD_START) {
 			RfuWaitData();
-			MenuState=SEARCH_START;
+			my_state=STATE_RESET;
 			GameListInit();
 			SoundPlaySfx(3);
 		}
-		else if(!SearchMenuEnd&&
-				!MenuBusy&&
+		else if(!SearchMenuEnd&&!MenuBusy&&
 				SearchMenuErrorMsg==(u8)-1&&
-				MenuState!=SEARCH_BOOT&&
-				MenuState!=SEARCH_MBOOT_START_CHECK) {
+				my_state!=STATE_INIT&&
+				my_state!=STATE_MBOOT_POLL) {
 			RfuWaitData();
-			MenuState=SEARCH_START;
+			my_state=STATE_RESET;
 			SearchMenuEnd=TRUE;
 			SoundPlaySfx(3);
 		}
 	}
 	
-	if(!(MenuState & 0x80))
-		procRes=SearchProcTable[MenuState]();
+	if(!(my_state & 0x80))
+		procRes=SearchProcTable[my_state]();
 	
-	switch(MenuState) {
-		case SEARCH_BOOT:
+	switch(my_state) {
+		case STATE_INIT:
 			// Resets and boots the adapter
 			if(procRes==0)
-				MenuState=SEARCH_START;
+				my_state=STATE_RESET;
 			break;
 			
-		case SEARCH_START:
+		case STATE_RESET:
 			if(procRes==0) {
 				SearchMenuErrorMsg=-1;
 				if(SearchMenuEnd!=FALSE)
-					MenuState=SEARCH_END;
+					my_state=STATE_RETURN_TITLE;
 				else {
-					MenuState=SEARCH_RADIOCFG;
+					my_state=STATE_CONFIG_SYSTEM;
 					mf_clearRect(0x6b,1,8);
 				}
 			}
 			break;
 			
-		case SEARCH_RADIOCFG:
+		case STATE_CONFIG_SYSTEM:
 			if(procRes==0) {
-				MenuState=SEARCH_DISCOSTART;
+				my_state=STATE_SP_START;
 				FrameCountReset();
 				GameListBits=0;
 			}
 			break;
 			
-		case SEARCH_DISCOSTART:
+		case STATE_SP_START:
 			// Starts game discovery
 			if(procRes==0) {
-				MenuState=SEARCH_SELECT_DISCO;
+				my_state=STATE_WAIT_SP;
 				MbootBeaconID=0;
 				SearchMenuTimer=1*60;
 			}
 			break;
 			
-		case SEARCH_SELECT_DISCO:
+		case STATE_WAIT_SP:
 			// Wait one second for discovery to finish
 			if(GameListBits) {
 				MenuMsgSet(9,0);  // SELECT A GAME
@@ -265,26 +264,26 @@ void SearchMenu(void)
 			
 			SearchMenuTimer--;
 			if(SearchMenuTimer==0)
-				MenuState=SEARCH_DISCORES;
+				my_state=STATE_SP_END;
 			break;
 			
-		case SEARCH_DISCORES:
+		case STATE_SP_END:
 			// Get discovery results
 			if(procRes==0) {
 				if(SearchMenuTimer<60-8)
 					GameListBits=SearchMenuUpdateGames();
 				
 				if(MbootBeaconID)
-					MenuState=SEARCH_CONNECT;
+					my_state=STATE_CP_START;
 				else {
-					MenuState=SEARCH_SELECT;
+					my_state=STATE_WAIT;
 					SearchMenuTimer=5*60;
 					FrameCount=0;
 				}
 			}
 			break;
 			
-		case SEARCH_SELECT:
+		case STATE_WAIT:
 			// Allow the player to select a game
 			// Restart discovery after 5 seconds
 			if(GameListBits!=0) {
@@ -300,27 +299,27 @@ void SearchMenu(void)
 			
 			SearchMenuTimer--;
 			if(SearchMenuTimer==0)
-				MenuState=SEARCH_DISCOSTART;
+				my_state=STATE_SP_START;
 			break;
 			
-		case SEARCH_CONNECT:
+		case STATE_CP_START:
 			// Start connecting to a game
 			if(procRes==0) {
 				mf_clearRect(0x200,2,0x20);
 				SearchMenuTimer=2*60;
-				MenuState=SEARCH_CONNCHECK;
+				my_state=STATE_CP_POLL;
 			}
 			else if(procRes==0x900) {
 				procRes=0;
 				SearchMenuErrorMsg=0;  // CONNECTION ATTEMPT FAILED!
-				MenuState=SEARCH_ERROR_RESTART;
+				my_state=STATE_CONNECTION_ERROR;
 			}
 			break;
 			
-		case SEARCH_CONNCHECK:
+		case STATE_CP_POLL:
 			// Wait a maximum of two seconds for the connection to complete
 			if(procRes==0) {
-				MenuState=SEARCH_CONNREADY;
+				my_state=STATE_CP_END;
 				break;
 			}
 			
@@ -331,38 +330,38 @@ void SearchMenu(void)
 				procRes=0;
 			}
 			if(SearchMenuTimer==0)
-				MenuState=SEARCH_CONNREADY;
+				my_state=STATE_CP_END;
 			break;
 			
-		case SEARCH_CONNREADY:
+		case STATE_CP_END:
 			// Initialize multiboot download
 			if(procRes==0) {
 				if(SearchMenuTimer>0&&RfuBuf.recv[7]==0) {
 					SearchMenuClearGame();
 					Sio32IntrProcSet(RfuIntrDataTransfer);
 					RfuMbootCfg(0x20,MbootPeer,(u8 *)EX_WRAM,EX_WRAM_SIZE);
-					MenuState=SEARCH_SETGAMEINFO;
+					my_state=STATE_CONFIG_GAME;
 				}
 				else {
 					SearchMenuErrorMsg=0;  // CONNECTION ATTEMPT FAILED!
-					MenuState=SEARCH_ERROR_RESTART;
+					my_state=STATE_CONNECTION_ERROR;
 				}
 			}
 			break;
 			
-		case SEARCH_SETGAMEINFO:
+		case STATE_CONFIG_GAME:
 			// Set the timer for the next step
 			if(procRes==0) {
 				SearchMenuTimer=0.5*60;
-				MenuState=SEARCH_STATUS;
+				my_state=STATE_LINK_STATUS;
 			}
 			break;
 			
-		case SEARCH_STATUS:
+		case STATE_LINK_STATUS:
 			// Check if peer is still connected
 			if(procRes==0) {
 				if(RfuBuf.recv[4+MbootPeer]) {
-					MenuState=SEARCH_WAITDATA;
+					my_state=STATE_CHANGE_CLOCK_SLAVE;
 					mf_drawString(0x6b,2,Mboot.curGame.userName);
 					break;
 				}
@@ -371,18 +370,18 @@ void SearchMenu(void)
 			SearchMenuTimer--;
 			if(SearchMenuTimer==0) {
 				SearchMenuErrorMsg=0;  // CONNECTION ATTEMPT FAILED!
-				MenuState=SEARCH_ERROR_RESTART;
+				my_state=STATE_CONNECTION_ERROR;
 			}
 			break;
 			
-		case SEARCH_WAITDATA:
+		case STATE_CHANGE_CLOCK_SLAVE:
 			if(procRes==0) {
 				FrameCountReset();
-				MenuState=SEARCH_MBOOT_START;
+				my_state=STATE_MBOOT_START;
 			}
 			break;
 			
-		case SEARCH_END:
+		case STATE_RETURN_TITLE:
 			// Return to main menu
 			if(procRes==0) {
 				SEQ_title_init();
@@ -390,21 +389,21 @@ void SearchMenu(void)
 			}
 			break;
 			
-		case SEARCH_ERROR_RESTART:
-		case SEARCH_ERROR_END:
-		case SEARCH_ERROR_REBOOT:
+		case STATE_CONNECTION_ERROR:
+		case STATE_FATAL_ERROR:
+		case STATE_DOWNLOAD_FAILED:
 			MenuMsgSet(SearchMenuErrorMsg,1);
 			SearchMenuErrorBeep();
 			
 			mf_clearRect(0x243,1,0x18);
 			GameListInit();
 			
-			if(MenuState==SEARCH_ERROR_RESTART)
-				MenuState=SEARCH_START;
-			else if(MenuState==SEARCH_ERROR_REBOOT)
-				MenuState=SEARCH_BOOT;
+			if(my_state==STATE_CONNECTION_ERROR)
+				my_state=STATE_RESET;
+			else if(my_state==STATE_DOWNLOAD_FAILED)
+				my_state=STATE_INIT;
 			else {
-				// MenuState == SEARCH_ERROR_END
+				// my_state == STATE_FATAL_ERROR
 				SoundPlaySfx(3);
 				SEQ_title_init();
 				nowProcess=SEQ_title;
@@ -419,24 +418,24 @@ void SearchMenu(void)
 
 static void SearchMenuMbootStart(void)
 {
-	switch(MenuState) {
-		case SEARCH_MBOOT_START:
+	switch(my_state) {
+		case STATE_MBOOT_START:
 			MbootDLStart2(MbootPeer,8);
-			MenuState=SEARCH_MBOOT_START_CHECK;
+			my_state=STATE_MBOOT_POLL;
 			break;
 			
-		case SEARCH_MBOOT_START_CHECK:
+		case STATE_MBOOT_POLL:
 			if(RfuPeers[MbootPeer].sub[0][0]==0x27) {
-				MenuState=SEARCH_MBOOT_DL_START;
+				my_state=STATE_DOWNLOAD_START;
 				RfuPeerUpdateFlags(4,MbootPeer);
 			}
 			if(RfuPeers[MbootPeer].sub[0][1]>0xfa) {
 				SearchMenuErrorMsg=0;  // CONNECTION ATTEMPT FAILED!
-				MenuState=SEARCH_ERROR_REBOOT;
+				my_state=STATE_DOWNLOAD_FAILED;
 				RfuPeerUpdateFlags(4,MbootPeer);
 			}
 			
-			if(MenuState!=SEARCH_MBOOT_START_CHECK)
+			if(my_state!=STATE_MBOOT_POLL)
 				FrameCountReset();
 	}
 }
@@ -450,51 +449,51 @@ static void SearchMenuMbootDL(void)
 	
 	data=RfuPeers[MbootPeer].sub[1];
 	
-	switch(MenuState) {
-		case SEARCH_MBOOT_DL_START:
+	switch(my_state) {
+		case STATE_DOWNLOAD_START:
 			MenuMsgBlink(10,0x40);  // WAITING FOR DATA...
 			if((data[0] & 0x8000)!=0) {
 				SoundPlaySfx(4);
 				FrameCountReset();
-				MenuState=SEARCH_MBOOT_DL;
+				my_state=STATE_WAIT_DOWNLOAD_END;
 				MenuBusy=TRUE;
 			}
 			else if(data[0]==0x49) {
 				SearchMenuErrorMsg=1;  // DOWNLOAD FAILED!
-				MenuState=SEARCH_ERROR_REBOOT;
+				my_state=STATE_DOWNLOAD_FAILED;
 			}
 			break;
 			
-		case SEARCH_MBOOT_DL:
+		case STATE_WAIT_DOWNLOAD_END:
 			MenuMsgBlink(0xb,0x20);  // DOWNLOADING...
 			if(data[0]==0x47) {
 				if(RfuStrcmp(GameLogoInitial,(u8 *)EX_WRAM+4)==0) {
 					SoundPlaySfx(5);
 					SearchMenuTimer=2*60;
 					MenuMsgSet(0xc,2);  // DOWNLOAD COMPLETED!
-					MenuState=SEARCH_MBOOT_DL_COMPLETE;
+					my_state=STATE_DOWNLOAD_SUCCESS;
 				}
 				else {
 					SearchMenuErrorMsg=2;  // INVALID DATA RECEIVED!
-					MenuState=SEARCH_ERROR_RESTART;
+					my_state=STATE_CONNECTION_ERROR;
 				}
 				RfuPeerUpdateFlags(0xc,MbootPeer);
 				RfuWaitData();
 			}
 			else if(data[1]>0xfa||data[0]==0x49) {
 				SearchMenuErrorMsg=1;  // DOWNLOAD FAILED!
-				MenuState=SEARCH_ERROR_REBOOT;
+				my_state=STATE_DOWNLOAD_FAILED;
 			}
 			break;
 			
-		case SEARCH_MBOOT_DL_COMPLETE:
+		case STATE_DOWNLOAD_SUCCESS:
 			SearchMenuTimer--;
 			if(SearchMenuTimer==0)
-				MenuState=SEARCH_MBOOT_EXEC;
+				my_state=STATE_EXEC;
 			break;
 	}
 	
-	if(MenuState==SEARCH_MBOOT_EXEC) {
+	if(my_state==STATE_EXEC) {
 		CpuCopy(&Mboot,CPU_WRAM+0,sizeof(Mboot),16);
 		CpuCopy(GameLogoInitial,CPU_WRAM+0xf0,sizeof(GameLogoInitial),16);
 		
