@@ -11,9 +11,9 @@ extern u16 SearchProc_ConnectCheck(void);
 extern u16 RfuConnectReady(void);
 extern u16 SearchProc_WaitData(void);
 extern u16 SearchProc_Boot(void);
-extern u16 RfuCmd_End(void);
-extern u16 RfuCmd_Status(void);
-extern u16 RfuCmd_0x13(void);
+extern u16 STWI_send_StopModeREQ(void);
+extern u16 STWI_send_LinkStatusREQ(void);
+extern u16 STWI_send_SystemStatusREQ(void);
 
 u16 (*const SearchProcTable[])(void) = {
     RfuStart,
@@ -27,7 +27,7 @@ u16 (*const SearchProcTable[])(void) = {
     RfuConnectReady,
     SearchProc_WaitData,
     SearchProc_Boot,
-    RfuCmd_End,
-    RfuCmd_Status,
-    RfuCmd_0x13
+    STWI_send_StopModeREQ,
+    STWI_send_LinkStatusREQ,
+    STWI_send_SystemStatusREQ
 };

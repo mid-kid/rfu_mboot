@@ -8,7 +8,7 @@ extern struct RfuBuf {
 } RfuBuf;
 extern struct Mboot Mboot;
 extern struct MbootTmp MbootTmp;
-extern u16 RfuCmd_Status(void);
+extern u16 STWI_send_LinkStatusREQ(void);
 extern void RfuDisconnect(u8 Peer, u8 param_2);
 
 u32 RfuStatus(u8 *PeersLost, u8 *Connected, u8 *PeersSeen)
@@ -41,7 +41,7 @@ u32 RfuStatus(u8 *PeersLost, u8 *Connected, u8 *PeersSeen)
     }
 
     if (mode) {
-        ret = RfuCmd_Status();
+        ret = STWI_send_LinkStatusREQ();
         if (ret == 0) {
             puVar6 = RfuBuf.recv + 4;
             for (x = 0; x < 4; x++) {

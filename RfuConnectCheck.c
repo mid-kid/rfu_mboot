@@ -17,7 +17,7 @@ RfuConnectCheck:
 	mov	r7, #255
 	strb	r7, [r4]
 	strb	r7, [r1]
-	bl	RfuCmd_ConnectCheck
+	bl	STWI_send_CP_PollingREQ
 	lsl	r0, r0, #16
 	lsr	r0, r0, #16
 	mov	r9, r0
@@ -178,7 +178,7 @@ RfuConnectCheck:
 #include "GameInfo.h"
 #include "Mboot.h"
 #include "MbootTmp.h"
-extern u16 RfuCmd_ConnectCheck(void);
+extern u16 STWI_send_CP_PollingREQ(void);
 extern void RfuCmd_ConnectCheck_Parse(u8 *Busy, u8 *PlayerNum, u16 *ID);
 extern struct Mboot Mboot;
 extern struct MbootTmp MbootTmp;
@@ -197,7 +197,7 @@ u16 RfuConnectCheck(u8 *Busy, u8 *PlayerNum)
     *Busy = -1;
     *PlayerNum = -1;
 
-    ret = RfuCmd_ConnectCheck();
+    ret = STWI_send_CP_PollingREQ();
     if (ret != 0) return ret;
 
     RfuCmd_ConnectCheck_Parse(Busy, PlayerNum, &ID);

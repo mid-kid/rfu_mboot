@@ -3,7 +3,7 @@
 #include "Mboot.h"
 #include "MbootTmp.h"
 #include "RfuPeer.h"
-extern u16 RfuCmd_DataRecv(void);
+extern u16 STWI_send_DataRxREQ(void);
 extern void RfuCmd_DataRecv_Parse(void);
 extern void RfuPeerUpdate(u8 param_1, u8 param_2, struct RfuPeerSub *param_3);
 extern struct Mboot Mboot;
@@ -23,7 +23,7 @@ u32 RfuDataRecv(void)
     if (Mboot.mode == (u8)-1) return 0;
 
     MbootTmp.unk_10 = Mboot.unk_04 | Mboot.unk_05 | Mboot.unk_06;
-    res = RfuCmd_DataRecv();
+    res = STWI_send_DataRxREQ();
     if (res == 0 && RfuBuf.recv[1] != 0) {
         MbootTmp.unk_05 = 0;
         RfuCmd_DataRecv_Parse();

@@ -3,7 +3,7 @@
 #include "STWI_status.h"
 extern struct STWI_status STWI_status;
 
-u32 RfuCmdReset(void)
+u32 STWI_init(void)
 {
     *(vu16 *)REG_RCNT = 0x100;
     *(vu16 *)REG_SIOCNT = 0x5003;

@@ -2,93 +2,93 @@
 __asm__("
 .text
 	.align	2
-	.globl	RfuCmdSend
-	.type	 RfuCmdSend,function
+	.globl	STWI_start_Command
+	.type	 STWI_start_Command,function
 	.thumb_func
-RfuCmdSend:
+STWI_start_Command:
 	push	{r4, r5, lr}
-	ldr	r0, .L21
+	ldr	r0, .LA21
 	ldrb	r0, [r0, #11]
 	cmp	r0, #0
-	bne	.L4	@cond_branch
+	bne	.LA4	@cond_branch
 	mov	r0, #1
-	b	.L19
-.L22:
+	b	.LA19
+.LA22:
 	.align	2
-.L21:
+.LA21:
 	.word	STWI_status
-.L4:
-	ldr	r1, .L23
-	ldr	r0, .L23+4
+.LA4:
+	ldr	r1, .LA23
+	ldr	r0, .LA23+4
 	ldr	r0, [r0]
 	str	r0, [r1]
-	ldr	r1, .L23+8
+	ldr	r1, .LA23+8
 	str	r0, [r1, #4]
 	mov	r0, #1
 	strb	r0, [r1, #9]
-	ldr	r2, .L23+12
-	ldr	r3, .L23+16
+	ldr	r2, .LA23+12
+	ldr	r3, .LA23+16
 	add	r0, r3, #0
 	strh	r0, [r2]
 	add	r2, r1, #0
 	add	r2, r2, #12
-.L5:
+.LA5:
 	ldrb	r0, [r2]
 	cmp	r0, #0
-	beq	.L5	@cond_branch
+	beq	.LA5	@cond_branch
 	ldrb	r2, [r1, #13]
 	sub	r0, r2, #1
 	lsl	r0, r0, #24
 	lsr	r0, r0, #24
 	cmp	r0, #1
-	bhi	.L7	@cond_branch
+	bhi	.LA7	@cond_branch
 	mov	r4, #0
 	ldrb	r0, [r1, #14]
 	cmp	r4, r0
-	bge	.L9	@cond_branch
+	bge	.LA9	@cond_branch
 	add	r5, r1, #0
-.L11:
+.LA11:
 	bl	VBlankIntrWait
 	add	r4, r4, #1
 	ldrb	r2, [r5, #14]
 	cmp	r4, r2
-	blt	.L11	@cond_branch
-.L9:
-	ldr	r4, .L23+8
+	blt	.LA11	@cond_branch
+.LA9:
+	ldr	r4, .LA23+8
 	ldrb	r5, [r4, #13]
-	bl	RfuCmdReset
+	bl	STWI_init
 	strb	r5, [r4, #13]
 	mov	r0, #2
 	strb	r0, [r4, #10]
-	b	.L4
-.L24:
+	b	.LA4
+.LA24:
 	.align	2
-.L23:
+.LA23:
 	.word	67109152
 	.word	STWI_buffer_send
 	.word	STWI_status
 	.word	67109160
 	.word	20611
-.L7:
+.LA7:
 	lsl	r0, r2, #24
 	lsr	r0, r0, #24
 	cmp	r0, #3
-	bne	.L20	@cond_branch
-	ldr	r1, .L25
+	bne	.LA20	@cond_branch
+	ldr	r1, .LA25
 	mov	r3, #128
 	lsl	r3, r3, #8
 	add	r0, r3, #0
 	strh	r0, [r1]
-	ldr	r2, .L25+4
+	ldr	r2, .LA25+4
 	add	r0, r2, #0
 	mov	r4, #250
 	lsl	r4, r4, #2
-.L17:
+.LA17:
 	strh	r0, [r1]
 	sub	r4, r4, #1
 	cmp	r4, #0
-	bne	.L17	@cond_branch
-	ldr	r1, .L25
+	bne	.LA17	@cond_branch
+	ldr	r1, .LA25
 	mov	r3, #128
 	lsl	r3, r3, #8
 	add	r0, r3, #0
@@ -96,34 +96,34 @@ RfuCmdSend:
 	mov	r0, #0
 	strh	r0, [r1]
 	sub	r1, r1, #12
-	ldr	r2, .L25+8
+	ldr	r2, .LA25+8
 	add	r0, r2, #0
 	strh	r0, [r1]
-.L20:
+.LA20:
 	mov	r0, #0
-.L19:
+.LA19:
 	pop	{r4, r5}
 	pop	{r1}
 	bx	r1
-.L26:
+.LA26:
 	.align	2
-.L25:
+.LA25:
 	.word	67109172
 	.word	33023
 	.word	20483
-.Lfe1:
-	.size	 RfuCmdSend,.Lfe1-RfuCmdSend
+.LAfe1:
+	.size	 STWI_start_Command,.LAfe1-STWI_start_Command
 ");
 #else
 
 #include <Agb.h>
 
 #include "STWI_status.h"
-extern u32 RfuCmdReset(void);
+extern u32 STWI_init(void);
 extern struct STWI_status STWI_status;
 extern u8 STWI_buffer_send[0x120];
 
-u16 RfuCmdSend(void)
+u16 STWI_start_Command(void)
 {
     int x;
     u8 tmp;
@@ -146,7 +146,7 @@ wait:
         for (x = 0; x < STWI_status.unk_09; x++) VBlankIntrWait();
 
         tmp = STWI_status.unk_08;
-        RfuCmdReset();
+        STWI_init();
         STWI_status.unk_08 = tmp;
         STWI_status.error = 2;
         goto retry;

@@ -1,13 +1,13 @@
 #include <Agb.h>
 
-extern u16 RfuCmd_GameInfoGet(void);
+extern u16 STWI_send_SP_PollingREQ(void);
 extern void RfuCmd_GameInfoGet_Parse(void);
 
 u16 RfuGameInfoGet(void)
 {
     u16 ret;
 
-    ret = RfuCmd_GameInfoGet();
+    ret = STWI_send_SP_PollingREQ();
     if (ret == 0) RfuCmd_GameInfoGet_Parse();
     return ret;
 }

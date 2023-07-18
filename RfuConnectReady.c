@@ -1,8 +1,8 @@
 #include <Agb.h>
 
-extern u16 RfuCmd_ConnectReady(void);
+extern u16 STWI_send_CP_EndREQ(void);
 
 u16 RfuConnectReady(void)
 {
-    return RfuCmd_ConnectReady();
+    return STWI_send_CP_EndREQ();
 }

@@ -1,13 +1,13 @@
 #include <Agb.h>
 
-extern u16 RfuCmd_Start(void);
+extern u16 STWI_send_ResetREQ(void);
 extern void MbootInit(void);
 
 u16 RfuStart(void)
 {
     u16 ret;
 
-    ret = RfuCmd_Start();
+    ret = STWI_send_ResetREQ();
     if (ret == 0) MbootInit();
     return ret;
 }

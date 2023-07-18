@@ -2,11 +2,11 @@
 
 #include "STWI_status.h"
 extern struct STWI_status STWI_status;
-void RfuCmdReset(void);
+void STWI_init(void);
 
 u32 RfuCmdInit(void)
 {
-    RfuCmdReset();
+    STWI_init();
     STWI_status.unk_09 = 8;
     STWI_status.unk_12 = 1;
     *(vu16 *)REG_IME = 0;

@@ -4,7 +4,7 @@
 #include "Mboot.h"
 #include "MbootTmp.h"
 extern u32 RfuDataSendPrepare(void);
-extern u16 RfuCmd_DataSend(u8 *Srcp, u8 Size);
+extern u16 STWI_send_DataTxREQ(u8 *Srcp, u8 Size);
 extern void RfuPeerUpdate(u8 param_1, u8 param_2, struct RfuPeerSub *param_3);
 extern struct Mboot Mboot;
 extern struct MbootTmp MbootTmp;
@@ -24,7 +24,7 @@ u16 RfuDataSend(void)
     MbootTmp.unk_12 = 0;
     size = RfuDataSendPrepare();
     if (MbootTmp.unk_12 != 0) {
-        res = RfuCmd_DataSend(RfuDataSendBuf, size + 4);
+        res = STWI_send_DataTxREQ(RfuDataSendBuf, size + 4);
     }
 
     if (res == 0) {

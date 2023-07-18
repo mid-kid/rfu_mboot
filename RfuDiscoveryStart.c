@@ -1,8 +1,8 @@
 #include <Agb.h>
 
-extern u16 RfuCmd_DiscoveryStart(void);
+extern u16 STWI_send_SP_StartREQ(void);
 
 u16 RfuDiscoveryStart(void)
 {
-    return RfuCmd_DiscoveryStart();
+    return STWI_send_SP_StartREQ();
 }

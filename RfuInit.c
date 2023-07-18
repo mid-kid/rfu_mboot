@@ -36,7 +36,7 @@ void RfuInit(void)
     src = (u16 *)((u32)RfuMemcpy & ~1);
     dst = (u16 *)RfuBuf.func;
     size = (u16 *)RfuMemcpyEnd - (u16 *)RfuMemcpy;
-    while (--size != 0xffff) {
+    while (--size != (u16)-1) {
         *dst++ = *src++;
     }
 

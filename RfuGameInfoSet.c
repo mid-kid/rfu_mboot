@@ -1,7 +1,7 @@
 #include <Agb.h>
 
 #include "Mboot.h"
-extern u16 RfuCmd_GameInfoSet(char *GameData, char *UserName);
+extern u16 STWI_send_GameConfigREQ(char *GameData, char *UserName);
 extern struct Mboot Mboot;
 
 u16 RfuGameInfoSet(u8 IsMultiboot, u16 GameID, char *GameName, char *UserName)
@@ -21,7 +21,7 @@ u16 RfuGameInfoSet(u8 IsMultiboot, u16 GameID, char *GameName, char *UserName)
     GameNameTmp[1] = GameID >> 8;
     if (IsMultiboot) GameNameTmp[1] |= 0x80;
 
-    ret = RfuCmd_GameInfoSet(GameNameTmp, UserName);
+    ret = STWI_send_GameConfigREQ(GameNameTmp, UserName);
     if (ret != 0) return ret;
 
     Mboot.curGame.isMultiboot = IsMultiboot;
