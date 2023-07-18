@@ -38,12 +38,8 @@ SECTIONS {
         VBlankIntr.o(.text)
         Sio32.o(.text)
 
-        STWI_init.o(.text)
-        STWI_init_all.o(.text)
-        STWI_poll_CommandEnd.o(.text)
-        STWI_check_Command.o(.text)
-        STWI_intr_vblank.o(.text)
         AgbRFU_STWI.o(.text)
+
         RfuResetAdapter.o(.text)
         RfuBoot.o(.text)
         RfuHandshake.o(.text)
