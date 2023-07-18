@@ -12,7 +12,7 @@ extern u16 MbootBeaconID;
 extern u16 SearchMenuTimer;
 extern u8 FrameCount;
 extern u8 GameListBits;
-extern u8 LZ_450c[];
+extern u8 _binary_char_search_tmap_LZ_bin_start[];
 extern u8 Lang;
 extern u8 MbootPeer;
 extern u8 MenuBusy;
@@ -103,7 +103,7 @@ void SEQ_search_init(void)
 	*(vu16 *)REG_BG2VOFS=-52;
 	*(vu16 *)REG_BG2HOFS=-24;
 	DmaClear(3,0,Bg0Bak,sizeof(Bg0Bak),16);
-	LZ77UnCompVram(&LZ_450c,(void *)0x6000800);
+	LZ77UnCompVram(_binary_char_search_tmap_LZ_bin_start,(u8 *)VRAM+0x800);
 	VBlankIntrWait();
 	
 	*(vu16 *)REG_DISPCNT|=DISP_BG1_ON;

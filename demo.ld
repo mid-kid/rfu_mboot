@@ -3,6 +3,7 @@ SECTIONS {
     .text : {
         crt0_demo.o(.text)
         Main.o(.text)
+
         searchMenu.o(.text)
         RfuIntrDataTransfer.o(.text)
         RfuStrcmp.o(.text)
@@ -20,6 +21,7 @@ SECTIONS {
         SearchMenuDrawGame.o(.text)
         checkAPI_Error.o(.text)
         SearchMenuErrorBeep.o(.text)
+
         MenuMsgSet.o(.text)
         FrameCountReset.o(.text)
         MenuMsgBlink.o(.text)
@@ -27,10 +29,12 @@ SECTIONS {
         myFunc.o(.text)
         WinInit.o(.text)
         WinFade.o(.text)
+
         SoundInit.o(.text)
         SoundMain.o(.text)
         SoundPlaySfx.o(.text)
         SoundStop.o(.text)
+
         VBlankIntr.o(.text)
         Sio32.o(.text)
         RfuCmdReset.o(.text)
@@ -112,13 +116,10 @@ SECTIONS {
         Main.o(.rodata)
         Sfx.o(.rodata)
         interrupt.o(.rodata)
-        LZ_43c8 = .;
         char/pals_LZ.o(.rodata)
-        LZ_4420 = .;
         char/tmap_LZ.o(.rodata)
         LZ_450c = .;
         char/search_tmap_LZ.o(.rodata)
-        LZ_460c = .;
         char/tiles_LZ.o(.rodata)
         RfuIntrHandshake.o(.rodata)
         Sio32ID.o(.rodata)

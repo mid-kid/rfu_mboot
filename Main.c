@@ -20,9 +20,9 @@ struct MenuMsg {
 extern const struct MenuMsg *MenuMsg;
 extern const struct MenuMsg MenuMsgInitial[];
 extern u16 Bg0Bak[32*20];
-extern u8 LZ_43c8[];
-extern u8 LZ_4420[];
-extern u8 LZ_460c[];
+extern u8 _binary_char_pals_LZ_bin_start[];
+extern u8 _binary_char_tmap_LZ_bin_start[];
+extern u8 _binary_char_tiles_LZ_bin_start[];
 extern u8 Lang;
 extern u8 MainMenuFadeOut;
 extern u8 MenuBusy;
@@ -73,9 +73,9 @@ void AgbMain(void)
 	DmaClear(3,0,bss_start,(u32)(bss_end-bss_start),32);
 	*(vu32 *)INTR_VECTOR_BUF=(vu32)intr_main;
 	
-	LZ77UnCompVram(LZ_460c,(u8 *)VRAM+0x4000);
-	LZ77UnCompVram(LZ_43c8,(u8 *)PLTT);
-	LZ77UnCompVram(LZ_4420,(u8 *)VRAM+0x1800);
+	LZ77UnCompVram(_binary_char_tiles_LZ_bin_start,(u8 *)VRAM+0x4000);
+	LZ77UnCompVram(_binary_char_pals_LZ_bin_start,(u8 *)PLTT);
+	LZ77UnCompVram(_binary_char_tmap_LZ_bin_start,(u8 *)VRAM+0x1800);
 	
 	SoundInit();
 	WinInit();
@@ -152,8 +152,8 @@ void SEQ_title_init(void)
 	
 	CpuClear(0,Bg0Bak,sizeof(Bg0Bak),16);
 	MenuMsgInit();
-	mf_drawString(0xcb,0,"ENGLISH");
 	
+	mf_drawString(0xcb,0,"ENGLISH");
 	bg=Bg0Bak+(9*32+13);
 	charNo=0x10f;
 	for(i=0;i<3;i++)
