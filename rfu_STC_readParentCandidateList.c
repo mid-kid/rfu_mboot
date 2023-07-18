@@ -7,7 +7,7 @@ extern struct rfuFixed {
 } rfuFixed;
 extern struct rfuLinkStatus rfuLinkStatus;
 
-void RfuCmd_GameInfoGet_Parse(void)
+void rfu_STC_readParentCandidateList(void)
 {
     u8 x;
     u8 *data;

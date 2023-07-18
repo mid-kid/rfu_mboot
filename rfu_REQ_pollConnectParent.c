@@ -2,10 +2,10 @@
 __asm__("
 .text
 	.align	2
-	.globl	RfuConnectCheck
-	.type	 RfuConnectCheck,function
+	.globl	rfu_REQ_pollConnectParent
+	.type	 rfu_REQ_pollConnectParent,function
 	.thumb_func
-RfuConnectCheck:
+rfu_REQ_pollConnectParent:
 	push	{r4, r5, r6, r7, lr}
 	mov	r7, sl
 	mov	r6, r9
@@ -29,7 +29,7 @@ RfuConnectCheck:
 	add	r0, r4, #0
 	mov	r1, r8
 	add	r2, r6, #0
-	bl	RfuCmd_ConnectCheck_Parse
+	bl	rfu_getConnectParentStatus
 	ldrb	r0, [r4]
 	cmp	r0, #0
 	bne	.L17	@cond_branch
@@ -169,7 +169,7 @@ RfuConnectCheck:
 	.word	rfuLinkStatus+20
 	.word	67109384
 .Lfe1:
-	.size	 RfuConnectCheck,.Lfe1-RfuConnectCheck
+	.size	 rfu_REQ_pollConnectParent,.Lfe1-rfu_REQ_pollConnectParent
 ");
 #else
 
@@ -179,11 +179,11 @@ RfuConnectCheck:
 #include "rfuLinkStatus.h"
 #include "rfuStatic.h"
 extern u16 STWI_send_CP_PollingREQ(void);
-extern void RfuCmd_ConnectCheck_Parse(u8 *Busy, u8 *PlayerNum, u16 *ID);
+extern void rfu_getConnectParentStatus(u8 *Busy, u8 *PlayerNum, u16 *ID);
 extern struct rfuLinkStatus rfuLinkStatus;
 extern struct rfuStatic rfuStatic;
 
-u16 RfuConnectCheck(u8 *Busy, u8 *PlayerNum)
+u16 rfu_REQ_pollConnectParent(u8 *Busy, u8 *PlayerNum)
 {
     u16 ime;
     u16 ret;
@@ -200,7 +200,7 @@ u16 RfuConnectCheck(u8 *Busy, u8 *PlayerNum)
     ret = STWI_send_CP_PollingREQ();
     if (ret != 0) return ret;
 
-    RfuCmd_ConnectCheck_Parse(Busy, PlayerNum, &ID);
+    rfu_getConnectParentStatus(Busy, PlayerNum, &ID);
     if (*Busy != 0) return 0;
 
     bit = 1 << *PlayerNum;

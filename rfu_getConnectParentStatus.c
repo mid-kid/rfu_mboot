@@ -5,7 +5,7 @@ extern struct rfuFixed {
     u8 *send;
 } rfuFixed;
 
-void RfuCmd_ConnectCheck_Parse(u8 *Busy, u8 *PlayerNum, u16 *ID)
+void rfu_getConnectParentStatus(u8 *Busy, u8 *PlayerNum, u16 *ID)
 {
     u8 *data;
 

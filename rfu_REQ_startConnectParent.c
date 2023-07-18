@@ -6,7 +6,7 @@ extern u16 STWI_send_CP_StartREQ(u16 BeaconID);
 extern struct rfuLinkStatus rfuLinkStatus;
 extern struct rfuStatic rfuStatic;
 
-u16 RfuConnect(u16 BeaconID)
+u16 rfu_REQ_startConnectParent(u16 BeaconID)
 {
     u16 ret;
     u16 x;
