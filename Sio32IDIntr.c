@@ -4,10 +4,10 @@ static const char HandshakeString[] = {'N', 'I', 'N', 'T', 'E', 'N', 'D', 'O'};
 __asm__("
 .text
 	.align	2
-	.globl	RfuIntrHandshake
-	.type	 RfuIntrHandshake,function
+	.globl	Sio32IDIntr
+	.type	 Sio32IDIntr,function
 	.thumb_func
-RfuIntrHandshake:
+Sio32IDIntr:
 	push	{r4, r5, lr}
 	ldr	r0, .L14
 	ldr	r3, [r0]
@@ -118,7 +118,7 @@ RfuIntrHandshake:
 	.word	67109152
 	.word	67109160
 .Lfe1:
-	.size	 RfuIntrHandshake,.Lfe1-RfuIntrHandshake
+	.size	 Sio32IDIntr,.Lfe1-Sio32IDIntr
 ");
 #else
 
@@ -127,7 +127,7 @@ RfuIntrHandshake:
 #include "Sio32.h"
 extern struct Sio32 Sio32;
 
-void RfuIntrHandshake(void)
+void Sio32IDIntr(void)
 {
     u32 data;
     u32 DataHi;

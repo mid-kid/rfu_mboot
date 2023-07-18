@@ -2,7 +2,7 @@
 
 extern u32 Sio32InitUpdate(void);
 extern void Sio32Init(void);
-extern void RfuIntrHandshake(void);
+extern void Sio32IDIntr(void);
 extern u8 u8_03005efc;
 extern void (*STWI_intr)(void);
 
@@ -15,7 +15,7 @@ u32 RfuHandshake(void)
     ie = *(vu16 *)REG_IE;
     u8_03005efc = 1;
 
-    STWI_intr = RfuIntrHandshake;
+    STWI_intr = Sio32IDIntr;
     Sio32Init();
     for (x = 0; x < 0x3c; x++) {
         VBlankIntrWait();

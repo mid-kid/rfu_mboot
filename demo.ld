@@ -49,7 +49,7 @@ SECTIONS {
         RfuHandshake.o(.text)
         Sio32Init.o(.text)
         Sio32InitUpdate.o(.text)
-        RfuIntrHandshake.o(.text)
+        Sio32IDIntr.o(.text)
         Rfu0x13.o(.text)
         RfuInit.o(.text)
         rfu_STC_clearAPIVariables.o(.text)
@@ -107,7 +107,7 @@ SECTIONS {
         LZ_450c = .;
         char/search_tmap_LZ.o(.rodata)
         char/tiles_LZ.o(.rodata)
-        RfuIntrHandshake.o(.rodata)
+        Sio32IDIntr.o(.rodata)
         Sio32ID.o(.rodata)
         RfuEncTable.o(.rodata)
         RfuID.o(.rodata)
