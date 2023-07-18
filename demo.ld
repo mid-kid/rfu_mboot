@@ -42,10 +42,9 @@ SECTIONS {
 
         RfuResetAdapter.o(.text)
         RfuBoot.o(.text)
-        AgbRFU_checkID.o(.text)
-        Sio32IDInit.o(.text)
-        Sio32IDMain.o(.text)
-        Sio32IDIntr.o(.text)
+
+        AgbRFU_Sio32ID.o(.text)
+
         rfu_REQ_RFUStatus.o(.text)
         rfu_initializeAPI.o(.text)
         rfu_STC_clearAPIVariables.o(.text)
@@ -103,7 +102,7 @@ SECTIONS {
         LZ_450c = .;
         char/search_tmap_LZ.o(.rodata)
         char/tiles_LZ.o(.rodata)
-        Sio32IDIntr.o(.rodata)
+        AgbRFU_Sio32ID.o(.rodata)
         Sio32ID.o(.rodata)
         RfuEncTable.o(.rodata)
         RfuID.o(.rodata)
