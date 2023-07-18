@@ -9,10 +9,10 @@ extern void RfuPeerUpdate(u8 param_1, u8 param_2, struct RfuPeerSub *param_3);
 extern struct rfuLinkStatus rfuLinkStatus;
 extern struct rfuStatic rfuStatic;
 extern struct RfuPeer RfuPeers[4];
-extern struct RfuBuf {
+extern struct rfuFixed {
     u8 *recv;
     u8 *send;
-} RfuBuf;
+} rfuFixed;
 
 u32 RfuDataRecv(void)
 {
@@ -24,7 +24,7 @@ u32 RfuDataRecv(void)
 
     rfuStatic.unk_10 = rfuLinkStatus.unk_04 | rfuLinkStatus.unk_05 | rfuLinkStatus.unk_06;
     res = STWI_send_DataRxREQ();
-    if (res == 0 && RfuBuf.recv[1] != 0) {
+    if (res == 0 && rfuFixed.recv[1] != 0) {
         rfuStatic.unk_05 = 0;
         RfuCmd_DataRecv_Parse();
 

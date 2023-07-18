@@ -2,10 +2,10 @@
 
 #include "rfuLinkStatus.h"
 #include "rfuStatic.h"
-extern struct RfuBuf {
+extern struct rfuFixed {
     u8 *recv;
     u8 *send;
-} RfuBuf;
+} rfuFixed;
 extern struct rfuLinkStatus rfuLinkStatus;
 extern struct rfuStatic rfuStatic;
 extern u16 STWI_send_LinkStatusREQ(void);
@@ -33,9 +33,9 @@ u32 RfuStatus(u8 *PeersLost, u8 *Connected, u8 *PeersSeen)
         mode = 1;
     }
 
-    if (RfuBuf.recv[0] == 0x29) {
-        *PeersLost = RfuBuf.recv[4];
-        *Connected = RfuBuf.recv[5];
+    if (rfuFixed.recv[0] == 0x29) {
+        *PeersLost = rfuFixed.recv[4];
+        *Connected = rfuFixed.recv[5];
         if (*Connected == 1) *PeersLost = rfuLinkStatus.peersConn;
         mode = 2;
     }
@@ -43,7 +43,7 @@ u32 RfuStatus(u8 *PeersLost, u8 *Connected, u8 *PeersSeen)
     if (mode) {
         ret = STWI_send_LinkStatusREQ();
         if (ret == 0) {
-            puVar6 = RfuBuf.recv + 4;
+            puVar6 = rfuFixed.recv + 4;
             for (x = 0; x < 4; x++) {
                 bit = 1 << x;
 

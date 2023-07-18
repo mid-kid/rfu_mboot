@@ -5,10 +5,10 @@
 #include "rfuStatic.h"
 extern struct rfuLinkStatus rfuLinkStatus;
 extern u8 RfuEncTable[2][16];
-extern struct RfuBuf {
+extern struct rfuFixed {
     u8 *recv;
     u8 *send;
-} RfuBuf;
+} rfuFixed;
 extern struct rfuStatic rfuStatic;
 
 u16 RfuDataSendPreparePeer(u8 Peer, u8 **Destp, struct RfuPeerSub *PeerSub)
@@ -64,7 +64,7 @@ u16 RfuDataSendPreparePeer(u8 Peer, u8 **Destp, struct RfuPeerSub *PeerSub)
 
     if (size != 0) {
         temp_ptr = PeerSub->unk_02[PeerSub->unk_11];
-        ((void (*)())RfuBuf.send)(&temp_ptr, Destp, size);
+        ((void (*)())rfuFixed.send)(&temp_ptr, Destp, size);
     }
 
     if (PeerSub->unk_01[0] == 0x8022) {

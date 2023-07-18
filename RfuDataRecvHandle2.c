@@ -6,10 +6,10 @@ extern struct RfuPeer RfuPeers[4];
 extern struct rfuStatic rfuStatic;
 extern u32 RfuDataRecvWrite1(u8 Peer, struct RfuPeerSub *Sub);
 extern u16 RfuDataRecvWrite2(u8 Peer, struct RfuPeerSub *Sub);
-extern struct RfuBuf {
+extern struct rfuFixed {
     u8 *recv;
     u8 *send;
-} RfuBuf;
+} rfuFixed;
 
 void RfuDataRecvHandle2(u8 Peer, u8 *param_2, u8 *param_3)
 {
@@ -51,7 +51,7 @@ void RfuDataRecvHandle2(u8 Peer, u8 *param_2, u8 *param_3)
     }
 
     if (cont && param_2[5] == ((sub->unk_12[param_2[4]] + 1) & 3)) {
-        ((void (*)())RfuBuf.send)(&param_3, &sub->unk_02[param_2[4]],
+        ((void (*)())rfuFixed.send)(&param_3, &sub->unk_02[param_2[4]],
             *(u16 *)&param_2[6]);
         if (sub->unk_01[0] == 0x8042) {
             sub->unk_02[param_2[4]] += sub->unk_21 * 3;

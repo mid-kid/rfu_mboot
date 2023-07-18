@@ -1,10 +1,10 @@
 #include <Agb.h>
 
 #include "rfuLinkStatus.h"
-extern struct RfuBuf {
+extern struct rfuFixed {
     u8 *recv;
     u8 *send;
-} RfuBuf;
+} rfuFixed;
 extern struct rfuLinkStatus rfuLinkStatus;
 
 void RfuCmd_GameInfoGet_Parse(void)
@@ -15,7 +15,7 @@ void RfuCmd_GameInfoGet_Parse(void)
     u8 peer;
     char *tmp;
 
-    data = RfuBuf.recv;
+    data = rfuFixed.recv;
     len = data[1];
     data += 4;
 

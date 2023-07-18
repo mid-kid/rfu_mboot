@@ -47,10 +47,10 @@ extern void Sio32IntrProcSet(void (*Func)());
 extern void SoundPlaySfx(u8 Num);
 extern void WinFade(u8 Dir);
 
-extern struct RfuBuf {
+extern struct rfuFixed {
 	u8 *recv;
 	u8 *send;
-} RfuBuf;
+} rfuFixed;
 
 extern struct RfuPeer {
 	u16 sub[2][0x1a];
@@ -336,7 +336,7 @@ void SEQ_search(void)
 		case STATE_CP_END:
 			// Finalize connection
 			if(procRes==0) {
-				if(SearchMenuTimer>0&&RfuBuf.recv[7]==0) {
+				if(SearchMenuTimer>0&&rfuFixed.recv[7]==0) {
 					SearchMenuClearGame();
 					Sio32IntrProcSet(RfuIntrDataTransfer);
 					RfuMbootCfg(0x20,MbootPeer,(u8 *)EX_WRAM,EX_WRAM_SIZE);
@@ -360,7 +360,7 @@ void SEQ_search(void)
 		case STATE_LINK_STATUS:
 			// Check if parent is still connected
 			if(procRes==0) {
-				if(RfuBuf.recv[4+MbootPeer]) {
+				if(rfuFixed.recv[4+MbootPeer]) {
 					my_state=STATE_CHANGE_CLOCK_SLAVE;
 					mf_drawString(0x6b,2,rfuLinkStatus.curGame.userName);
 					break;

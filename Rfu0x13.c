@@ -1,9 +1,9 @@
 #include <Agb.h>
 
-extern struct RfuBuf {
+extern struct rfuFixed {
     u8 *recv;
     u8 *send;
-} RfuBuf;
+} rfuFixed;
 extern u16 STWI_send_SystemStatusREQ(void);
 
 u32 Rfu0x13(u8 *Recv)
@@ -12,7 +12,7 @@ u32 Rfu0x13(u8 *Recv)
 
     ret = STWI_send_SystemStatusREQ();
     if (ret == 0) {
-        *Recv = RfuBuf.recv[7];
+        *Recv = rfuFixed.recv[7];
     } else {
         *Recv = 0xff;
     }
