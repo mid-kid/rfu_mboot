@@ -107,7 +107,7 @@ RfuMbootDLStart:
 .L46:
 	.align	2
 .L45:
-	.word	RfuEncTable
+	.word	llsf_struct
 .L17:
 	mov	r0, #32
 	and	r0, r0, r6
@@ -236,7 +236,7 @@ RfuMbootDLStart:
 #include "rfuLinkStatus.h"
 #include "RfuPeer.h"
 extern struct rfuLinkStatus rfuLinkStatus;
-extern u8 RfuEncTable[2][16];
+extern u8 llsf_struct[2][16];
 extern struct RfuPeer RfuPeers[4];
 
 u16 RfuMbootDLStart(u8 param_1, u8 param_2, u16 param_3, u16 *GameID, u32 param_5)
@@ -259,7 +259,7 @@ u16 RfuMbootDLStart(u8 param_1, u8 param_2, u16 param_3, u16 *GameID, u32 param_
             if (param_2 >> peer & 1) break;
         }
         min = &rfuLinkStatus.unk_10[peer];
-        max = RfuEncTable[rfuLinkStatus.mode][0];
+        max = llsf_struct[rfuLinkStatus.mode][0];
         if (param_3 > *min || param_3 <= max) {
             return 0x700;
         } else {

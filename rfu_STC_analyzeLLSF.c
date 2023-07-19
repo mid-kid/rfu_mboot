@@ -19,7 +19,7 @@ extern struct RfuEnc {
     u8 unk_12;
     u8 unk_13;
     u16 unk_15;
-} RfuEncTable[2];
+} llsf_struct[2];
 
 u16 rfu_STC_analyzeLLSF(u32 unused, u8 *Srcp, u16 Size)
 {
@@ -31,7 +31,7 @@ u16 rfu_STC_analyzeLLSF(u32 unused, u8 *Srcp, u16 Size)
     u8 mode;
 
     mode = ~rfuLinkStatus.mode & 1;
-    enc = &RfuEncTable[mode];
+    enc = &llsf_struct[mode];
     if (Size < enc->unk_01) return Size;
 
     bits = 0;

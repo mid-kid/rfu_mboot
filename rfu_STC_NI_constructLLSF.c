@@ -4,7 +4,7 @@
 #include "rfuLinkStatus.h"
 #include "rfuStatic.h"
 extern struct rfuLinkStatus rfuLinkStatus;
-extern u8 RfuEncTable[2][16];
+extern u8 llsf_struct[2][16];
 extern struct rfuFixed {
     u8 *recv;
     u8 *send;
@@ -21,7 +21,7 @@ u16 rfu_STC_NI_constructLLSF(u8 Peer, u8 **Destp, struct RfuPeerSub *PeerSub)
     u8 *flags_ptr;
     u8 *temp_ptr;
 
-    enc = RfuEncTable[rfuLinkStatus.mode];
+    enc = llsf_struct[rfuLinkStatus.mode];
 
     if (PeerSub->unk_01[0] == 0x8022) {
         ptr = &PeerSub->unk_11;

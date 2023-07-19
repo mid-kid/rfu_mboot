@@ -8,7 +8,8 @@ extern void Sio32IDIntr(void);
 extern u8 u8_03005efc;
 extern void (*STWI_intr)(void);
 
-static const char HandshakeString[]={'N','I','N','T','E','N','D','O'};
+static const char Sio32ConnectionData[]={'N','I','N','T','E','N','D','O'};
+static const char Sio32IDLib_Var[]="Sio32ID_011008";
 
 u32 AgbRFU_checkID(void)
 {
@@ -174,7 +175,7 @@ Sio32IDIntr:
 .LA17:
 	.align	2
 .LA16:
-	.word	HandshakeString
+	.word	Sio32ConnectionData
 .LA10:
 	ldr	r0, .LA18
 .LA13:
@@ -244,7 +245,7 @@ void Sio32IDIntr(void)
 			Sio32.handshakeStep=0;
 	}
 	if(Sio32.handshakeStep<4)
-		Sio32.dataLo=*(u16 *)(HandshakeString+Sio32.handshakeStep*2);
+		Sio32.dataLo=*(u16 *)(Sio32ConnectionData+Sio32.handshakeStep*2);
 	else
 		Sio32.dataLo=0x8001;  // Send device ID
 	Sio32.dataHi=~DataLo;
