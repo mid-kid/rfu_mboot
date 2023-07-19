@@ -17,7 +17,6 @@ extern void (*STWI_intr)(void);
 
 extern u16  RfuMbootDLStart(u8 param_1,u8 param_2,u16 param_3,u16 *GameID,u32 param_5);
 extern u16  STWI_send_CP_EndREQ(void);
-extern u16  STWI_send_CP_PollingREQ(void);
 extern u16  STWI_send_CP_StartREQ(u16 BeaconID);
 extern u16  STWI_send_DataRxREQ(void);
 extern u16  STWI_send_DataTxREQ(u8 *Srcp,u8 Size);
@@ -30,10 +29,6 @@ extern u16  STWI_send_SP_PollingREQ(void);
 extern u16  STWI_send_SP_StartREQ(void);
 extern u16  STWI_send_SystemConfigREQ(u16 param_1,u8 param_2,u8 param_3);
 extern u16  STWI_send_SystemStatusREQ(void);
-extern u16  rfu_STC_NI_constructLLSF(u8 Peer,u8 **Destp,struct RfuPeerSub *PeerSub);
-extern u16  rfu_STC_NI_initSlot_asRecvDataEntity(u8 Peer,struct RfuPeerSub *Sub);
-extern u16  rfu_STC_analyzeLLSF(u32 unused,u8 *Srcp,u16 Size);
-extern u32  rfu_STC_NI_initSlot_asRecvControllData(u8 Peer,struct RfuPeerSub *Sub);
 extern u32  rfu_clearAllSlot(void);
 extern u32  rfu_constructSendLLFrame(void);
 extern void RfuResetSub(u8 param_1);
@@ -41,13 +36,6 @@ extern void STWI_init_all(void);
 extern void STWI_intr_vblank(void);
 extern void Sio32IntrProcSet();
 extern void rfu_REQ_disconnect(u8 Peer,u8 param_2);
-extern void rfu_STC_CHILD_analyzeRecvPacket(void);
-extern void rfu_STC_NI_receive_Receiver(u8 param_1,u8 *param_2,u8 *param_3);
-extern void rfu_STC_NI_receive_Sender(u8 param_1,u8 param_2,u8 *param_3,u8 *param_4);
-extern void rfu_STC_clearAPIVariables(void);
-extern void rfu_STC_readParentCandidateList(void);
-extern void rfu_STC_releaseFrame(u8 Peer,u8 Recv,struct RfuPeerSub *Sub);
-extern void rfu_getConnectParentStatus(u8 *Busy,u8 *PlayerNum,u16 *ID);
 
 extern struct rfuFixed {
 	u8 *recv;
@@ -72,7 +60,16 @@ extern struct RfuEnc {
 	u16 unk_15;
 } llsf_struct[2];
 
-void rfu_STC_fastCopy(u8 **Src,u8 **Dst,int Size);
+static u16  rfu_STC_NI_constructLLSF(u8 Peer,u8 **Destp,struct RfuPeerSub *PeerSub);
+static u16  rfu_STC_NI_initSlot_asRecvDataEntity(u8 Peer,struct RfuPeerSub *Sub);
+static u16  rfu_STC_analyzeLLSF(u32 unused,u8 *Srcp,u16 Size);
+static u32  rfu_STC_NI_initSlot_asRecvControllData(u8 Peer,struct RfuPeerSub *Sub);
+static void rfu_STC_CHILD_analyzeRecvPacket(void);
+static void rfu_STC_NI_receive_Receiver(u8 param_1,u8 *param_2,u8 *param_3);
+static void rfu_STC_NI_receive_Sender(u8 param_1,u8 param_2,u8 *param_3,u8 *param_4);
+static void rfu_STC_clearAPIVariables(void);
+static void rfu_STC_fastCopy(u8 **Src,u8 **Dst,int Size);
+static void rfu_STC_readParentCandidateList(void);
 
 u32 rfu_REQ_RFUStatus(u8 *Recv)
 {
@@ -113,7 +110,7 @@ void rfu_initializeAPI(void)
 	rfuFixed.send=rfuFixed.func+1;
 }
 
-void rfu_STC_clearAPIVariables(void)
+static void rfu_STC_clearAPIVariables(void)
 {
 	u8 save;
 	
@@ -209,7 +206,7 @@ u16 rfu_REQ_endSearchParent(void)
 	return ret;
 }
 
-void rfu_STC_readParentCandidateList(void)
+static void rfu_STC_readParentCandidateList(void)
 {
 	u8 x;
 	u8 *data;
@@ -611,7 +608,7 @@ void rfu_REQ_disconnect(u8 Peer,u8 Clear)
 		CpuClear(0,rfuLinkStatus.games+Peer,sizeof(struct GameInfo),16);
 }
 
-void rfu_STC_fastCopy(u8 **Src,u8 **Dst,int Size)
+static void rfu_STC_fastCopy(u8 **Src,u8 **Dst,int Size)
 {
 	u8 *src=*Src;
 	u8 *dst=*Dst;
@@ -681,7 +678,7 @@ u32 rfu_clearAllSlot(void)
 	return 0;
 }
 
-void rfu_STC_releaseFrame(u8 Peer,u8 Recv,struct RfuPeerSub *Sub)
+static void rfu_STC_releaseFrame(u8 Peer,u8 Recv,struct RfuPeerSub *Sub)
 {
 	if(!Recv)
 		rfuLinkStatus.unk_10[Peer]+=Sub->unk_21;
@@ -1116,7 +1113,7 @@ u32 rfu_constructSendLLFrame(void)
 	return size;
 }
 
-u16 rfu_STC_NI_constructLLSF(u8 Peer,u8 **Destp,struct RfuPeerSub *PeerSub)
+static u16 rfu_STC_NI_constructLLSF(u8 Peer,u8 **Destp,struct RfuPeerSub *PeerSub)
 {
 	u16 x;
 	u16 size;
@@ -1216,7 +1213,7 @@ u32 rfu_REQ_recvData(void)
 	return res;
 }
 
-void rfu_STC_CHILD_analyzeRecvPacket(void)
+static void rfu_STC_CHILD_analyzeRecvPacket(void)
 {
 	u16 done;
 	u16 size;
@@ -1237,7 +1234,7 @@ void rfu_STC_CHILD_analyzeRecvPacket(void)
 	}
 }
 
-u16 rfu_STC_analyzeLLSF(u32 unused,u8 *Srcp,u16 Size)
+static u16 rfu_STC_analyzeLLSF(u32 unused,u8 *Srcp,u16 Size)
 {
 	u16 x;
 	struct RfuEnc *enc;
@@ -1281,7 +1278,7 @@ u16 rfu_STC_analyzeLLSF(u32 unused,u8 *Srcp,u16 Size)
 	return ret;
 }
 
-void rfu_STC_NI_receive_Sender(u8 Peer,u8 param_2,u8 *param_3,u8 *param_4)
+static void rfu_STC_NI_receive_Sender(u8 Peer,u8 param_2,u8 *param_3,u8 *param_4)
 {
 	u8 x;
 	struct RfuPeerSub *sub;
@@ -1341,7 +1338,7 @@ void rfu_STC_NI_receive_Sender(u8 Peer,u8 param_2,u8 *param_3,u8 *param_4)
 	}
 }
 
-void rfu_STC_NI_receive_Receiver(u8 Peer,u8 *param_2,u8 *param_3)
+static void rfu_STC_NI_receive_Receiver(u8 Peer,u8 *param_2,u8 *param_3)
 {
 	u8 cont;
 	struct RfuPeerSub *sub;
@@ -1396,7 +1393,7 @@ void rfu_STC_NI_receive_Receiver(u8 Peer,u8 *param_2,u8 *param_3)
 	}
 }
 
-u32 rfu_STC_NI_initSlot_asRecvControllData(u8 Peer,struct RfuPeerSub *Sub)
+static u32 rfu_STC_NI_initSlot_asRecvControllData(u8 Peer,struct RfuPeerSub *Sub)
 {
 	u32 max;
 	u8 *ptr;
@@ -1420,7 +1417,7 @@ u32 rfu_STC_NI_initSlot_asRecvControllData(u8 Peer,struct RfuPeerSub *Sub)
 	return 0x8041;
 }
 
-u16 rfu_STC_NI_initSlot_asRecvDataEntity(u8 Peer,struct RfuPeerSub *Sub)
+static u16 rfu_STC_NI_initSlot_asRecvDataEntity(u8 Peer,struct RfuPeerSub *Sub)
 {
 	u8 x;
 	
