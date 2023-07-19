@@ -37,7 +37,7 @@ RfuIntrDataTransfer:
 	.align	2
 .L15:
 	.word	SearchMenuErrorTimer
-	.word	RfuPeers
+	.word	rfuSlotStatus_NI
 	.word	MbootPeer
 	.word	SearchMenuErrorMsg
 .L4:
@@ -102,7 +102,7 @@ extern u16 rfu_REQ_changeMasterSlave_force(void);
 extern u8 SearchMenuErrorTimer;
 extern u8 my_state;
 extern u8 SearchMenuErrorMsg;
-extern struct RfuPeer RfuPeers[4];
+extern struct RfuPeer rfuSlotStatus_NI[4];
 extern u8 MbootPeer;
 
 void RfuIntrDataTransfer(void)
@@ -117,7 +117,7 @@ void RfuIntrDataTransfer(void)
 
     rfu_REQBN_watchLink(&res, &res2, &res3);
     if (res != 0) {
-        if (RfuPeers[MbootPeer].sub[1].unk_01[0] != 0) {
+        if (rfuSlotStatus_NI[MbootPeer].sub[1].unk_01[0] != 0) {
             SearchMenuErrorMsg = 1;
         } else {
             SearchMenuErrorMsg = 3;

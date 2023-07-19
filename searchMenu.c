@@ -56,7 +56,7 @@ extern struct RfuPeer {
 	u16 sub[2][0x1a];
 	void *mbootDest;
 	u32 mbootSize;
-} RfuPeers[4];
+} rfuSlotStatus_NI[4];
 
 enum {
 	// Correspond to entries in SearchProcTable
@@ -426,11 +426,11 @@ static void SEQ_search_mboot(void)
 			break;
 			
 		case STATE_MBOOT_POLL:
-			if(RfuPeers[MbootPeer].sub[0][0]==0x27) {
+			if(rfuSlotStatus_NI[MbootPeer].sub[0][0]==0x27) {
 				my_state=STATE_DOWNLOAD_START;
 				rfu_clearSlot(4,MbootPeer);
 			}
-			if(RfuPeers[MbootPeer].sub[0][1]>0xfa) {
+			if(rfuSlotStatus_NI[MbootPeer].sub[0][1]>0xfa) {
 				SearchMenuErrorMsg=0;  // CONNECTION ATTEMPT FAILED!
 				my_state=STATE_DOWNLOAD_FAILED;
 				rfu_clearSlot(4,MbootPeer);
@@ -448,7 +448,7 @@ static void SEQ_search_dl(void)
 	u16 checksum;
 	vu16 *header;
 	
-	data=RfuPeers[MbootPeer].sub[1];
+	data=rfuSlotStatus_NI[MbootPeer].sub[1];
 	
 	switch(my_state) {
 		case STATE_DOWNLOAD_START:
