@@ -13,7 +13,7 @@ struct rfuLinkStatus {
     u8 unk_06;
     u8 unk_07;
     u8 gamesCount;
-    u8 unk_09;
+    u8 timer;
     u8 unk_0a[4];
     u8 unk_0e;
     u8 unk_0f;

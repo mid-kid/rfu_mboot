@@ -79,7 +79,7 @@ u32 rfu_REQ_RFUStatus(u8 *Recv)
 	if(ret==0)
 		*Recv=rfuFixed.recv[7];
 	else
-		*Recv=0xff;
+		*Recv=-1;
 	
 	return ret;
 }
@@ -93,7 +93,7 @@ void rfu_initializeAPI(void)
 	
 	STWI_init_all();
 	rfu_STC_clearAPIVariables();
-	rfuLinkStatus.unk_09=0;
+	rfuLinkStatus.timer=0;
 	rfuFixed.recv=STWI_buffer_recv;
 	
 	for(peer=0;peer<4;peer++) {
@@ -115,10 +115,10 @@ static void rfu_STC_clearAPIVariables(void)
 	u8 save;
 	
 	CpuClear(0,&rfuStatic,16,16);
-	save=rfuLinkStatus.unk_09;
+	save=rfuLinkStatus.timer;
 	CpuClear(0,&rfuLinkStatus,0x5a*2,16);
-	rfuStatic.unk_04=save;
-	rfuLinkStatus.unk_09=save;
+	rfuStatic.timer=save;
+	rfuLinkStatus.timer=save;
 	rfuLinkStatus.mode=0xff;
 	rfu_clearAllSlot();
 }
@@ -511,18 +511,18 @@ void rfu_getConnectParentStatus(u8 *Busy,u8 *PlayerNum,u16 *ID)
 	*Busy=data[7];
 }
 
-void RfuSetUnk04(u8 val)
+void rfu_setTimer(u8 val)
 {
 	struct rfuLinkStatus *ptr=&rfuLinkStatus;
-	rfuStatic.unk_04=val;
-	ptr->unk_09=val;
+	rfuStatic.timer=val;
+	ptr->timer=val;
 }
 
 void rfu_syncVBlank(void)
 {
 	if(rfuLinkStatus.mode!=(u8)-1)
-		if(rfuStatic.unk_04)
-			rfuStatic.unk_04--;
+		if(rfuStatic.timer)
+			rfuStatic.timer--;
 	STWI_intr_vblank();
 }
 
@@ -544,8 +544,8 @@ u32 rfu_REQBN_watchLink(u8 *PeersLost,u8 *Connected,u8 *PeersSeen)
 	if(rfuLinkStatus.mode==(u8)-1)
 		return 0;
 	
-	if(!rfuStatic.unk_04) {
-		rfuStatic.unk_04=rfuLinkStatus.unk_09;
+	if(!rfuStatic.timer) {
+		rfuStatic.timer=rfuLinkStatus.timer;
 		mode=1;
 	}
 	
@@ -988,7 +988,7 @@ u16 RfuMbootDLStart(u8 param_1,u8 param_2,u16 param_3,u16 *GameID,u32 param_5)
 	u8 *min;
 	struct RfuPeerSub *sub;
 	
-	if(rfuLinkStatus.mode==0xff)
+	if(rfuLinkStatus.mode==(u8)-1)
 		return 0x502;
 	else if((param_2 & 0xf)==0)
 		return 0x601;

@@ -41,7 +41,7 @@ static void MenuMsgInit(void);
 extern void FrameCountReset(void);
 extern void MenuMsgBlink(u8 Msg,u8 Rate);
 extern void rfu_initializeAPI(void);
-extern void RfuSetUnk04(u8 param_1);
+extern void rfu_setTimer(u8 param_1);
 extern void SEQ_search(void);
 extern void SEQ_search_init(void);
 extern void SoundInit(void);
@@ -113,7 +113,7 @@ void AgbMain(void)
 	*(vu16 *)REG_STAT=STAT_V_BLANK_IF_ENABLE;
 	*(vu16 *)REG_IME=1;
 	
-	RfuSetUnk04(8);
+	rfu_setTimer(8);
 	MainMenuFadeOut=FALSE;
 	Lang=0;
 	
