@@ -350,8 +350,8 @@ typedef struct RFU_SlotStatus_UNI_Tag {
 //
 // --------------------------------------------------------------------------
 
-extern RFU_LINK_STATUS     *rfuLinkStatus;                      // Link Status Data
-extern RFU_SLOT_STATUS_NI  *rfuSlotStatus_NI[RFU_CHILD_MAX];    // Slot Status Data for NI-type Communication
+extern RFU_LINK_STATUS     rfuLinkStatus;                      // Link Status Data
+extern RFU_SLOT_STATUS_NI  rfuSlotStatus_NI[RFU_CHILD_MAX];    // Slot Status Data for NI-type Communication
 extern RFU_SLOT_STATUS_UNI *rfuSlotStatus_UNI[RFU_CHILD_MAX];   // Slot Status Data for UNI-type Communication
 
 
@@ -367,11 +367,11 @@ extern RFU_SLOT_STATUS_UNI *rfuSlotStatus_UNI[RFU_CHILD_MAX];   // Slot Status D
 
 // API Initialization and Initial Settings
     // API Initialization
-extern u16  rfu_initializeAPI(u32 *API_buffer,u16 buffByteSize, void (**sioIntrTablep)( void ),u8 sio_use_ram_flag);
+//extern u16  rfu_initializeAPI(u32 *API_buffer,u16 buffByteSize, void (**sioIntrTablep)( void ),u8 sio_use_ram_flag);
     // Set Timer Interrupt
 extern void rfu_setTimerInterrupt(u8 timerNo, void (**timerIntrTablep)( void ));
     // Resident Function called from within a V-Blank Interrupt
-extern u16  rfu_syncVBlank(void);
+//extern u16  rfu_syncVBlank(void);
     // Specify REQ Callback function
 extern void rfu_setREQCallback(void (*callbackFuncp)(u16 REQ_command_ID,u16 REQ_result));
     // REQ-API Execution Completion Wait
@@ -383,13 +383,13 @@ extern u16  rfu_waitREQComplete(void);
     // RFU Startup and ID Check (Forced RFU reset occurs simultaneously)
 extern u32  rfu_REQBN_softReset_and_checkID(void);
     // RFU Reset
-extern void rfu_REQ_reset(void);
+//extern void rfu_REQ_reset(void);
     // Set RFU to Stop Mode (Power Down)
 extern void rfu_REQ_stopMode(void);
     // RFU Hardware Settings
-extern void rfu_REQ_configSystem(u16 availSlot_flag,u8 MaxMframe,u8 MC_Timer);
+//extern void rfu_REQ_configSystem(u16 availSlot_flag,u8 MaxMframe,u8 MC_Timer);
     // Game Identification Information Configuration
-extern void rfu_REQ_configGameData(u8 mboot_flag,u16 serialNo,const u8 *GName,const u8 *UName);
+//extern void rfu_REQ_configGameData(u8 mboot_flag,u16 serialNo,const u8 *GName,const u8 *UName);
 
 
 
@@ -399,14 +399,14 @@ extern void rfu_REQ_startSearchChild(void);
 extern void rfu_REQ_pollSearchChild(void);
 extern void rfu_REQ_endSearchChild(void);
     // Operate as child device; search for parent device
-extern void rfu_REQ_startSearchParent(void);
-extern void rfu_REQ_pollSearchParent(void);
-extern void rfu_REQ_endSearchParent(void);
+//extern void rfu_REQ_startSearchParent(void);
+//extern void rfu_REQ_pollSearchParent(void);
+//extern void rfu_REQ_endSearchParent(void);
     // Operate as child device; connect to specified parent device
-extern void rfu_REQ_startConnectParent(u16 pid);
+//extern void rfu_REQ_startConnectParent(u16 pid);
 extern void rfu_REQ_pollConnectParent(void);
-extern void rfu_REQ_endConnectParent(void);
-extern u16  rfu_getConnectParentStatus(u8 *status,u8 *connect_slotNo);
+//extern void rfu_REQ_endConnectParent(void);
+//extern u16  rfu_getConnectParentStatus(u8 *status,u8 *connect_slotNo);
     // Restore link from child device
 extern void rfu_REQ_CHILD_startConnectRecovery(u8 bm_recoverySlot);
 extern void rfu_REQ_CHILD_pollConnectRecovery(void);
@@ -417,15 +417,15 @@ extern u16  rfu_CHILD_getConnectRecoveryStatus(u8 *status);
 
 // RFU Link Management
     // Link Monitoring
-extern u16  rfu_REQBN_watchLink(u16 REQ_commandID,u8 *bm_linkLossSlot,u8 *linkLossReason,u8 *parent_bm_linkRecoverySlot);
+//extern u16  rfu_REQBN_watchLink(u16 REQ_commandID,u8 *bm_linkLossSlot,u8 *linkLossReason,u8 *parent_bm_linkRecoverySlot);
     // Link Disconnect
-extern void rfu_REQ_disconnect(u8 bm_disconnectSlot);
+//extern void rfu_REQ_disconnect(u8 bm_disconnectSlot);
 
 
 
 // Relation of clock between AGB and RFU
     // Switch to AGB clock slave
-extern void rfu_REQ_changeMasterSlave(void);
+//extern void rfu_REQ_changeMasterSlave(void);
     // Acquire either the master or slave clock from the current AGB-RFU
 extern u8   rfu_getMasterSlave(void);
 
@@ -433,13 +433,13 @@ extern u8   rfu_getMasterSlave(void);
 
 // Communication Configuration
     // MSC Callback Configuration
-extern void rfu_setMSCCallback(void (*callbackFuncp)(u16 REQ_command_ID));
+//extern void rfu_setMSCCallback(void (*callbackFuncp)(u16 REQ_command_ID));
     // Shared by NI- and UNI-type communications
         // Clear Communication Status
-extern void rfu_clearAllSlot(void);
-extern u16  rfu_clearSlot(u8 connType_flag,u8 slotStatus_Index);
+//extern void rfu_clearAllSlot(void);
+//extern u16  rfu_clearSlot(u8 connType_flag,u8 slotStatus_Index);
         // Set Receive Buffer
-extern u16  rfu_setRecvBuffer(u8 connType,u8 slotNo,void *buffer,u32 buffSize);
+//extern u16  rfu_setRecvBuffer(u8 connType,u8 slotNo,void *buffer,u32 buffSize);
 
 
 
@@ -457,9 +457,9 @@ extern u16  rfu_UNI_PARENT_getDRAC_ACK(u8 *ACK_flag);
 extern void rfu_UNI_clearRecvNewDataFlag(u8 slotStatus_Index);
     // NI-type Communication
         // Set transmission data
-extern u16  rfu_NI_setSendData(u8 bm_sendSlot,u8 subFrameSize,const void *src,u32 size);
+//extern u16  rfu_NI_setSendData(u8 bm_sendSlot,u8 subFrameSize,const void *src,u32 size);
         // Used only by child device. After establishing connection at the RFU level, configure transmission of child device game identification information in order to authenticate connection
-extern u16  rfu_NI_CHILD_setSendGameName(u8 slotNo,u8 subFrameSize);
+//extern u16  rfu_NI_CHILD_setSendGameName(u8 slotNo,u8 subFrameSize);
         // Stop the NI data currently being received
 extern u16  rfu_NI_stopReceivingData(u8 slotStatus_Index);
     // Shared by NI- and UNI-type communications
@@ -468,11 +468,11 @@ extern u16  rfu_changeSendTarget(u8 connType, u8 slotStatus_Index,u8 bm_newTgtSl
 
     // Functions for sending/receiving data to RFU
         // Data transmission
-extern void rfu_REQ_sendData(u8 clockChange_flag);
+//extern void rfu_REQ_sendData(u8 clockChange_flag);
         // Used only by parent device. Resend previous sent data (packet)
 extern void rfu_REQ_PARENT_resumeRetransmitAndChange(void);
         // Read receive data
-extern void rfu_REQ_recvData(void);
+//extern void rfu_REQ_recvData(void);
 
 
 
@@ -486,7 +486,7 @@ extern u16  rfu_MBOOT_CHILD_inheritanceLinkStatus(void);
     // Obtain address of the SWTI-layer receive buffer
 extern u8  *rfu_getSTWIRecvBuffer(void);
     // Obtain RFU state
-extern void rfu_REQ_RFUStatus(void);
+//extern void rfu_REQ_RFUStatus(void);
 extern u16  rfu_getRFUStatus(u8 *rfuState);
     // Using RFU, generate noise (jamming radio waves) for other RFUs
 extern void rfu_REQ_noise(void);

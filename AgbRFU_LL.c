@@ -2,14 +2,12 @@
 #include <stddef.h>
 
 #include "GameInfo.h"
-#include "RfuPeer.h"
 #include "STWI_status.h"
 #include "rfuLinkStatus.h"
 #include "rfuStatic.h"
+#include "AgbRFU_LL.h"
 
-extern struct RfuPeer rfuSlotStatus_NI[4];
 extern struct STWI_status STWI_status;
-extern struct rfuLinkStatus rfuLinkStatus;
 extern struct rfuStatic rfuStatic;
 extern u8 RfuDataSendBuf[];
 extern u8 STWI_buffer_recv[0x120];
@@ -54,10 +52,10 @@ extern struct RfuEnc {
 	u16 unk_15;
 } llsf_struct[2];
 
-static u16  rfu_STC_NI_constructLLSF(u8 Peer,u8 **Destp,struct RfuPeerSub *PeerSub);
-static u16  rfu_STC_NI_initSlot_asRecvDataEntity(u8 Peer,struct RfuPeerSub *Sub);
+static u16  rfu_STC_NI_constructLLSF(u8 Peer,u8 **Destp,NI_COMM *Comm);
+static u16  rfu_STC_NI_initSlot_asRecvDataEntity(u8 Peer,NI_COMM *Comm);
 static u16  rfu_STC_analyzeLLSF(u32 unused,u8 *Srcp,u16 Size);
-static u32  rfu_STC_NI_initSlot_asRecvControllData(u8 Peer,struct RfuPeerSub *Sub);
+static u32  rfu_STC_NI_initSlot_asRecvControllData(u8 Peer,NI_COMM *Comm);
 static void rfu_STC_CHILD_analyzeRecvPacket(void);
 static void rfu_STC_NI_receive_Receiver(u8 param_1,u8 *param_2,u8 *param_3);
 static void rfu_STC_NI_receive_Sender(u8 param_1,u8 param_2,u8 *param_3,u8 *param_4);
@@ -94,12 +92,12 @@ void rfu_initializeAPI(void)
 	
 	STWI_init_all();
 	rfu_STC_clearAPIVariables();
-	rfuLinkStatus.timer=0;
+	rfuLinkStatus.watchInterval=0;
 	rfuFixed.recv=STWI_buffer_recv;
 	
 	for(peer=0;peer<4;peer++) {
-		rfuSlotStatus_NI[peer].mbootDest=NULL;
-		rfuSlotStatus_NI[peer].mbootSize=0;
+		rfuSlotStatus_NI[peer].recvBuff=NULL;
+		rfuSlotStatus_NI[peer].recvBuffSize=0;
 	}
 	
 	src=(u16 *)((u32)rfu_STC_fastCopy & ~1);
@@ -116,11 +114,11 @@ static void rfu_STC_clearAPIVariables(void)
 	u8 save;
 	
 	CpuClear(0,&rfuStatic,16,16);
-	save=rfuLinkStatus.timer;
+	save=rfuLinkStatus.watchInterval;
 	CpuClear(0,&rfuLinkStatus,0x5a*2,16);
 	rfuStatic.timer=save;
-	rfuLinkStatus.timer=save;
-	rfuLinkStatus.mode=-1;
+	rfuLinkStatus.watchInterval=save;
+	rfuLinkStatus.parent_child=-1;
 	rfu_clearAllSlot();
 }
 
@@ -155,11 +153,11 @@ u16 rfu_REQ_configGameData(u8 IsMultiboot,u16 GameID,char *GameName,char *UserNa
 	if(ret!=0)
 		return ret;
 	
-	rfuLinkStatus.curGame.isMultiboot=IsMultiboot;
-	rfuLinkStatus.curGame.gameID=GameID;
+	rfuLinkStatus.my.mboot_flag=IsMultiboot;
+	rfuLinkStatus.my.serialNo=GameID;
 	
-	GameNameCur=rfuLinkStatus.curGame.gameName;
-	UserNameCur=rfuLinkStatus.curGame.userName;
+	GameNameCur=rfuLinkStatus.my.gname;
+	UserNameCur=rfuLinkStatus.my.uname;
 	GameNameNew=GameNameTmp+2;
 	
 	for(x=0;x<0xe;x++) {
@@ -219,30 +217,30 @@ static void rfu_STC_readParentCandidateList(void)
 	len=data[1];
 	data+=4;
 	
-	rfuLinkStatus.gamesCount=0;
+	rfuLinkStatus.findParentCount=0;
 	for(peer=0;peer<4&&len!=0;peer++) {
 		
-		rfuLinkStatus.games[peer].beaconID=*((u16 *)data);
+		rfuLinkStatus.partner[peer].id=*((u16 *)data);
 		data+=2;
-		rfuLinkStatus.games[peer].playerNum=*((u8 *)data);
+		rfuLinkStatus.partner[peer].slot=*((u8 *)data);
 		data+=2;
-		rfuLinkStatus.games[peer].gameID=*(u16 *)data & 0x7fff;
+		rfuLinkStatus.partner[peer].serialNo=*(u16 *)data & 0x7fff;
 		if(*(u16 *)data & 0x8000)
-			rfuLinkStatus.games[peer].isMultiboot=1;
+			rfuLinkStatus.partner[peer].mboot_flag=1;
 		else
-			rfuLinkStatus.games[peer].isMultiboot=0;
+			rfuLinkStatus.partner[peer].mboot_flag=0;
 		data+=2;
 		
-		tmp=rfuLinkStatus.games[peer].gameName;
+		tmp=rfuLinkStatus.partner[peer].gname;
 		for(x=0;x<14;x++)
 			*tmp++=*data++;
 		
-		tmp=rfuLinkStatus.games[peer].userName;
+		tmp=rfuLinkStatus.partner[peer].uname;
 		for(x=0;x<8;x++)
 			*tmp++=*data++;
 		
 		len-=7;
-		rfuLinkStatus.gamesCount++;
+		rfuLinkStatus.findParentCount++;
 	}
 }
 
@@ -251,7 +249,7 @@ u16 rfu_REQ_startConnectParent(u16 BeaconID)
 	u16 ret;
 	u16 x;
 	
-	for(x=0;x<4&&rfuLinkStatus.games[x].beaconID!=BeaconID;x++)
+	for(x=0;x<4&&rfuLinkStatus.partner[x].id!=BeaconID;x++)
 		;
 	if(x==4)
 		return 0x900;
@@ -459,37 +457,37 @@ u16 rfu_REQ_pollConnectParent(u8 *Busy,u8 *PlayerNum)
 		return 0;
 	
 	bit=1<<*PlayerNum;
-	if(rfuLinkStatus.peersConn & bit)
+	if(rfuLinkStatus.connectSlot_flag & bit)
 		return 0;
 	
 	ime=*(vu16 *)REG_IME;
 	*(vu16 *)REG_IME=0;
 	
-	rfuLinkStatus.peersConn|=bit;
-	rfuLinkStatus.peersSeen&=~bit;
+	rfuLinkStatus.connectSlot_flag|=bit;
+	rfuLinkStatus.linkLossSlot_flag&=~bit;
 	
-	rfuLinkStatus.curGame.beaconID=ID;
-	rfuLinkStatus.unk_01++;
-	rfuLinkStatus.unk_0a[*PlayerNum]=-1;
-	rfuLinkStatus.mode=0;
+	rfuLinkStatus.my.id=ID;
+	rfuLinkStatus.connectCount++;
+	rfuLinkStatus.strength[*PlayerNum]=-1;
+	rfuLinkStatus.parent_child=0;
 	
 	for(x=0;x<4;x++) {
-		if(rfuLinkStatus.games[x].beaconID==rfuStatic.beaconID) {
-			if(rfuLinkStatus.gamesCount==0)
-				GameSrc=rfuLinkStatus.games;
+		if(rfuLinkStatus.partner[x].id==rfuStatic.beaconID) {
+			if(rfuLinkStatus.findParentCount==0)
+				GameSrc=rfuLinkStatus.partner;
 			else {
 				GameSrc=&GameTmp;
-				CpuCopy(rfuLinkStatus.games+x,&GameTmp,0x10*2,16);
-				CpuArrayClear(0,rfuLinkStatus.games,16);
-				rfuLinkStatus.gamesCount=0;
+				CpuCopy(rfuLinkStatus.partner+x,&GameTmp,0x10*2,16);
+				CpuArrayClear(0,rfuLinkStatus.partner,16);
+				rfuLinkStatus.findParentCount=0;
 			}
 			break;
 		}
 	}
 	
 	if(x<4) {
-		CpuCopy(GameSrc,rfuLinkStatus.games+*PlayerNum,0x10*2,16);
-		rfuLinkStatus.games[*PlayerNum].playerNum=*PlayerNum;
+		CpuCopy(GameSrc,rfuLinkStatus.partner+*PlayerNum,0x10*2,16);
+		rfuLinkStatus.partner[*PlayerNum].slot=*PlayerNum;
 	}
 	
 	*(vu16 *)REG_IME=ime;
@@ -514,14 +512,14 @@ void rfu_getConnectParentStatus(u8 *Busy,u8 *PlayerNum,u16 *ID)
 
 void rfu_setTimer(u8 val)
 {
-	struct rfuLinkStatus *ptr=&rfuLinkStatus;
+	RFU_LINK_STATUS *ptr=&rfuLinkStatus;
 	rfuStatic.timer=val;
-	ptr->timer=val;
+	ptr->watchInterval=val;
 }
 
 void rfu_syncVBlank(void)
 {
-	if(rfuLinkStatus.mode!=(u8)-1)
+	if(rfuLinkStatus.parent_child!=(u8)-1)
 		if(rfuStatic.timer)
 			rfuStatic.timer--;
 	STWI_intr_vblank();
@@ -542,11 +540,11 @@ u32 rfu_REQBN_watchLink(u8 *PeersLost,u8 *Connected,u8 *PeersSeen)
 	*Connected=0;
 	*PeersSeen=0;
 	
-	if(rfuLinkStatus.mode==(u8)-1)
+	if(rfuLinkStatus.parent_child==(u8)-1)
 		return 0;
 	
 	if(!rfuStatic.timer) {
-		rfuStatic.timer=rfuLinkStatus.timer;
+		rfuStatic.timer=rfuLinkStatus.watchInterval;
 		mode=1;
 	}
 	
@@ -554,7 +552,7 @@ u32 rfu_REQBN_watchLink(u8 *PeersLost,u8 *Connected,u8 *PeersSeen)
 		*PeersLost=rfuFixed.recv[4];
 		*Connected=rfuFixed.recv[5];
 		if(*Connected==1)
-			*PeersLost=rfuLinkStatus.peersConn;
+			*PeersLost=rfuLinkStatus.connectSlot_flag;
 		mode=2;
 	}
 	
@@ -565,25 +563,25 @@ u32 rfu_REQBN_watchLink(u8 *PeersLost,u8 *Connected,u8 *PeersSeen)
 			for(x=0;x<4;x++) {
 				bit=1<<x;
 				
-				if(rfuLinkStatus.peersConn & bit&&!*puVar6&&mode==1) {
+				if(rfuLinkStatus.connectSlot_flag & bit&&!*puVar6&&mode==1) {
 					*PeersLost|=bit;
 					*Connected=1;
 				}
 				
-				if(rfuLinkStatus.peersSeen & bit&&*puVar6&&rfuLinkStatus.mode==1) {
+				if(rfuLinkStatus.linkLossSlot_flag & bit&&*puVar6&&rfuLinkStatus.parent_child==1) {
 					*PeersSeen|=bit;
-					rfuLinkStatus.peersConn|=bit;
-					rfuLinkStatus.peersSeen&=~bit;
-					rfuLinkStatus.unk_01++;
+					rfuLinkStatus.connectSlot_flag|=bit;
+					rfuLinkStatus.linkLossSlot_flag&=~bit;
+					rfuLinkStatus.connectCount++;
 				}
 				
-				rfuLinkStatus.unk_0a[x]=*puVar6;
+				rfuLinkStatus.strength[x]=*puVar6;
 				puVar6++;
 			}
 		}
 		
 		for(x=0;x<4;x++) {
-			if(rfuLinkStatus.peersConn & 1<<x&&*PeersLost & 1<<x)
+			if(rfuLinkStatus.connectSlot_flag & 1<<x&&*PeersLost & 1<<x)
 				rfu_REQ_disconnect(x,FALSE);
 		}
 	}
@@ -596,17 +594,17 @@ void rfu_REQ_disconnect(u8 Peer,u8 Clear)
 	u8 bit;
 	
 	bit=1<<Peer;
-	if(rfuLinkStatus.peersConn & bit)
-		if(rfuLinkStatus.unk_01)
-			rfuLinkStatus.unk_01--;
+	if(rfuLinkStatus.connectSlot_flag & bit)
+		if(rfuLinkStatus.connectCount)
+			rfuLinkStatus.connectCount--;
 	
-	rfuLinkStatus.peersConn&=~bit;
-	rfuLinkStatus.peersSeen|=bit;
-	if(rfuLinkStatus.mode==0&&rfuLinkStatus.peersConn==0)
-		rfuLinkStatus.mode=-1;
+	rfuLinkStatus.connectSlot_flag&=~bit;
+	rfuLinkStatus.linkLossSlot_flag|=bit;
+	if(rfuLinkStatus.parent_child==0&&rfuLinkStatus.connectSlot_flag==0)
+		rfuLinkStatus.parent_child=-1;
 	
 	if(Clear)
-		CpuClear(0,rfuLinkStatus.games+Peer,sizeof(struct GameInfo),16);
+		CpuClear(0,rfuLinkStatus.partner+Peer,sizeof(struct GameInfo),16);
 }
 
 static void rfu_STC_fastCopy(u8 **Src,u8 **Dst,int Size)
@@ -665,30 +663,30 @@ u32 rfu_clearAllSlot(void)
 	u16 x;
 	
 	for(x=0;x<4;x++) {
-		CpuArrayClear(0,rfuSlotStatus_NI[x].sub,16);
-		rfuLinkStatus.unk_10[x]=0x10;
+		CpuClear(0,&rfuSlotStatus_NI[x].send,sizeof(NI_COMM)*2,16);
+		rfuLinkStatus.remainLLFrameSize_C[x]=0x10;
 	}
 	
-	rfuLinkStatus.unk_0f=0x57;
-	rfuLinkStatus.unk_04=0;
-	rfuLinkStatus.unk_05=0;
-	rfuLinkStatus.unk_06=0;
+	rfuLinkStatus.remainLLFrameSize_P=0x57;
+	rfuLinkStatus.sendSlot_NI_flag=0;
+	rfuLinkStatus.recvSlot_NI_flag=0;
+	rfuLinkStatus.sendSlot_UNI_flag=0;
 	rfuStatic.unk_06=0;
 	rfuStatic.unk_07=0;
 	
 	return 0;
 }
 
-static void rfu_STC_releaseFrame(u8 Peer,u8 Recv,struct RfuPeerSub *Sub)
+static void rfu_STC_releaseFrame(u8 Peer,u8 Recv,NI_COMM *Comm)
 {
 	if(!Recv)
-		rfuLinkStatus.unk_10[Peer]+=Sub->unk_21;
-	rfuLinkStatus.unk_10[Peer]+=2;
+		rfuLinkStatus.remainLLFrameSize_C[Peer]+=Comm->payloadSize;
+	rfuLinkStatus.remainLLFrameSize_C[Peer]+=2;
 }
 
 u32 rfu_clearSlot(u8 Flags,u8 Peer)
 {
-	struct RfuPeerSub *sub;
+	NI_COMM *comm;
 	
 	u32 ret;
 	u16 x;
@@ -700,26 +698,26 @@ u32 rfu_clearSlot(u8 Flags,u8 Peer)
 	ret=0x800;
 	if(Flags & 0xc) {
 		for(x=0;x<2;x++) {
-			sub=NULL;
+			comm=NULL;
 			if(x==0&&Flags & 0x4) {
-				sub=&rfuSlotStatus_NI[Peer].sub[0];
-				rfuLinkStatus.unk_04&=~(1<<Peer);
+				comm=&rfuSlotStatus_NI[Peer].send;
+				rfuLinkStatus.sendSlot_NI_flag&=~(1<<Peer);
 			}
 			else if(x!=0&&Flags & 0x8) {
-				sub=&rfuSlotStatus_NI[Peer].sub[1];
-				rfuLinkStatus.unk_05&=~(1<<Peer);
+				comm=&rfuSlotStatus_NI[Peer].recv;
+				rfuLinkStatus.recvSlot_NI_flag&=~(1<<Peer);
 			}
 			
-			if(sub!=NULL) {
-				if(sub->unk_01[0] & 0x8000||
-						(sub->unk_01[0]==0x49&&sub->unk_04!=0x405)) {
-					rfu_STC_releaseFrame(Peer,x,sub);
+			if(comm) {
+				if(comm->state & 0x8000||
+						(comm->state==0x49&&comm->errorCode!=0x405)) {
+					rfu_STC_releaseFrame(Peer,x,comm);
 					for(y=0;y<4;y++)
-						if(sub->unk_05 & 1<<y)
-							sub->unk_01[1]=0;
+						if(comm->bmSlot & 1<<y)
+							comm->failCounter=0;
 				}
 				
-				CpuClear(0,sub,52,16);
+				CpuClear(0,comm,sizeof(NI_COMM),16);
 			}
 		}
 		ret=0;
@@ -734,8 +732,8 @@ u32 rfu_setRecvBuffer(u8 param_1,u8 Peer,void *Dest,u32 Size)
 		return 0x600;
 	
 	if(param_1 & 0x20) {
-		rfuSlotStatus_NI[Peer].mbootDest=Dest;
-		rfuSlotStatus_NI[Peer].mbootSize=Size;
+		rfuSlotStatus_NI[Peer].recvBuff=Dest;
+		rfuSlotStatus_NI[Peer].recvBuffSize=Size;
 	}
 	return 0;
 }
@@ -747,10 +745,11 @@ u16 rfu_NI_setSendData(u8 param_1,u16 param_2,u16 *GameID,u32 param_4)
 
 u16 rfu_NI_CHILD_setSendGameName(u8 Peer,u16 param_2)
 {
-	return rfu_STC_setSendData_org(0x40,1<<Peer,param_2,&rfuLinkStatus.curGame.gameID,0x1a);
+	return rfu_STC_setSendData_org(0x40,1<<Peer,param_2,&rfuLinkStatus.my.serialNo,0x1a);
 }
 
 #ifndef NONMATCHING
+//#if 0
 __asm__ ("
 .text
 	.align	2
@@ -981,59 +980,59 @@ rfu_STC_setSendData_org:
 	.size	 rfu_STC_setSendData_org,.LBfe1-rfu_STC_setSendData_org
 ");
 #else
-static u16 rfu_STC_setSendData_org(u8 param_1,u8 param_2,u16 param_3,u16 *GameID,u32 param_5)
+u16 rfu_STC_setSendData_org(u8 param_1,u8 param_2,u16 param_3,u16 *GameID,u32 param_5)
 {
 	u8 peer;
 	u8 max;
 	u8 *min;
-	struct RfuPeerSub *sub;
+	NI_COMM *comm;
 	
-	if(rfuLinkStatus.mode==(u8)-1)
+	if(rfuLinkStatus.parent_child==(u8)-1)
 		return 0x502;
 	else if((param_2 & 0xf)==0)
 		return 0x601;
-	else if((rfuLinkStatus.peersConn & param_2)!=param_2)
+	else if((rfuLinkStatus.connectSlot_flag & param_2)!=param_2)
 		return 0x602;
-	else if((rfuLinkStatus.unk_04 & param_2)!=0)
+	else if((rfuLinkStatus.sendSlot_NI_flag & param_2)!=0)
 		return 0x603;
 	else {
 		for(peer=0;peer<4;peer++)
 			if(param_2 & 1<<peer)
 				break;
-		min=&rfuLinkStatus.unk_10[peer];
-		max=llsf_struct[rfuLinkStatus.mode].unk_01;
+		min=&rfuLinkStatus.remainLLFrameSize_C[peer];
+		max=llsf_struct[rfuLinkStatus.parent_child].unk_01;
 		if(param_3>*min||param_3<=max)
 			return 0x700;
 		else {
 			if((param_1 & 0x20)!=0||param_1==0x40) {
-				sub=&rfuSlotStatus_NI[peer].sub[0];
-				sub->unk_04=0;
-				sub->unk_02[0]=&sub->unk_20;
-				sub->unk_03=7;
-				sub->unk_19=param_2;
-				sub->unk_05=param_2;
-				sub->unk_21=param_3-max;
+				comm=&rfuSlotStatus_NI[peer].send;
+				comm->errorCode=0;
+				comm->nowp[0]=&comm->dataType;
+				comm->remainSize=7;
+				comm->bmSlot_org=param_2;
+				comm->bmSlot=param_2;
+				comm->payloadSize=param_3-max;
 				if(param_1 & 0x20)
-					sub->unk_20=0;
+					comm->dataType=0;
 				else
-					sub->unk_20=1;
-				sub->unk_22=param_5;
-				sub->unk_18=(u8 *)GameID;
-				sub->unk_10=0;
-				sub->unk_11=0;
+					comm->dataType=1;
+				comm->dataSize=param_5;
+				comm->src=(u8 *)GameID;
+				comm->ack=0;
+				comm->phase=0;
 				
 				for(peer=0;peer<4;peer++) {
-					sub->unk_06[peer]=0;
-					sub->unk_12[peer]=1;
+					comm->recv_ack_flag[peer]=0;
+					comm->n[peer]=1;
 				}
 				
 				for(peer=0;peer<4;peer++) {
 					if(param_2 & 1<<peer)
-						rfuSlotStatus_NI[peer].sub[0].unk_01[1]=0;
+						rfuSlotStatus_NI[peer].send.failCounter=0;
 				}
-				rfuLinkStatus.unk_04|=param_2;
+				rfuLinkStatus.sendSlot_NI_flag|=param_2;
 				*min-=param_3;
-				sub->unk_01[0]=0x8021;
+				comm->state=0x8021;
 			}
 			return 0;
 		}
@@ -1046,10 +1045,10 @@ u16 rfu_REQ_sendData(void)
 	u16 res;
 	u16 x;
 	u32 size;
-	struct RfuPeerSub *sub;
+	NI_COMM *comm;
 	
 	res=0;
-	if(rfuLinkStatus.mode==(u8)-1)
+	if(rfuLinkStatus.parent_child==(u8)-1)
 		return 0;
 	
 	rfuStatic.unk_12=0;
@@ -1059,17 +1058,17 @@ u16 rfu_REQ_sendData(void)
 	
 	if(res==0) {
 		for(x=0;x<4;x++) {
-			if(rfuSlotStatus_NI[x].sub[0].unk_01[0]!=0x8020)
+			if(rfuSlotStatus_NI[x].send.state!=0x8020)
 				continue;
 			
-			sub=&rfuSlotStatus_NI[x].sub[0];
+			comm=&rfuSlotStatus_NI[x].send;
 			
-			rfu_STC_releaseFrame(x,FALSE,sub);
+			rfu_STC_releaseFrame(x,FALSE,comm);
 			
-			rfuLinkStatus.unk_04&=~sub->unk_05;
-			if(sub->unk_20==1)
-				rfuLinkStatus.unk_07|=1<<x;
-			sub->unk_01[0]=0x27;
+			rfuLinkStatus.sendSlot_NI_flag&=~comm->bmSlot;
+			if(comm->dataType==1)
+				rfuLinkStatus.getName_flag|=1<<x;
+			comm->state=0x27;
 		}
 	}
 	return res;
@@ -1088,14 +1087,14 @@ u32 rfu_constructSendLLFrame(void)
 	for(x=0;x<4;x++) {
 		peersize=0;
 		
-		if((rfuSlotStatus_NI[x].sub[0].unk_01[0] & 0x8000)!=0)
-			peersize+=rfu_STC_NI_constructLLSF(x,&data,&rfuSlotStatus_NI[x].sub[0]);
+		if((rfuSlotStatus_NI[x].send.state & 0x8000)!=0)
+			peersize+=rfu_STC_NI_constructLLSF(x,&data,&rfuSlotStatus_NI[x].send);
 		
-		if((rfuSlotStatus_NI[x].sub[1].unk_01[0] & 0x8000)!=0)
-			peersize+=rfu_STC_NI_constructLLSF(x,&data,&rfuSlotStatus_NI[x].sub[1]);
+		if((rfuSlotStatus_NI[x].recv.state & 0x8000)!=0)
+			peersize+=rfu_STC_NI_constructLLSF(x,&data,&rfuSlotStatus_NI[x].recv);
 		
 		if(peersize!=0) {
-			if(rfuLinkStatus.mode==1)
+			if(rfuLinkStatus.parent_child==1)
 				size+=peersize;
 			else
 				size|=peersize<<(x*5+8);
@@ -1107,13 +1106,13 @@ u32 rfu_constructSendLLFrame(void)
 			*data++=0;
 		*(u32 *)RfuDataSendBuf=size;
 		
-		if(rfuLinkStatus.mode==0)
+		if(rfuLinkStatus.parent_child==0)
 			size=data-4-RfuDataSendBuf;
 	}
 	return size;
 }
 
-static u16 rfu_STC_NI_constructLLSF(u8 Peer,u8 **Destp,struct RfuPeerSub *PeerSub)
+static u16 rfu_STC_NI_constructLLSF(u8 Peer,u8 **Destp,NI_COMM *Comm)
 {
 	u16 x;
 	u16 size;
@@ -1123,56 +1122,56 @@ static u16 rfu_STC_NI_constructLLSF(u8 Peer,u8 **Destp,struct RfuPeerSub *PeerSu
 	u8 *flags_ptr;
 	u8 *temp_ptr;
 	
-	enc=(u8 *)&llsf_struct[rfuLinkStatus.mode];
+	enc=(u8 *)&llsf_struct[rfuLinkStatus.parent_child];
 	
-	if(PeerSub->unk_01[0]==0x8022) {
-		ptr=&PeerSub->unk_11;
-		while(PeerSub->unk_02[*ptr]>=PeerSub->unk_18+PeerSub->unk_22)
+	if(Comm->state==0x8022) {
+		ptr=&Comm->phase;
+		while(Comm->nowp[*ptr]>=Comm->src+Comm->dataSize)
 			if(++(*ptr)==4)
-				PeerSub->unk_11=0;
+				Comm->phase=0;
 	}
 	
-	if(PeerSub->unk_01[0] & 0x40)
+	if(Comm->state & 0x40)
 		size=0;
-	else if(PeerSub->unk_01[0]==0x8022) {
-		if(PeerSub->unk_02[PeerSub->unk_11]+PeerSub->unk_21>
-				PeerSub->unk_18+PeerSub->unk_22) {
-			size=PeerSub->unk_18+PeerSub->unk_22-
-				PeerSub->unk_02[PeerSub->unk_11];
+	else if(Comm->state==0x8022) {
+		if(Comm->nowp[Comm->phase]+Comm->payloadSize>
+				Comm->src+Comm->dataSize) {
+			size=Comm->src+Comm->dataSize-
+				Comm->nowp[Comm->phase];
 		}
 		else
-			size=PeerSub->unk_21;
+			size=Comm->payloadSize;
 	}
 	else {
-		if(PeerSub->unk_03>=PeerSub->unk_21)
-			size=PeerSub->unk_21;
+		if(Comm->remainSize>=Comm->payloadSize)
+			size=Comm->payloadSize;
 		else
-			size=PeerSub->unk_03;
+			size=Comm->remainSize;
 	}
 	
 	flags=
-		(PeerSub->unk_01[0] & 0xf)<<enc[3]|
-		PeerSub->unk_10<<enc[4]|
-		PeerSub->unk_11<<enc[5]|
-		PeerSub->unk_12[PeerSub->unk_11]<<enc[6]|
+		(Comm->state & 0xf)<<enc[3]|
+		Comm->ack<<enc[4]|
+		Comm->phase<<enc[5]|
+		Comm->n[Comm->phase]<<enc[6]|
 		size;
 	
-	if(rfuLinkStatus.mode==1)
-		flags|=PeerSub->unk_05<<18;
+	if(rfuLinkStatus.parent_child==1)
+		flags|=Comm->bmSlot<<18;
 	
 	flags_ptr=(u8 *)&flags;
 	for(x=0;x<enc[0];x++)
 		*(*Destp)++=*flags_ptr++;
 	
 	if(size!=0) {
-		temp_ptr=PeerSub->unk_02[PeerSub->unk_11];
+		temp_ptr=Comm->nowp[Comm->phase];
 		((void (*)())rfuFixed.send)(&temp_ptr,Destp,size);
 	}
 	
-	if(PeerSub->unk_01[0]==0x8022) {
-		ptr=&PeerSub->unk_11;
+	if(Comm->state==0x8022) {
+		ptr=&Comm->phase;
 		if(++(*ptr)==4)
-			PeerSub->unk_11=0;
+			Comm->phase=0;
 	}
 	
 	rfuStatic.unk_12|=1<<Peer;
@@ -1184,15 +1183,15 @@ u32 rfu_REQ_recvData(void)
 {
 	u16 res;
 	u8 x;
-	struct RfuPeerSub *sub;
+	NI_COMM *comm;
 	
-	if(rfuLinkStatus.mode==(u8)-1)
+	if(rfuLinkStatus.parent_child==(u8)-1)
 		return 0;
 	
 	rfuStatic.unk_10=
-		rfuLinkStatus.unk_04|
-		rfuLinkStatus.unk_05|
-		rfuLinkStatus.unk_06;
+		rfuLinkStatus.sendSlot_NI_flag|
+		rfuLinkStatus.recvSlot_NI_flag|
+		rfuLinkStatus.sendSlot_UNI_flag;
 	
 	res=STWI_send_DataRxREQ();
 	if(res==0&&rfuFixed.recv[1]!=0) {
@@ -1200,18 +1199,18 @@ u32 rfu_REQ_recvData(void)
 		rfu_STC_CHILD_analyzeRecvPacket();
 		
 		for(x=0;x<4;x++) {
-			if(rfuSlotStatus_NI[x].sub[1].unk_01[0]!=0x8043)
+			if(rfuSlotStatus_NI[x].recv.state!=0x8043)
 				continue;
 			if(rfuStatic.unk_05 & 1<<x)
 				continue;
 			
-			sub=&rfuSlotStatus_NI[x].sub[1];
+			comm=&rfuSlotStatus_NI[x].recv;
 			
-			if(sub->unk_20==1)
-				rfuLinkStatus.unk_07|=1<<x;
-			rfu_STC_releaseFrame(x,TRUE,sub);
-			rfuLinkStatus.unk_05&=~sub->unk_05;
-			sub->unk_01[0]=0x47;
+			if(comm->dataType==1)
+				rfuLinkStatus.getName_flag|=1<<x;
+			rfu_STC_releaseFrame(x,TRUE,comm);
+			rfuLinkStatus.recvSlot_NI_flag&=~comm->bmSlot;
+			comm->state=0x47;
 		}
 	}
 	return res;
@@ -1247,7 +1246,7 @@ static u16 rfu_STC_analyzeLLSF(u32 unused,u8 *Srcp,u16 Size)
 	u16 ret;
 	u8 mode;
 	
-	mode=~rfuLinkStatus.mode & 1;
+	mode=~rfuLinkStatus.parent_child & 1;
 	enc=&llsf_struct[mode];
 	if(Size<enc->unk_01)
 		return Size;
@@ -1266,14 +1265,14 @@ static u16 rfu_STC_analyzeLLSF(u32 unused,u8 *Srcp,u16 Size)
 	ret=fields._7+enc->unk_01;
 	
 	if(fields._1==0) {
-		int temp=rfuLinkStatus.peersConn & fields._2;
+		int temp=rfuLinkStatus.connectSlot_flag & fields._2;
 		if(temp) {
 			for(x=0;x<4;x++) {
 				if(!(temp & 1<<x))
 					continue;
 				if((fields._4)==0)
 					rfu_STC_NI_receive_Receiver(x,(u8 *)&fields,Srcp);
-				else if(rfuLinkStatus.unk_04 & 1<<x)
+				else if(rfuLinkStatus.sendSlot_NI_flag & 1<<x)
 					rfu_STC_NI_receive_Sender(x,x,(u8 *)&fields,Srcp);
 			}
 		}
@@ -1285,167 +1284,167 @@ static u16 rfu_STC_analyzeLLSF(u32 unused,u8 *Srcp,u16 Size)
 static void rfu_STC_NI_receive_Sender(u8 Peer,u8 param_2,u8 *param_3,u8 *param_4)
 {
 	u8 x;
-	struct RfuPeerSub *sub;
+	NI_COMM *comm;
 	u16 save_unk_01;
 	u8 save_unk_12;
-	int diff;
+	int size;
 	
-	sub=&rfuSlotStatus_NI[Peer].sub[0];
-	save_unk_01=sub->unk_01[0];
-	save_unk_12=sub->unk_12[param_3[4]];
+	comm=&rfuSlotStatus_NI[Peer].send;
+	save_unk_01=comm->state;
+	save_unk_12=comm->n[param_3[4]];
 	
-	if((param_3[2]==2&&sub->unk_01[0]==0x8022)||
-			(param_3[2]==1&&sub->unk_01[0]==0x8021)||
-			(param_3[2]==3&&sub->unk_01[0]==0x8023)) {
-		if(sub->unk_12[param_3[4]]==param_3[5])
-			sub->unk_06[param_3[4]]|=1<<param_2;
+	if((param_3[2]==2&&comm->state==0x8022)||
+			(param_3[2]==1&&comm->state==0x8021)||
+			(param_3[2]==3&&comm->state==0x8023)) {
+		if(comm->n[param_3[4]]==param_3[5])
+			comm->recv_ack_flag[param_3[4]]|=1<<param_2;
 	}
 	
-	if((sub->unk_06[param_3[4]] & sub->unk_05)==sub->unk_05) {
-		sub->unk_12[param_3[4]]=(sub->unk_12[param_3[4]]+1) & 3;
-		sub->unk_06[param_3[4]]=0;
+	if((comm->recv_ack_flag[param_3[4]] & comm->bmSlot)==comm->bmSlot) {
+		comm->n[param_3[4]]=(comm->n[param_3[4]]+1) & 3;
+		comm->recv_ack_flag[param_3[4]]=0;
 		
-		if(sub->unk_01[0]==0x8021||
-				sub->unk_01[0]==0x8022) {
-			if(sub->unk_01[0]==0x8021)
-				sub->unk_02[param_3[4]]+=sub->unk_21;
+		if(comm->state==0x8021||
+				comm->state==0x8022) {
+			if(comm->state==0x8021)
+				comm->nowp[param_3[4]]+=comm->payloadSize;
 			else
-				sub->unk_02[param_3[4]]+=sub->unk_21*4;
-			diff=sub->unk_03-sub->unk_21;
-			sub->unk_03=diff;
-			if(sub->unk_03==0||diff<0) {
-				sub->unk_11=0;
-				if(sub->unk_01[0]==0x8021) {
+				comm->nowp[param_3[4]]+=comm->payloadSize*4;
+			size=comm->remainSize-comm->payloadSize;
+			comm->remainSize=size;
+			if(comm->remainSize==0||size<0) {
+				comm->phase=0;
+				if(comm->state==0x8021) {
 					for(x=0;x<4;x++) {
-						sub->unk_12[x]=1;
-						sub->unk_02[x]=&sub->unk_18[sub->unk_21*x];
+						comm->n[x]=1;
+						comm->nowp[x]=(u8 *)&comm->src[comm->payloadSize*x];
 					}
-					sub->unk_03=sub->unk_22;
-					sub->unk_01[0]=0x8022;
+					comm->remainSize=comm->dataSize;
+					comm->state=0x8022;
 				}
 				else {
-					sub->unk_12[0]=0;
-					sub->unk_03=0;
-					sub->unk_01[0]=0x8023;
+					comm->n[0]=0;
+					comm->remainSize=0;
+					comm->state=0x8023;
 				}
 			}
 		}
-		else if(sub->unk_01[0]==0x8023)
-			sub->unk_01[0]=0x8020;
+		else if(comm->state==0x8023)
+			comm->state=0x8020;
 	}
 	
-	if(sub->unk_01[0]!=save_unk_01||
-			sub->unk_12[param_3[4]]!=save_unk_12||
-			sub->unk_06[param_3[4]] & 1<<param_2) {
+	if(comm->state!=save_unk_01||
+			comm->n[param_3[4]]!=save_unk_12||
+			comm->recv_ack_flag[param_3[4]] & 1<<param_2) {
 		rfuStatic.unk_07|=1<<param_2;
-		rfuSlotStatus_NI[param_2].sub[0].unk_01[1]=0;
+		rfuSlotStatus_NI[param_2].send.failCounter=0;
 	}
 }
 
 static void rfu_STC_NI_receive_Receiver(u8 Peer,u8 *param_2,u8 *param_3)
 {
 	u8 cont;
-	struct RfuPeerSub *sub;
+	NI_COMM *comm;
 	u16 save_unk_01;
 	u8 save_unk_12;
 	u8 *ptr_unk_11;
 	
 	cont=FALSE;
-	sub=&rfuSlotStatus_NI[Peer].sub[1];
-	save_unk_01=sub->unk_01[0];
-	save_unk_12=sub->unk_12[param_2[4]];
+	comm=&rfuSlotStatus_NI[Peer].recv;
+	save_unk_01=comm->state;
+	save_unk_12=comm->n[param_2[4]];
 	
-	if(sub->unk_01[0]==0x46||sub->unk_01[0]==0x47)
+	if(comm->state==0x46||comm->state==0x47)
 		return;
 	
 	if(param_2[2]==3) {
 		rfuStatic.unk_05|=1<<Peer;
-		ptr_unk_11=&sub->unk_11;
-		if(sub->unk_01[0]==0x8042) {
+		ptr_unk_11=&comm->phase;
+		if(comm->state==0x8042) {
 			*ptr_unk_11=0;
-			sub->unk_12[0]=0;
-			sub->unk_01[0]=0x8043;
+			comm->n[0]=0;
+			comm->state=0x8043;
 		}
 	}
 	else if(param_2[2]==2) {
-		if(sub->unk_01[0]==0x8041&&sub->unk_03==0)
-			sub->unk_01[0]=rfu_STC_NI_initSlot_asRecvDataEntity(Peer,sub);
-		if(sub->unk_01[0]==0x8042)
+		if(comm->state==0x8041&&comm->remainSize==0)
+			comm->state=rfu_STC_NI_initSlot_asRecvDataEntity(Peer,comm);
+		if(comm->state==0x8042)
 			cont=TRUE;
 	}
 	else if(param_2[2]==1) {
-		if(!(sub->unk_01[0] & 0x8000))
-			sub->unk_01[0]=rfu_STC_NI_initSlot_asRecvControllData(Peer,sub);
-		if(sub->unk_01[0]==0x8041)
+		if(!(comm->state & 0x8000))
+			comm->state=rfu_STC_NI_initSlot_asRecvControllData(Peer,comm);
+		if(comm->state==0x8041)
 			cont=TRUE;
 	}
 	
-	if(cont&&param_2[5]==((sub->unk_12[param_2[4]]+1) & 3)) {
-		((void (*)())rfuFixed.send)(&param_3,&sub->unk_02[param_2[4]],*(u16 *)&param_2[6]);
-		if(sub->unk_01[0]==0x8042)
-			sub->unk_02[param_2[4]]+=sub->unk_21*3;
-		sub->unk_03-=*(u16 *)&param_2[6];
-		sub->unk_12[param_2[4]]=param_2[5];
+	if(cont&&param_2[5]==((comm->n[param_2[4]]+1) & 3)) {
+		((void (*)())rfuFixed.send)(&param_3,&comm->nowp[param_2[4]],*(u16 *)&param_2[6]);
+		if(comm->state==0x8042)
+			comm->nowp[param_2[4]]+=comm->payloadSize*3;
+		comm->remainSize-=*(u16 *)&param_2[6];
+		comm->n[param_2[4]]=param_2[5];
 	}
-	sub->unk_11=param_2[4];
+	comm->phase=param_2[4];
 	
-	if(sub->unk_01[0]!=save_unk_01||
-			sub->unk_12[param_2[4]]!=save_unk_12||
-			sub->unk_12[param_2[4]]==param_2[5]) {
+	if(comm->state!=save_unk_01||
+			comm->n[param_2[4]]!=save_unk_12||
+			comm->n[param_2[4]]==param_2[5]) {
 		rfuStatic.unk_06|=1<<Peer;
-		sub->unk_01[1]=0;
+		comm->failCounter=0;
 	}
 }
 
-static u32 rfu_STC_NI_initSlot_asRecvControllData(u8 Peer,struct RfuPeerSub *Sub)
+static u32 rfu_STC_NI_initSlot_asRecvControllData(u8 Peer,NI_COMM *Comm)
 {
 	u32 max;
 	u8 *ptr;
 	
 	max=2;
-	ptr=&rfuLinkStatus.unk_10[Peer];
+	ptr=&rfuLinkStatus.remainLLFrameSize_C[Peer];
 	
 	if(*ptr<max) {
-		Sub->unk_04=0x405;
+		Comm->errorCode=0x405;
 		return 0x49;
 	}
-	Sub->unk_04=0;
+	Comm->errorCode=0;
 	
 	*ptr-=max;
-	Sub->unk_05=1<<Peer;
-	Sub->unk_02[0]=&Sub->unk_20;
-	Sub->unk_03=7;
-	Sub->unk_10=1;
-	Sub->unk_21=0;
-	rfuLinkStatus.unk_05|=1<<Peer;
+	Comm->bmSlot=1<<Peer;
+	Comm->nowp[0]=&Comm->dataType;
+	Comm->remainSize=7;
+	Comm->ack=1;
+	Comm->payloadSize=0;
+	rfuLinkStatus.recvSlot_NI_flag|=1<<Peer;
 	return 0x8041;
 }
 
-static u16 rfu_STC_NI_initSlot_asRecvDataEntity(u8 Peer,struct RfuPeerSub *Sub)
+static u16 rfu_STC_NI_initSlot_asRecvDataEntity(u8 Peer,NI_COMM *Comm)
 {
 	u8 x;
 	
-	if(Sub->unk_20==1)
-		Sub->unk_02[0]=(u8 *)&rfuLinkStatus.games[Peer].gameID;
+	if(Comm->dataType==1)
+		Comm->nowp[0]=(u8 *)&rfuLinkStatus.partner[Peer].serialNo;
 	else {
-		if(rfuSlotStatus_NI[Peer].mbootDest==NULL) {
-			rfuLinkStatus.unk_05&=~(1<<Peer);
-			Sub->unk_04=0x401;
+		if(rfuSlotStatus_NI[Peer].recvBuff==NULL) {
+			rfuLinkStatus.recvSlot_NI_flag&=~(1<<Peer);
+			Comm->errorCode=0x401;
 			return 0x49;
 		}
-		if(Sub->unk_22>rfuSlotStatus_NI[Peer].mbootSize) {
-			rfuLinkStatus.unk_05&=~(1<<Peer);
-			Sub->unk_04=0x402;
+		if(Comm->dataSize>rfuSlotStatus_NI[Peer].recvBuffSize) {
+			rfuLinkStatus.recvSlot_NI_flag&=~(1<<Peer);
+			Comm->errorCode=0x402;
 			return 0x49;
 		}
-		Sub->unk_02[0]=rfuSlotStatus_NI[Peer].mbootDest;
+		Comm->nowp[0]=rfuSlotStatus_NI[Peer].recvBuff;
 	}
 	
 	for(x=0;x<4;x++) {
-		Sub->unk_12[x]=0;
-		Sub->unk_02[x]=Sub->unk_02[0]+Sub->unk_21*x;
+		Comm->n[x]=0;
+		Comm->nowp[x]=Comm->nowp[0]+Comm->payloadSize*x;
 	}
-	Sub->unk_03=Sub->unk_22;
+	Comm->remainSize=Comm->dataSize;
 	return 0x8042;
 }
 
@@ -1456,9 +1455,9 @@ void RfuReset(void)
 	ime=*(vu16 *)REG_IME;
 	*(vu16 *)REG_IME=0;
 	
-	if(rfuLinkStatus.unk_04!=0)
+	if(rfuLinkStatus.sendSlot_NI_flag!=0)
 		RfuResetSub(0);
-	if(rfuLinkStatus.unk_05!=0)
+	if(rfuLinkStatus.recvSlot_NI_flag!=0)
 		RfuResetSub(1);
 	rfuStatic.unk_07=0;
 	rfuStatic.unk_06=0;
@@ -1474,11 +1473,11 @@ void RfuResetSub(u8 param_1)
 	u8 *puVar4;
 	
 	if(param_1==0) {
-		puVar4=&rfuLinkStatus.unk_04;
+		puVar4=&rfuLinkStatus.sendSlot_NI_flag;
 		puVar3=&rfuStatic.unk_07;
 	}
 	else {
-		puVar4=&rfuLinkStatus.unk_05;
+		puVar4=&rfuLinkStatus.recvSlot_NI_flag;
 		puVar3=&rfuStatic.unk_06;
 	}
 	
@@ -1487,11 +1486,11 @@ void RfuResetSub(u8 param_1)
 		
 		if((*puVar4 & bit)!=0&&
 				(*puVar3 & bit)==0&&
-				(param_1!=1||(rfuSlotStatus_NI[x].sub[1].unk_01[0]!=0x8043))) {
+				(param_1!=1||(rfuSlotStatus_NI[x].recv.state!=0x8043))) {
 			if(param_1==0)
-				rfuSlotStatus_NI[x].sub[0].unk_01[1]++;
+				rfuSlotStatus_NI[x].send.failCounter++;
 			else
-				rfuSlotStatus_NI[x].sub[1].unk_01[1]++;
+				rfuSlotStatus_NI[x].recv.failCounter++;
 		}
 	}
 }
