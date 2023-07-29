@@ -352,7 +352,7 @@ typedef struct RFU_SlotStatus_UNI_Tag {
 
 extern RFU_LINK_STATUS     rfuLinkStatus;                      // Link Status Data
 extern RFU_SLOT_STATUS_NI  rfuSlotStatus_NI[RFU_CHILD_MAX];    // Slot Status Data for NI-type Communication
-extern RFU_SLOT_STATUS_UNI *rfuSlotStatus_UNI[RFU_CHILD_MAX];   // Slot Status Data for UNI-type Communication
+extern RFU_SLOT_STATUS_UNI rfuSlotStatus_UNI[RFU_CHILD_MAX];   // Slot Status Data for UNI-type Communication
 
 
 // --------------------------------------------------------------------------
