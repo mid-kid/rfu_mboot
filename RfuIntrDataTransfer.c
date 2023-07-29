@@ -94,7 +94,7 @@ RfuIntrDataTransfer:
 
 #include <Agb.h>
 
-#include "RfuPeer.h"
+#include "AgbRFU_LL.h"
 extern u32 rfu_REQBN_watchLink(u8 *param_1, u8 *param_2, u8 *param_3);
 extern u16 rfu_REQ_recvData(void);
 extern u16 rfu_REQ_sendData(void);
@@ -102,7 +102,6 @@ extern u16 rfu_REQ_changeMasterSlave_force(void);
 extern u8 SearchMenuErrorTimer;
 extern u8 my_state;
 extern u8 SearchMenuErrorMsg;
-extern struct RfuPeer rfuSlotStatus_NI[4];
 extern u8 MbootPeer;
 
 void RfuIntrDataTransfer(void)
@@ -117,7 +116,7 @@ void RfuIntrDataTransfer(void)
 
     rfu_REQBN_watchLink(&res, &res2, &res3);
     if (res != 0) {
-        if (rfuSlotStatus_NI[MbootPeer].sub[1].unk_01[0] != 0) {
+        if (rfuSlotStatus_NI[MbootPeer].recv.state != 0) {
             SearchMenuErrorMsg = 1;
         } else {
             SearchMenuErrorMsg = 3;
