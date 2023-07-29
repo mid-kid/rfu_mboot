@@ -23,9 +23,9 @@ extern u8 SearchMenuErrorMsg;
 extern u8 SearchMenuErrorTimer;
 extern void (*nowProcess)();
 
-extern u16  MbootDLStart2(u8 Peer,u16 param_2);
+extern u16  rfu_NI_CHILD_setSendGameName(u8 Peer,u16 param_2);
 extern u32  rfu_clearAllSlot(void);
-extern u32  RfuMbootCfg(u32 param_1,u8 Client,void *Dest,u32 Size);
+extern u32  rfu_setRecvBuffer(u32 param_1,u8 Client,void *Dest,u32 Size);
 extern u32  rfu_clearSlot(u8 param_1,u8 Peer);
 extern u8   RfuStrcmp(const char *Str1,const char *Str2);
 extern u8   SearchMenuUpdateGames(void);
@@ -43,7 +43,7 @@ extern void SearchMenuClearGame(void);
 extern void SearchMenuDrawList(u8 Blink);
 extern void SearchMenuErrorBeep(void);
 extern void checkAPI_Error(u16 State);
-extern void Sio32IntrProcSet(void (*Func)());
+extern void rfu_setMSCCallback(void (*Func)());
 extern void SoundPlaySfx(u8 Num);
 extern void WinFade(u8 Dir);
 
@@ -338,8 +338,8 @@ void SEQ_search(void)
 			if(procRes==0) {
 				if(SearchMenuTimer>0&&rfuFixed.recv[7]==0) {
 					SearchMenuClearGame();
-					Sio32IntrProcSet(RfuIntrDataTransfer);
-					RfuMbootCfg(0x20,MbootPeer,(u8 *)EX_WRAM,EX_WRAM_SIZE);
+					rfu_setMSCCallback(RfuIntrDataTransfer);
+					rfu_setRecvBuffer(0x20,MbootPeer,(u8 *)EX_WRAM,EX_WRAM_SIZE);
 					my_state=STATE_CONFIG_GAME;
 				}
 				else {
@@ -421,7 +421,7 @@ static void SEQ_search_mboot(void)
 {
 	switch(my_state) {
 		case STATE_MBOOT_START:
-			MbootDLStart2(MbootPeer,8);
+			rfu_NI_CHILD_setSendGameName(MbootPeer,8);
 			my_state=STATE_MBOOT_POLL;
 			break;
 			
