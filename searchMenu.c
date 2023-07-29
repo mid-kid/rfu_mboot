@@ -35,7 +35,7 @@ extern void GameNameInit(void);
 extern void MenuMsgBlink(u8 Msg,u8 Rate);
 extern void MenuMsgSet(u8 Msg,u16 PlttNo);
 extern void RfuIntrDataTransfer(void);
-extern void RfuReset(void);
+extern void rfu_NI_checkCommFailCounter(void);
 extern void RfuWaitData(void);
 extern void SEQ_title(void);
 extern void SEQ_title_init(void);
@@ -149,7 +149,7 @@ void SEQ_search(void)
 	u16 procRes=0;
 	
 	if(rfuLinkStatus.mode==0) {
-		RfuReset();
+		rfu_NI_checkCommFailCounter();
 		
 		if(my_state!=STATE_DOWNLOAD_SUCCESS) {
 			*(vu16 *)REG_IME=0;

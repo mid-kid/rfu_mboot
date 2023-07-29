@@ -61,9 +61,9 @@ static void rfu_STC_NI_receive_Receiver(u8 param_1,u8 *param_2,u8 *param_3);
 static void rfu_STC_NI_receive_Sender(u8 param_1,u8 param_2,u8 *param_3,u8 *param_4);
 static void rfu_STC_clearAPIVariables(void);
 static void rfu_STC_fastCopy(u8 **Src,u8 **Dst,int Size);
+static void rfu_STC_incCommFailCounter(u8 param_1);
 static void rfu_STC_readParentCandidateList(void);
 
-void RfuResetSub(u8 param_1);
 void rfu_REQ_disconnect(u8 Peer,u8 param_2);
 void rfu_setMSCCallback();
 u32  rfu_clearAllSlot(void);
@@ -1448,31 +1448,31 @@ static u16 rfu_STC_NI_initSlot_asRecvDataEntity(u8 Peer,NI_COMM *Comm)
 	return 0x8042;
 }
 
-void RfuReset(void)
+void rfu_NI_checkCommFailCounter(void)
 {
 	u16 ime;
 	
 	ime=*(vu16 *)REG_IME;
 	*(vu16 *)REG_IME=0;
 	
-	if(rfuLinkStatus.sendSlot_NI_flag!=0)
-		RfuResetSub(0);
-	if(rfuLinkStatus.recvSlot_NI_flag!=0)
-		RfuResetSub(1);
+	if(rfuLinkStatus.sendSlot_NI_flag)
+		rfu_STC_incCommFailCounter(0);
+	if(rfuLinkStatus.recvSlot_NI_flag)
+		rfu_STC_incCommFailCounter(1);
 	rfuStatic.unk_07=0;
 	rfuStatic.unk_06=0;
 	
 	*(vu16 *)REG_IME=ime;
 }
 
-void RfuResetSub(u8 param_1)
+static void rfu_STC_incCommFailCounter(u8 which)
 {
 	u8 x;
 	u8 bit;
 	u8 *puVar3;
 	u8 *puVar4;
 	
-	if(param_1==0) {
+	if(which==0) {
 		puVar4=&rfuLinkStatus.sendSlot_NI_flag;
 		puVar3=&rfuStatic.unk_07;
 	}
@@ -1486,8 +1486,8 @@ void RfuResetSub(u8 param_1)
 		
 		if((*puVar4 & bit)!=0&&
 				(*puVar3 & bit)==0&&
-				(param_1!=1||(rfuSlotStatus_NI[x].recv.state!=0x8043))) {
-			if(param_1==0)
+				(which!=1||(rfuSlotStatus_NI[x].recv.state!=0x8043))) {
+			if(which==0)
 				rfuSlotStatus_NI[x].send.failCounter++;
 			else
 				rfuSlotStatus_NI[x].recv.failCounter++;
