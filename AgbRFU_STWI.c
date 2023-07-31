@@ -4,6 +4,7 @@
 #include "STWI_status.h"
 extern u16 STWI_poll_CommandEnd(void);
 extern u16 STWI_check_Command(u32 Cmd,u8 VarSize);
+extern u32 AgbRFU_checkID(void);
 extern u8 STWI_buffer_send[0x120];
 extern u8 STWI_buffer_recv[0x120];
 extern struct STWI_status STWI_status;
@@ -545,5 +546,25 @@ u16 STWI_send_StopModeREQ(void)
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
     return STWI_check_Command(0x996600bd,FALSE);
+}
+
+void AgbRFU_SoftReset(void)
+{
+    u16 x;
+
+    *(vu16 *)REG_RCNT = 0x8000;
+
+    // Pulse the SD pin
+    *(vu16 *)REG_RCNT = 0x80a0;
+    for (x = 0; x < 1000; x++) *(vu16 *)REG_RCNT = 0x80a2;
+    *(vu16 *)REG_RCNT = 0x80a0;
+
+    *(vu16 *)REG_SIOCNT = 0x5003;
+}
+
+u32 AgbRFU_SoftReset_and_checkID(void)
+{
+    AgbRFU_SoftReset();
+    return AgbRFU_checkID();
 }
 

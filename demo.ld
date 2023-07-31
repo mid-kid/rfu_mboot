@@ -39,10 +39,6 @@ SECTIONS {
         Sio32.o(.text)
 
         AgbRFU_STWI.o(.text)
-
-        RfuResetAdapter.o(.text)
-        RfuBoot.o(.text)
-
         AgbRFU_Sio32ID.o(.text)
         AgbRFU_LL.o(.text)
         *(.text)

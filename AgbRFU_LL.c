@@ -18,7 +18,7 @@ extern struct rfuFixed {
 	u8 *recv;  // dst
 	void (*fastCopy_p)();
 	u8 fastCopy_buff[1];
-} rfuFixed;
+}rfuFixed;
 
 static const struct RfuEnc {
 	u8 unk_01;
@@ -35,12 +35,12 @@ static const struct RfuEnc {
 	u8 unk_12;
 	u8 unk_13;
 	u16 unk_15;
-} llsf_struct[2] = {
+}llsf_struct[2]={
     {0x02, 0x0e, 0x00, 0x0a, 0x09, 0x05, 0x07, 0x02, 0x00, 0x0f, 0x01, 0x03, 0x03, 0x1f},
     {0x03, 0x16, 0x12, 0x0e, 0x0d, 0x09, 0x0b, 0x03, 0x0f, 0x0f, 0x01, 0x03, 0x03, 0x7f}
 };
 
-static const char str_checkMbootLL[] = "RFU-MBOOT";
+static const char str_checkMbootLL[]="RFU-MBOOT";
 
 static u16  rfu_STC_NI_constructLLSF(u8 Peer,u8 **Destp,NI_COMM *Comm);
 static u16  rfu_STC_NI_initSlot_asRecvDataEntity(u8 Peer,NI_COMM *Comm);
