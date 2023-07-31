@@ -60,8 +60,7 @@ SECTIONS {
         char/search_tmap_LZ.o(.rodata)
         char/tiles_LZ.o(.rodata)
         AgbRFU_Sio32ID.o(.rodata)
-        llsf_struct.o(.rodata)
-        RfuID.o(.rodata)
+        AgbRFU_LL.o(.rodata)
         *(.data)
     }
 
