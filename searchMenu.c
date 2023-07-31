@@ -45,7 +45,7 @@ extern void SearchMenuErrorBeep(void);
 extern void checkAPI_Error(u16 State);
 extern void rfu_setIDCallback(void (*Func)());
 extern void SoundPlaySfx(u8 Num);
-extern void WinFade(u8 Dir);
+extern void mf_winFade(u8 Dir);
 
 extern struct rfuFixed {
 	u8 *recv;
@@ -97,7 +97,7 @@ void SEQ_search_init(void)
 {
 	u8 x;
 	
-	WinFade(0);
+	mf_winFade(0);
 	
 	mf_drawBg2_search(0x18);
 	*(vu16 *)REG_BG2VOFS=-52;
@@ -107,7 +107,7 @@ void SEQ_search_init(void)
 	VBlankIntrWait();
 	
 	*(vu16 *)REG_DISPCNT|=DISP_BG1_ON;
-	WinFade(1);
+	mf_winFade(1);
 	*(vu16 *)REG_DISPCNT|=DISP_BG2_ON;
 	
 	if(Lang==0) {

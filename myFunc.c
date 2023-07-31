@@ -21,9 +21,9 @@ static u8  key_rapid[4];
 // Reads key input
 void mf_readKey()
 {
-	u16 ReadData = (*(vu16 *)REG_KEYINPUT ^ 0xffff);
-	key.Trg  = ReadData & (ReadData ^ key.Cont);    // Trigger input
-	key.Cont = ReadData;                            //   Continuous input
+	u16 ReadData=(*(vu16 *)REG_KEYINPUT ^ 0xffff);
+	key.Trg=ReadData & (ReadData ^ key.Cont);    // Trigger input
+	key.Cont=ReadData;                            //   Continuous input
 }
 
 // Rapid key input
@@ -130,5 +130,41 @@ void mf_wait3sec(void)
 	
 	for(i=0;i<3*60;i++)
 		VBlankIntrWait();
+}
+
+void mf_winInit(void)
+{
+	*(vu16 *)REG_WIN0H=0xff;
+	*(vu16 *)REG_WIN0V=0xff;
+	*(vu16 *)REG_WIN0=0x3f;
+	*(vu16 *)REG_WINOUT=0;
+	*(vu16 *)REG_BLDCNT=0x2857;
+	*(vu16 *)REG_BLDALPHA=0x1f00;
+}
+
+void mf_winFade(u8 Dir)
+{
+	u16 i;
+	u16 val;
+	
+	if(Dir==0)
+		*(vu16 *)REG_DISPCNT&=0xfbff;
+	
+	i=0;
+	while(i<=0x10) {
+		VBlankIntrWait();
+		if(i==0x10)
+			val=0;
+		else {
+			//val=0x10-i;
+			val=(~i & 0xf)+1;
+		}
+		if(Dir)
+			*(vu16 *)REG_BLDALPHA=val<<8 | i;
+		else
+			*(vu16 *)REG_BLDALPHA=val | i<<8;
+		i++;
+		VBlankIntrWait();
+	}
 }
 

@@ -27,8 +27,6 @@ SECTIONS {
         MenuMsgBlink.o(.text)
         GameNameInit.o(.text)
         myFunc.o(.text)
-        WinInit.o(.text)
-        WinFade.o(.text)
 
         Sound.o(.text)
         interrupt.o(.text)

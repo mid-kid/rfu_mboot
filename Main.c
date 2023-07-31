@@ -46,8 +46,8 @@ extern void SEQ_search(void);
 extern void SEQ_search_init(void);
 extern void SoundInit(void);
 extern void SoundPlaySfx(u8 Num);
-extern void WinFade(u8 Dir);
-extern void WinInit(void);
+extern void mf_winFade(u8 Dir);
+extern void mf_winInit(void);
 
 // global variable -------------------------------------
 
@@ -78,7 +78,7 @@ void AgbMain(void)
 	LZ77UnCompVram(_binary_char_tmap_LZ_bin_start,(u8 *)VRAM+0x1800);
 	
 	SoundInit();
-	WinInit();
+	mf_winInit();
 	
 // BG SET
 	*(vu16 *)REG_BG0CNT=BG_SCREEN_SIZE_0
@@ -146,7 +146,7 @@ void SEQ_title_init(void)
 	
 	if(MainMenuFadeOut) {
 		mf_clearRect(0x80,2,0x20);
-		WinFade(0);
+		mf_winFade(0);
 	}
 	*(vu16 *)REG_DISPCNT&=~DISP_BG1_ON;
 	
@@ -163,7 +163,7 @@ void SEQ_title_init(void)
 	*(vu16 *)REG_BG2VOFS=~(56+Lang*24-1);
 	*(vu16 *)REG_BG2HOFS=~(65-1);
 	
-	WinFade(1);
+	mf_winFade(1);
 	*(vu16 *)REG_DISPCNT|=DISP_BG2_ON;
 	
 	my_state=0xc0;
