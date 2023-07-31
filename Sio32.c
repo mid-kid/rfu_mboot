@@ -7,7 +7,7 @@ void Call_thumb(void (*)());
 
 #include "STWI_status.h"
 extern u8 u8_03005efc;
-extern void (*STWI_intr)(void);
+extern void (*STWI_callback_ID)(void);
 extern struct STWI_status STWI_status;
 extern u8 STWI_buffer_recv[0x120];
 extern u8 u8_03005729;
@@ -25,7 +25,7 @@ extern u8 RfuIntrSize;
 void Sio32Intr(void)
 {
     if (u8_03005efc == 1) {
-        Call_thumb(STWI_intr);
+        Call_thumb(STWI_callback_ID);
         return;
     }
 
@@ -579,7 +579,7 @@ Sio32IntrSlave:
 	.word	RfuIntrCmd
 	.word	STWI_buffer_send
 	.word	-1721368082
-	.word	STWI_intr
+	.word	STWI_callback_ID
 .LY29:
 	mov	r3, #20480
 	add	r3, r3, #130
@@ -703,7 +703,7 @@ u32 Sio32IntrSlave(void)
         *(vu16 *)REG_SIOCNT = 0;
         *(vu16 *)REG_SIOCNT = 0x5003;
 
-        Call_thumb(STWI_intr);
+        Call_thumb(STWI_callback_ID);
     } else {
         *(vu16 *)REG_SIOCNT = 0x5082;
     }

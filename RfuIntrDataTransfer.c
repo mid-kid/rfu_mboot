@@ -64,7 +64,7 @@ RfuIntrDataTransfer:
 .L11:
 	ldr	r6, .L19+4
 .L14:
-	bl	rfu_REQ_changeMasterSlave_force
+	bl	rfu_REQ_changeMasterSlave
 	lsl	r0, r0, #16
 	cmp	r0, #0
 	beq	.L2	@cond_branch
@@ -98,7 +98,7 @@ RfuIntrDataTransfer:
 extern u32 rfu_REQBN_watchLink(u8 *param_1, u8 *param_2, u8 *param_3);
 extern u16 rfu_REQ_recvData(void);
 extern u16 rfu_REQ_sendData(void);
-extern u16 rfu_REQ_changeMasterSlave_force(void);
+extern u16 rfu_REQ_changeMasterSlave(void);
 extern u8 SearchMenuErrorTimer;
 extern u8 my_state;
 extern u8 SearchMenuErrorMsg;
@@ -128,7 +128,7 @@ void RfuIntrDataTransfer(void)
         }
 
         for (x = 0; x != 2; x++) {
-            if (rfu_REQ_changeMasterSlave_force() == 0) return;
+            if (rfu_REQ_changeMasterSlave() == 0) return;
         }
         SearchMenuErrorMsg = 4;
     }

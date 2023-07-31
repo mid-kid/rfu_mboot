@@ -43,7 +43,7 @@ extern void SearchMenuClearGame(void);
 extern void SearchMenuDrawList(u8 Blink);
 extern void SearchMenuErrorBeep(void);
 extern void checkAPI_Error(u16 State);
-extern void rfu_setMSCCallback(void (*Func)());
+extern void rfu_setIDCallback(void (*Func)());
 extern void SoundPlaySfx(u8 Num);
 extern void WinFade(u8 Dir);
 
@@ -338,7 +338,7 @@ void SEQ_search(void)
 			if(procRes==0) {
 				if(SearchMenuTimer>0&&rfuFixed.recv[7]==0) {
 					SearchMenuClearGame();
-					rfu_setMSCCallback(RfuIntrDataTransfer);
+					rfu_setIDCallback(RfuIntrDataTransfer);
 					rfu_setRecvBuffer(0x20,MbootPeer,(u8 *)EX_WRAM,EX_WRAM_SIZE);
 					my_state=STATE_CONFIG_GAME;
 				}

@@ -11,13 +11,13 @@ extern struct STWI_status STWI_status;
 extern struct rfuStatic rfuStatic;
 extern u8 RfuDataSendBuf[];
 extern u8 STWI_buffer_recv[0x120];
-extern void (*STWI_intr)(void);
+extern void (*STWI_callback_ID)(void);
 
 extern u16  STWI_send_CP_EndREQ(void);
 extern u16  STWI_send_CP_StartREQ(u16 BeaconID);
 extern u16  STWI_send_DataRxREQ(void);
 extern u16  STWI_send_DataTxREQ(u8 *Srcp,u8 Size);
-extern u16  STWI_send_GameConfigREQ(char *GameData,char *UserName);
+extern u16  STWI_send_GameConfigREQ(const u8 *GameData,const u8 *UserName);
 extern u16  STWI_send_LinkStatusREQ(void);
 extern u16  STWI_send_MS_ChangeREQ(void);
 extern u16  STWI_send_ResetREQ(void);
@@ -30,9 +30,9 @@ extern void STWI_init_all(void);
 extern void STWI_intr_vblank(void);
 
 extern struct rfuFixed {
-	u8 *recv;
-	u8 *send;
-	u8 func[1];
+	u8 *recv;  // dst
+	void (*fastCopy_p)();
+	u8 fastCopy_buff[1];
 } rfuFixed;
 
 extern struct RfuEnc {
@@ -63,27 +63,26 @@ static void rfu_STC_clearAPIVariables(void);
 static void rfu_STC_fastCopy(u8 **Src,u8 **Dst,int Size);
 static void rfu_STC_incCommFailCounter(u8 param_1);
 static void rfu_STC_readParentCandidateList(void);
+static void rfu_STC_removeLinkData(u8 slot,u8 clear);
 
-void rfu_REQ_disconnect(u8 Peer,u8 param_2);
-void rfu_setMSCCallback();
-u32  rfu_clearAllSlot(void);
+void rfu_setIDCallback(void (*callbackFuncp)(void));
 u32  rfu_constructSendLLFrame(void);
-u16  rfu_STC_setSendData_org(u8 param_1,u8 param_2,u16 param_3,u16 *GameID,u32 param_5);
+u16  rfu_STC_setSendData_org(u8 param_1,u8 param_2,u16 param_3,const u16 *GameID,u32 param_5);
 
-u32 rfu_REQ_RFUStatus(u8 *Recv)
+u16 rfu_getRFUStatus(u8 *rfuState)
 {
 	u16 ret;
 	
 	ret=STWI_send_SystemStatusREQ();
 	if(ret==0)
-		*Recv=rfuFixed.recv[7];
+		*rfuState=rfuFixed.recv[7];
 	else
-		*Recv=-1;
+		*rfuState=-1;
 	
 	return ret;
 }
 
-void rfu_initializeAPI(void)
+void rfu_initializeAPI_NI(void)
 {
 	u16 peer;
 	u16 size;
@@ -101,12 +100,12 @@ void rfu_initializeAPI(void)
 	}
 	
 	src=(u16 *)((u32)rfu_STC_fastCopy & ~1);
-	dst=(u16 *)rfuFixed.func;
-	size=(u16 *)rfu_setMSCCallback-(u16 *)rfu_STC_fastCopy;
+	dst=(u16 *)rfuFixed.fastCopy_buff;
+	size=(u16 *)rfu_setIDCallback-(u16 *)rfu_STC_fastCopy;
 	while(--size!=(u16)-1)
 		*dst++=*src++;
 	
-	rfuFixed.send=rfuFixed.func+1;
+	rfuFixed.fastCopy_p=(void (*)())rfuFixed.fastCopy_buff+1;
 }
 
 static void rfu_STC_clearAPIVariables(void)
@@ -132,7 +131,7 @@ u16 rfu_REQ_reset(void)
 	return ret;
 }
 
-u16 rfu_REQ_configGameData(u8 IsMultiboot,u16 GameID,char *GameName,char *UserName)
+u16 rfu_REQ_configGameData(u8 mboot_flag,u16 serialNo,const u8 *GName,const u8 *UName)
 {
 	u16 ret;
 	u8 x;
@@ -142,19 +141,19 @@ u16 rfu_REQ_configGameData(u8 IsMultiboot,u16 GameID,char *GameName,char *UserNa
 	char GameNameTmp[16];
 	
 	for(x=2;x<16;x++)
-		GameNameTmp[x]=*GameName++;
+		GameNameTmp[x]=*GName++;
 	
-	GameNameTmp[0]=GameID>>0;
-	GameNameTmp[1]=GameID>>8;
-	if(IsMultiboot)
+	GameNameTmp[0]=serialNo>>0;
+	GameNameTmp[1]=serialNo>>8;
+	if(mboot_flag)
 		GameNameTmp[1]|=0x80;
 	
-	ret=STWI_send_GameConfigREQ(GameNameTmp,UserName);
+	ret=STWI_send_GameConfigREQ(GameNameTmp,UName);
 	if(ret!=0)
 		return ret;
 	
-	rfuLinkStatus.my.mboot_flag=IsMultiboot;
-	rfuLinkStatus.my.serialNo=GameID;
+	rfuLinkStatus.my.mboot_flag=mboot_flag;
+	rfuLinkStatus.my.serialNo=serialNo;
 	
 	GameNameCur=rfuLinkStatus.my.gname;
 	UserNameCur=rfuLinkStatus.my.uname;
@@ -164,8 +163,8 @@ u16 rfu_REQ_configGameData(u8 IsMultiboot,u16 GameID,char *GameName,char *UserNa
 		*GameNameCur++=*GameNameNew++;
 		
 		if(x<8) {
-			if(*UserName!='\0')
-				*UserNameCur=*UserName++;
+			if(*UName!='\0')
+				*UserNameCur=*UName++;
 			else
 				*UserNameCur='\0';
 			UserNameCur++;
@@ -175,9 +174,9 @@ u16 rfu_REQ_configGameData(u8 IsMultiboot,u16 GameID,char *GameName,char *UserNa
 	return ret;
 }
 
-u16 rfu_REQ_configSystem(u16 param_1,u8 param_2,u8 param_3)
+u16 rfu_REQ_configSystem(u16 availSlot_flag,u8 MaxMframe,u8 MC_Timer)
 {
-	return STWI_send_SystemConfigREQ(param_1 | 0x20,param_2,param_3);
+	return STWI_send_SystemConfigREQ(availSlot_flag | 0x20,MaxMframe,MC_Timer);
 }
 
 u16 rfu_REQ_startSearchParent(void)
@@ -244,19 +243,19 @@ static void rfu_STC_readParentCandidateList(void)
 	}
 }
 
-u16 rfu_REQ_startConnectParent(u16 BeaconID)
+u16 rfu_REQ_startConnectParent(u16 pid)
 {
 	u16 ret;
 	u16 x;
 	
-	for(x=0;x<4&&rfuLinkStatus.partner[x].id!=BeaconID;x++)
+	for(x=0;x<4&&rfuLinkStatus.partner[x].id!=pid;x++)
 		;
 	if(x==4)
 		return 0x900;
 	
-	ret=STWI_send_CP_StartREQ(BeaconID);
+	ret=STWI_send_CP_StartREQ(pid);
 	if(ret==0)
-		rfuStatic.beaconID=BeaconID;
+		rfuStatic.beaconID=pid;
 	return ret;
 }
 
@@ -500,14 +499,14 @@ u16 rfu_REQ_endConnectParent(void)
 	return STWI_send_CP_EndREQ();
 }
 
-void rfu_getConnectParentStatus(u8 *Busy,u8 *PlayerNum,u16 *ID)
+void rfu_getConnectParentStatus(u8 *status,u8 *connect_slotNo,u16 *pid)
 {
 	u8 *data;
 	
 	data=rfuFixed.recv;
-	*ID=*(u16 *)(data+4);
-	*PlayerNum=data[6];
-	*Busy=data[7];
+	*pid=*(u16 *)(data+4);
+	*connect_slotNo=data[6];
+	*status=data[7];
 }
 
 void rfu_setTimer(u8 val)
@@ -525,20 +524,20 @@ void rfu_syncVBlank(void)
 	STWI_intr_vblank();
 }
 
-u32 rfu_REQBN_watchLink(u8 *PeersLost,u8 *Connected,u8 *PeersSeen)
+u16 rfu_REQBN_watchLink(u8 *bm_linkLossSlot,u8 *bm_linkLossReason,u8 *parent_bm_linkRecoverySlot)
 {
 	u8 *puVar6;
 	
-	u32 ret;
+	u16 ret;
 	u8 mode;
 	u8 x;
 	u8 bit;
 	
 	mode=0;
 	ret=0;
-	*PeersLost=0;
-	*Connected=0;
-	*PeersSeen=0;
+	*bm_linkLossSlot=0;
+	*bm_linkLossReason=0;
+	*parent_bm_linkRecoverySlot=0;
 	
 	if(rfuLinkStatus.parent_child==(u8)-1)
 		return 0;
@@ -549,10 +548,10 @@ u32 rfu_REQBN_watchLink(u8 *PeersLost,u8 *Connected,u8 *PeersSeen)
 	}
 	
 	if(rfuFixed.recv[0]==0x29) {
-		*PeersLost=rfuFixed.recv[4];
-		*Connected=rfuFixed.recv[5];
-		if(*Connected==1)
-			*PeersLost=rfuLinkStatus.connectSlot_flag;
+		*bm_linkLossSlot=rfuFixed.recv[4];
+		*bm_linkLossReason=rfuFixed.recv[5];
+		if(*bm_linkLossReason==1)
+			*bm_linkLossSlot=rfuLinkStatus.connectSlot_flag;
 		mode=2;
 	}
 	
@@ -564,12 +563,12 @@ u32 rfu_REQBN_watchLink(u8 *PeersLost,u8 *Connected,u8 *PeersSeen)
 				bit=1<<x;
 				
 				if(rfuLinkStatus.connectSlot_flag & bit&&!*puVar6&&mode==1) {
-					*PeersLost|=bit;
-					*Connected=1;
+					*bm_linkLossSlot|=bit;
+					*bm_linkLossReason=1;
 				}
 				
 				if(rfuLinkStatus.linkLossSlot_flag & bit&&*puVar6&&rfuLinkStatus.parent_child==1) {
-					*PeersSeen|=bit;
+					*parent_bm_linkRecoverySlot|=bit;
 					rfuLinkStatus.connectSlot_flag|=bit;
 					rfuLinkStatus.linkLossSlot_flag&=~bit;
 					rfuLinkStatus.connectCount++;
@@ -581,19 +580,19 @@ u32 rfu_REQBN_watchLink(u8 *PeersLost,u8 *Connected,u8 *PeersSeen)
 		}
 		
 		for(x=0;x<4;x++) {
-			if(rfuLinkStatus.connectSlot_flag & 1<<x&&*PeersLost & 1<<x)
-				rfu_REQ_disconnect(x,FALSE);
+			if(rfuLinkStatus.connectSlot_flag & 1<<x&&*bm_linkLossSlot & 1<<x)
+				rfu_STC_removeLinkData(x,FALSE);
 		}
 	}
 	
 	return ret;
 }
 
-void rfu_REQ_disconnect(u8 Peer,u8 Clear)
+static void rfu_STC_removeLinkData(u8 slot,u8 clear)
 {
 	u8 bit;
 	
-	bit=1<<Peer;
+	bit=1<<slot;
 	if(rfuLinkStatus.connectSlot_flag & bit)
 		if(rfuLinkStatus.connectCount)
 			rfuLinkStatus.connectCount--;
@@ -603,8 +602,8 @@ void rfu_REQ_disconnect(u8 Peer,u8 Clear)
 	if(rfuLinkStatus.parent_child==0&&rfuLinkStatus.connectSlot_flag==0)
 		rfuLinkStatus.parent_child=-1;
 	
-	if(Clear)
-		CpuClear(0,rfuLinkStatus.partner+Peer,sizeof(struct GameInfo),16);
+	if(clear)
+		CpuClear(0,rfuLinkStatus.partner+slot,sizeof(struct GameInfo),16);
 }
 
 static void rfu_STC_fastCopy(u8 **Src,u8 **Dst,int Size)
@@ -619,12 +618,12 @@ static void rfu_STC_fastCopy(u8 **Src,u8 **Dst,int Size)
 	*Dst=dst;
 }
 
-void rfu_setMSCCallback(void (*Func)(void))
+void rfu_setIDCallback(void (*callbackFuncp)(void))
 {
-	STWI_intr=Func;
+	STWI_callback_ID=callbackFuncp;
 }
 
-u16 rfu_REQ_changeMasterSlave(u8 param_1)
+u16 rfu_REQ_changeMasterSlave_check(u8 param_1)
 {
 	u16 ret=0;
 	
@@ -641,7 +640,7 @@ u16 rfu_REQ_changeMasterSlave(u8 param_1)
 	return ret;
 }
 
-u16 rfu_REQ_changeMasterSlave_force(void)
+u16 rfu_REQ_changeMasterSlave(void)
 {
 	u16 ret=0;
 	
@@ -658,7 +657,7 @@ u8 rfu_getMasterSlave(void)
 	return STWI_status.modeMaster;
 }
 
-u32 rfu_clearAllSlot(void)
+u16 rfu_clearAllSlot(void)
 {
 	u16 x;
 	
@@ -684,34 +683,34 @@ static void rfu_STC_releaseFrame(u8 Peer,u8 Recv,NI_COMM *Comm)
 	rfuLinkStatus.remainLLFrameSize_C[Peer]+=2;
 }
 
-u32 rfu_clearSlot(u8 Flags,u8 Peer)
+u16 rfu_clearSlot(u8 connType_flag,u8 slotStatus_Index)
 {
 	NI_COMM *comm;
 	
-	u32 ret;
+	u16 ret;
 	u16 x;
 	u16 y;
 	
-	if(Peer>=4)
+	if(slotStatus_Index>=4)
 		return 0x600;
 	
 	ret=0x800;
-	if(Flags & 0xc) {
+	if(connType_flag & 0xc) {
 		for(x=0;x<2;x++) {
 			comm=NULL;
-			if(x==0&&Flags & 0x4) {
-				comm=&rfuSlotStatus_NI[Peer].send;
-				rfuLinkStatus.sendSlot_NI_flag&=~(1<<Peer);
+			if(x==0&&connType_flag & 0x4) {
+				comm=&rfuSlotStatus_NI[slotStatus_Index].send;
+				rfuLinkStatus.sendSlot_NI_flag&=~(1<<slotStatus_Index);
 			}
-			else if(x!=0&&Flags & 0x8) {
-				comm=&rfuSlotStatus_NI[Peer].recv;
-				rfuLinkStatus.recvSlot_NI_flag&=~(1<<Peer);
+			else if(x!=0&&connType_flag & 0x8) {
+				comm=&rfuSlotStatus_NI[slotStatus_Index].recv;
+				rfuLinkStatus.recvSlot_NI_flag&=~(1<<slotStatus_Index);
 			}
 			
 			if(comm) {
 				if(comm->state & 0x8000||
 						(comm->state==0x49&&comm->errorCode!=0x405)) {
-					rfu_STC_releaseFrame(Peer,x,comm);
+					rfu_STC_releaseFrame(slotStatus_Index,x,comm);
 					for(y=0;y<4;y++)
 						if(comm->bmSlot & 1<<y)
 							comm->failCounter=0;
@@ -726,26 +725,26 @@ u32 rfu_clearSlot(u8 Flags,u8 Peer)
 	return ret;
 }
 
-u32 rfu_setRecvBuffer(u8 param_1,u8 Peer,void *Dest,u32 Size)
+u16 rfu_setRecvBuffer(u8 connType,u8 slotNo,void *buffer,u32 buffSize)
 {
-	if(Peer>=4)
+	if(slotNo>=4)
 		return 0x600;
 	
-	if(param_1 & 0x20) {
-		rfuSlotStatus_NI[Peer].recvBuff=Dest;
-		rfuSlotStatus_NI[Peer].recvBuffSize=Size;
+	if(connType & 0x20) {
+		rfuSlotStatus_NI[slotNo].recvBuff=buffer;
+		rfuSlotStatus_NI[slotNo].recvBuffSize=buffSize;
 	}
 	return 0;
 }
 
-u16 rfu_NI_setSendData(u8 param_1,u16 param_2,u16 *GameID,u32 param_4)
+u16 rfu_NI_setSendData(u8 bm_sendSlot,u16 subFrameSize,const void *src,u32 size)
 {
-	return rfu_STC_setSendData_org(0x20,param_1,param_2,GameID,param_4);
+	return rfu_STC_setSendData_org(0x20,bm_sendSlot,subFrameSize,src,size);
 }
 
-u16 rfu_NI_CHILD_setSendGameName(u8 Peer,u16 param_2)
+u16 rfu_NI_CHILD_setSendGameName(u8 slotNo,u16 subFrameSize)
 {
-	return rfu_STC_setSendData_org(0x40,1<<Peer,param_2,&rfuLinkStatus.my.serialNo,0x1a);
+	return rfu_STC_setSendData_org(0x40,1<<slotNo,subFrameSize,&rfuLinkStatus.my.serialNo,0x1a);
 }
 
 #ifndef NONMATCHING
@@ -1165,7 +1164,7 @@ static u16 rfu_STC_NI_constructLLSF(u8 Peer,u8 **Destp,NI_COMM *Comm)
 	
 	if(size!=0) {
 		temp_ptr=Comm->nowp[Comm->phase];
-		((void (*)())rfuFixed.send)(&temp_ptr,Destp,size);
+		rfuFixed.fastCopy_p(&temp_ptr,Destp,size);
 	}
 	
 	if(Comm->state==0x8022) {
@@ -1179,7 +1178,7 @@ static u16 rfu_STC_NI_constructLLSF(u8 Peer,u8 **Destp,NI_COMM *Comm)
 	return size+enc[0];
 }
 
-u32 rfu_REQ_recvData(void)
+u16 rfu_REQ_recvData(void)
 {
 	u16 res;
 	u8 x;
@@ -1380,7 +1379,7 @@ static void rfu_STC_NI_receive_Receiver(u8 Peer,u8 *param_2,u8 *param_3)
 	}
 	
 	if(cont&&param_2[5]==((comm->n[param_2[4]]+1) & 3)) {
-		((void (*)())rfuFixed.send)(&param_3,&comm->nowp[param_2[4]],*(u16 *)&param_2[6]);
+		rfuFixed.fastCopy_p(&param_3,&comm->nowp[param_2[4]],*(u16 *)&param_2[6]);
 		if(comm->state==0x8042)
 			comm->nowp[param_2[4]]+=comm->payloadSize*3;
 		comm->remainSize-=*(u16 *)&param_2[6];

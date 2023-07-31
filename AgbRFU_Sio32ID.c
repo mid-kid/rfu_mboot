@@ -6,7 +6,7 @@ extern u32  Sio32IDMain(void);
 extern void Sio32IDInit(void);
 extern void Sio32IDIntr(void);
 extern u8 u8_03005efc;
-extern void (*STWI_intr)(void);
+extern void (*STWI_callback_ID)(void);
 
 static const char Sio32ConnectionData[]={'N','I','N','T','E','N','D','O'};
 static const char Sio32IDLib_Var[]="Sio32ID_011008";
@@ -20,7 +20,7 @@ u32 AgbRFU_checkID(void)
 	ie=*(vu16 *)REG_IE;
 	u8_03005efc=1;
 	
-	STWI_intr=Sio32IDIntr;
+	STWI_callback_ID=Sio32IDIntr;
 	Sio32IDInit();
 	for(x=0;x<0x3c;x++) {
 		VBlankIntrWait();
@@ -235,7 +235,7 @@ void Sio32IDIntr(void)
 	if(Sio32.deviceID==0) {
 		if(DataHi==Sio32.dataHi) {
 			if(Sio32.handshakeStep<4) {
-				if((u16) ~Sio32.dataLo==DataHi&&(u16) ~Sio32.dataHi==DataLo)
+				if((u16)~Sio32.dataLo==DataHi&&(u16)~Sio32.dataHi==DataLo)
 					Sio32.handshakeStep++;
 			}
 			else
@@ -247,7 +247,7 @@ void Sio32IDIntr(void)
 	if(Sio32.handshakeStep<4)
 		Sio32.dataLo=*(u16 *)(Sio32ConnectionData+Sio32.handshakeStep*2);
 	else
-		Sio32.dataLo=0x8001;  // Send device ID
+		Sio32.dataLo=0x8001; // Send device ID
 	Sio32.dataHi=~DataLo;
 	
 	*(vu32 *)REG_SIODATA32=

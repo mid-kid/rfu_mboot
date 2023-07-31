@@ -1,1 +1,1 @@
-void (*STWI_intr)();
+void (*STWI_callback_ID)();
