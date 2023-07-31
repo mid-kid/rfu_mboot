@@ -36,8 +36,8 @@ SECTIONS {
         SoundStop.o(.text)
 
         VBlankIntr.o(.text)
-        Sio32.o(.text)
 
+        AgbRFU_sio32intr.o(.text)
         AgbRFU_STWI.o(.text)
         AgbRFU_Sio32ID.o(.text)
         AgbRFU_LL.o(.text)
