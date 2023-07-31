@@ -1,5 +1,6 @@
 #include <Agb.h>
 
+#include "AgbRFU_STWI.h"
 #include "STWI_status.h"
 extern u16 STWI_poll_CommandEnd(void);
 extern u16 STWI_check_Command(u32 Cmd,u8 VarSize);
@@ -367,7 +368,7 @@ STWI_send_GameConfigREQ:
 	.size	 STWI_send_GameConfigREQ,.LLfe1-STWI_send_GameConfigREQ
 ");
 #else
-u16 STWI_send_GameConfigREQ(char *GameData,char *UserName)
+u16 STWI_send_GameConfigREQ(const u8 *GameData,const u8 *UserName)
 {
 	u8 *dst;
 	u8 *src;

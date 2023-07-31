@@ -6,28 +6,13 @@
 #include "rfuLinkStatus.h"
 #include "rfuStatic.h"
 #include "AgbRFU_LL.h"
+#include "AgbRFU_STWI.h"
 
 extern struct STWI_status STWI_status;
 extern struct rfuStatic rfuStatic;
 extern u8 RfuDataSendBuf[];
 extern u8 STWI_buffer_recv[0x120];
 extern void (*STWI_callback_ID)(void);
-
-extern u16  STWI_send_CP_EndREQ(void);
-extern u16  STWI_send_CP_StartREQ(u16 BeaconID);
-extern u16  STWI_send_DataRxREQ(void);
-extern u16  STWI_send_DataTxREQ(u8 *Srcp,u8 Size);
-extern u16  STWI_send_GameConfigREQ(const u8 *GameData,const u8 *UserName);
-extern u16  STWI_send_LinkStatusREQ(void);
-extern u16  STWI_send_MS_ChangeREQ(void);
-extern u16  STWI_send_ResetREQ(void);
-extern u16  STWI_send_SP_EndREQ(void);
-extern u16  STWI_send_SP_PollingREQ(void);
-extern u16  STWI_send_SP_StartREQ(void);
-extern u16  STWI_send_SystemConfigREQ(u16 param_1,u8 param_2,u8 param_3);
-extern u16  STWI_send_SystemStatusREQ(void);
-extern void STWI_init_all(void);
-extern void STWI_intr_vblank(void);
 
 extern struct rfuFixed {
 	u8 *recv;  // dst
