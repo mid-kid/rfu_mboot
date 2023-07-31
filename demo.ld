@@ -31,9 +31,7 @@ SECTIONS {
         WinFade.o(.text)
 
         Sound.o(.text)
-
-        VBlankIntr.o(.text)
-
+        interrupt.o(.text)
         AgbRFU_sio32intr.o(.text)
         AgbRFU_STWI.o(.text)
         AgbRFU_Sio32ID.o(.text)
