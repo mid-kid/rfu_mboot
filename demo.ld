@@ -78,7 +78,7 @@ SECTIONS {
         MainMenuFadeOut = common; common += 4;
 
         bss_6.o(COMMON)
-        bss_Sound.o(.bss)
+        Sound.o(COMMON)
         bss_8.o(COMMON)
         bss_9.o(COMMON)
         bss_Rfu.o(COMMON)
