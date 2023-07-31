@@ -61,7 +61,7 @@ $(DEPENDFILE):
 
 
 # Matching hacks
-SoundPlaySfx.o: CC := ThumbPatch-thumb-elf-gcc
+Sound.o: CC := ThumbPatch-thumb-elf-gcc
 AgbRFU_STWI.o: CC := ThumbPatch-thumb-elf-gcc
 AgbRFU_Sio32ID.o: CFLAGS += -Wno-uninitialized
 AgbRFU_sio32intr.o: CC := arm-elf-gcc

@@ -30,10 +30,7 @@ SECTIONS {
         WinInit.o(.text)
         WinFade.o(.text)
 
-        SoundInit.o(.text)
-        SoundMain.o(.text)
-        SoundPlaySfx.o(.text)
-        SoundStop.o(.text)
+        Sound.o(.text)
 
         VBlankIntr.o(.text)
 
