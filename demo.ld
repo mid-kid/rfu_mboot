@@ -1,27 +1,8 @@
 SECTIONS {
     . = 0x03000100;
-    .text : {
-        crt0_demo.o(.text)
-        Main.o(.text)
-        searchMenu.o(.text)
-        menuFunc.o(.text)
-        myFunc.o(.text)
-        sound.o(.text)
-        interrupt.o(.text)
-        *(.text)
-
-        searchMenu.o(.rodata)
-        menuFunc.o(.rodata)
-        data.o(.rodata)
-        soundData.o(.rodata)
-        interrupt.o(.rodata)
-        char/pals_LZ.o(.rodata)
-        char/tmap_LZ.o(.rodata)
-        char/search_tmap_LZ.o(.rodata)
-        char/tiles_LZ.o(.rodata)
-        *(.rodata)
-        *(.data)
-    }
+    .text : { *(.text) }
+    .rodata : { *(.rodata) }
+    .data : { *(.data) }
 
     bss_start = .;
     .bss : {
@@ -46,6 +27,7 @@ SECTIONS {
         bss_6.o(COMMON)
         sound.o(COMMON)
         bss_8.o(COMMON)
+        myFunc.o(COMMON)
         bss_9.o(COMMON)
         bss_Rfu.o(COMMON)
         bss_11.o(.bss)

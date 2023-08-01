@@ -8,7 +8,7 @@ typedef struct keyDataTag {
 }KEY_DATA;
 
 // extern data----------------------------------
-KEY_DATA key;
+extern KEY_DATA key;
 
 // function's prototype declaration-------------
 extern void mf_readKey(void);
