@@ -19,7 +19,7 @@ TARGET_LIB =   libagbrfu.a
 $(TARGET_LIB): $(.OFILES) Makefile $(DEPENDFILE)
 	$(AR) rcs $@ $(.OFILES)
 
-AgbRFU_sio32intr.o: CC := arm-elf-gcc
+AgbRFU_sio32intr.o: CC := ThumbPatch-arm-elf-gcc
 AgbRFU_Sio32ID.o: CFLAGS += -Wno-uninitialized
 
 
