@@ -4,12 +4,12 @@
 #include "rfuLinkStatus.h"
 #include "GameInfo.h"
 extern void SoundPlaySfx(u8 Num);
-extern void SearchMenuDrawGame(u16 Pos, struct GameInfo *Game);
+extern void menu_drawGame(u16 Pos, struct GameInfo *Game);
 extern struct rfuLinkStatus rfuLinkStatus;
 extern struct GameInfo GameList[4];
 extern u8 GameListBitsNew;
 
-u8 SearchMenuUpdateGames(void)
+u8 menu_drawGameList(void)
 {
     u8 x;
     u8 y;
@@ -60,7 +60,7 @@ u8 SearchMenuUpdateGames(void)
     mf_clearRect(0xe3, 8, 0x19);
     Pos = 0xe3;
     for (x = 0; x < 4; x++) {
-        if (GameList[x].beaconID != 0) SearchMenuDrawGame(Pos, &GameList[x]);
+        if (GameList[x].beaconID != 0) menu_drawGame(Pos, &GameList[x]);
         Pos += 0x40;
     }
     return GamesOld | GamesNew;

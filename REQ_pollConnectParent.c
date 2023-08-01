@@ -3,7 +3,7 @@
 extern u16 rfu_REQ_pollConnectParent(u8 *param_1, u8 *GameIndex);
 extern u8 MbootPeer;
 
-u16 SearchProc_ConnectCheck(void)
+u16 REQ_pollConnectParent(void)
 {
     u16 ret;
     u8 temp[4];

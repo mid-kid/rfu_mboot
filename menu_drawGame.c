@@ -6,7 +6,7 @@
 // Function definition not included in myFunc.h, defaults to int
 extern void mf_clearGame(int Pos);
 
-void SearchMenuDrawGame(u16 Pos, struct GameInfo *Game)
+void menu_drawGame(u16 Pos, struct GameInfo *Game)
 {
     if (!Game->gameName[0]) {
         mf_clearGame(Pos);

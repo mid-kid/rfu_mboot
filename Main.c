@@ -38,8 +38,8 @@ void SEQ_title_init(void);
 
 static void MenuMsgInit(void);
 
-extern void FrameCountReset(void);
-extern void MenuMsgBlink(u8 Msg,u8 Rate);
+extern void menu_initBlinkCounter(void);
+extern void menu_blinkMessage(u8 Msg,u8 Rate);
 extern void rfu_initializeAPI_NI(void);
 extern void rfu_setTimer(u8 param_1);
 extern void SEQ_search(void);
@@ -167,7 +167,7 @@ void SEQ_title_init(void)
 	*(vu16 *)REG_DISPCNT|=DISP_BG2_ON;
 	
 	my_state=0xc0;
-	FrameCountReset();
+	menu_initBlinkCounter();
 	MainMenuFadeOut=TRUE;
 	MenuBusy=FALSE;
 }
@@ -179,7 +179,7 @@ static void MenuMsgInit(void)
 
 void SEQ_title(void)
 {
-	MenuMsgBlink(6,0x40);
+	menu_blinkMessage(6,0x40);
 	
 	if(key.Trg & (D_KEY | U_KEY)) {
 		SoundPlaySfx(0);

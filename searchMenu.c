@@ -3,14 +3,14 @@
 
 #include "GameInfo.h"
 #include "rfuLinkStatus.h"
-extern const u8 GameLogoInitial[10];
+extern const u8 str_header_mboot[10];
 extern struct GameInfo GameList[4];
 extern struct rfuLinkStatus rfuLinkStatus;
 extern u16 (*SearchProcTable[])(void);
 extern u16 Bg0Bak[32*20];
 extern u16 MbootBeaconID;
 extern u16 SearchMenuTimer;
-extern u8 FrameCount;
+extern u8 blink_counter;
 extern u8 GameListBits;
 extern u8 _binary_char_search_tmap_LZ_bin_start[];
 extern u8 Lang;
@@ -27,22 +27,22 @@ extern u16  rfu_NI_CHILD_setSendGameName(u8 Peer,u16 param_2);
 extern u32  rfu_clearAllSlot(void);
 extern u32  rfu_setRecvBuffer(u32 param_1,u8 Client,void *Dest,u32 Size);
 extern u32  rfu_clearSlot(u8 param_1,u8 Peer);
-extern u8   RfuStrcmp(const char *Str1,const char *Str2);
-extern u8   SearchMenuUpdateGames(void);
-extern void FrameCountReset(void);
-extern void GameListInit(void);
-extern void GameNameInit(void);
-extern void MenuMsgBlink(u8 Msg,u8 Rate);
-extern void MenuMsgSet(u8 Msg,u16 PlttNo);
-extern void RfuIntrDataTransfer(void);
+extern u8   my_strcmp(const char *Str1,const char *Str2);
+extern u8   menu_drawGameList(void);
+extern void menu_initBlinkCounter(void);
+extern void menu_initGameList(void);
+extern void menu_initGameName(void);
+extern void menu_blinkMessage(u8 Msg,u8 Rate);
+extern void menu_drawMessage(u8 Msg,u16 PlttNo);
+extern void REQ_callback_mboot(void);
 extern void rfu_NI_checkCommFailCounter(void);
-extern void RfuWaitData(void);
+extern void my_changeClockMaster(void);
 extern void SEQ_title(void);
 extern void SEQ_title_init(void);
-extern void SearchMenuClearGame(void);
-extern void SearchMenuDrawList(u8 Blink);
-extern void SearchMenuErrorBeep(void);
-extern void checkAPI_Error(u16 State);
+extern void menu_clearGameList(void);
+extern void menu_blinkGame(u8 Blink);
+extern void menu_playErrorSFX(void);
+extern void menu_checkError(u16 State);
 extern void rfu_setIDCallback(void (*Func)());
 extern void SoundPlaySfx(u8 Num);
 extern void mf_winFade(u8 Dir);
@@ -127,7 +127,7 @@ void SEQ_search_init(void)
 	SearchMenuErrorTimer=0;
 	SearchMenuErrorMsg=-1;
 	my_state=STATE_INIT;
-	GameNameInit();
+	menu_initGameName();
 }
 
 static void my_drawListTitle(u16 Pos,u8 Len,u16 CharNo)
@@ -184,7 +184,7 @@ void SEQ_search(void)
 		
 		// Select game
 		if(key.Trg & A_BUTTON&&GameList[SearchMenuCursor].beaconID) {
-			SearchMenuDrawList(FALSE);
+			menu_blinkGame(FALSE);
 			MbootBeaconID=GameList[SearchMenuCursor].beaconID;
 			if(my_state==STATE_WAIT_SP)
 				my_state=STATE_SP_END;
@@ -196,16 +196,16 @@ void SEQ_search(void)
 	
 	if(key.Trg & B_BUTTON) {
 		if(my_state==STATE_DOWNLOAD_START) {
-			RfuWaitData();
+			my_changeClockMaster();
 			my_state=STATE_RESET;
-			GameListInit();
+			menu_initGameList();
 			SoundPlaySfx(3);
 		}
 		else if(!SearchMenuEnd&&!MenuBusy&&
 				SearchMenuErrorMsg==(u8)-1&&
 				my_state!=STATE_INIT&&
 				my_state!=STATE_MBOOT_POLL) {
-			RfuWaitData();
+			my_changeClockMaster();
 			my_state=STATE_RESET;
 			SearchMenuEnd=TRUE;
 			SoundPlaySfx(3);
@@ -239,7 +239,7 @@ void SEQ_search(void)
             // Configure the radio
 			if(procRes==0) {
 				my_state=STATE_SP_START;
-				FrameCountReset();
+				menu_initBlinkCounter();
 				GameListBits=0;
 			}
 			break;
@@ -256,10 +256,10 @@ void SEQ_search(void)
 		case STATE_WAIT_SP:
 			// Wait one second for parent search to finish
 			if(GameListBits) {
-				MenuMsgSet(9,0);  // SELECT A GAME
+				menu_drawMessage(9,0);  // SELECT A GAME
 			}
 			else {
-				MenuMsgBlink(8,0x40);  // NOW SEARCHING...
+				menu_blinkMessage(8,0x40);  // NOW SEARCHING...
 			}
 			
 			SearchMenuTimer--;
@@ -271,14 +271,14 @@ void SEQ_search(void)
 			// Get discovery results
 			if(procRes==0) {
 				if(SearchMenuTimer<60-8)
-					GameListBits=SearchMenuUpdateGames();
+					GameListBits=menu_drawGameList();
 				
 				if(MbootBeaconID)
 					my_state=STATE_CP_START;
 				else {
 					my_state=STATE_WAIT;
 					SearchMenuTimer=5*60;
-					FrameCount=0;
+					blink_counter=0;
 				}
 			}
 			break;
@@ -287,14 +287,14 @@ void SEQ_search(void)
 			// Allow the player to select a game
 			// Restart discovery after 5 seconds
 			if(GameListBits!=0) {
-				MenuMsgSet(9,0);  // SELECT A GAME
+				menu_drawMessage(9,0);  // SELECT A GAME
 				if(SearchMenuTimer>3*60)
-					SearchMenuDrawList(TRUE);
+					menu_blinkGame(TRUE);
 				else
-					SearchMenuDrawList(FALSE);
+					menu_blinkGame(FALSE);
 			}
 			else {
-				MenuMsgBlink(8,0x40);  // NOW SEARCHING...
+				menu_blinkMessage(8,0x40);  // NOW SEARCHING...
 			}
 			
 			SearchMenuTimer--;
@@ -337,8 +337,8 @@ void SEQ_search(void)
 			// Finalize connection
 			if(procRes==0) {
 				if(SearchMenuTimer>0&&rfuFixed.recv[7]==0) {
-					SearchMenuClearGame();
-					rfu_setIDCallback(RfuIntrDataTransfer);
+					menu_clearGameList();
+					rfu_setIDCallback(REQ_callback_mboot);
 					rfu_setRecvBuffer(0x20,MbootPeer,(u8 *)EX_WRAM,EX_WRAM_SIZE);
 					my_state=STATE_CONFIG_GAME;
 				}
@@ -377,7 +377,7 @@ void SEQ_search(void)
 		case STATE_CHANGE_CLOCK_SLAVE:
             // Switch to slave clock
 			if(procRes==0) {
-				FrameCountReset();
+				menu_initBlinkCounter();
 				my_state=STATE_MBOOT_START;
 			}
 			break;
@@ -393,11 +393,11 @@ void SEQ_search(void)
 		case STATE_CONNECTION_ERROR:
 		case STATE_FATAL_ERROR:
 		case STATE_DOWNLOAD_FAILED:
-			MenuMsgSet(SearchMenuErrorMsg,1);
-			SearchMenuErrorBeep();
+			menu_drawMessage(SearchMenuErrorMsg,1);
+			menu_playErrorSFX();
 			
 			mf_clearRect(0x243,1,0x18);
-			GameListInit();
+			menu_initGameList();
 			
 			if(my_state==STATE_CONNECTION_ERROR)
 				my_state=STATE_RESET;
@@ -414,7 +414,7 @@ void SEQ_search(void)
 	
 	SEQ_search_mboot();
 	SEQ_search_dl();
-	checkAPI_Error(procRes);
+	menu_checkError(procRes);
 }
 
 static void SEQ_search_mboot(void)
@@ -437,7 +437,7 @@ static void SEQ_search_mboot(void)
 			}
 			
 			if(my_state!=STATE_MBOOT_POLL)
-				FrameCountReset();
+				menu_initBlinkCounter();
 	}
 }
 
@@ -452,10 +452,10 @@ static void SEQ_search_dl(void)
 	
 	switch(my_state) {
 		case STATE_DOWNLOAD_START:
-			MenuMsgBlink(10,0x40);  // WAITING FOR DATA...
+			menu_blinkMessage(10,0x40);  // WAITING FOR DATA...
 			if((data[0] & 0x8000)!=0) {
 				SoundPlaySfx(4);
-				FrameCountReset();
+				menu_initBlinkCounter();
 				my_state=STATE_WAIT_DOWNLOAD_END;
 				MenuBusy=TRUE;
 			}
@@ -466,12 +466,12 @@ static void SEQ_search_dl(void)
 			break;
 			
 		case STATE_WAIT_DOWNLOAD_END:
-			MenuMsgBlink(0xb,0x20);  // DOWNLOADING...
+			menu_blinkMessage(0xb,0x20);  // DOWNLOADING...
 			if(data[0]==0x47) {
-				if(RfuStrcmp(GameLogoInitial,(u8 *)EX_WRAM+4)==0) {
+				if(my_strcmp(str_header_mboot,(u8 *)EX_WRAM+4)==0) {
 					SoundPlaySfx(5);
 					SearchMenuTimer=2*60;
-					MenuMsgSet(0xc,2);  // DOWNLOAD COMPLETED!
+					menu_drawMessage(0xc,2);  // DOWNLOAD COMPLETED!
 					my_state=STATE_DOWNLOAD_SUCCESS;
 				}
 				else {
@@ -479,7 +479,7 @@ static void SEQ_search_dl(void)
 					my_state=STATE_CONNECTION_ERROR;
 				}
 				rfu_clearSlot(0xc,MbootPeer);
-				RfuWaitData();
+				my_changeClockMaster();
 			}
 			else if(data[1]>0xfa||data[0]==0x49) {
 				SearchMenuErrorMsg=1;  // DOWNLOAD FAILED!
@@ -496,7 +496,7 @@ static void SEQ_search_dl(void)
 	
 	if(my_state==STATE_EXEC) {
 		CpuCopy(&rfuLinkStatus,CPU_WRAM+0,sizeof(rfuLinkStatus),16);
-		CpuCopy(GameLogoInitial,CPU_WRAM+0xf0,sizeof(GameLogoInitial),16);
+		CpuCopy(str_header_mboot,CPU_WRAM+0xf0,sizeof(str_header_mboot),16);
 		
 		header=(vu16 *)CPU_WRAM;
 		checksum=0;

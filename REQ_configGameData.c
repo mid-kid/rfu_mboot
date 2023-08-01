@@ -5,7 +5,7 @@ extern u16 rfu_REQ_configGameData(u8 GameSpecial, u16 GameID, char *GameName, ch
 extern char *UserNames[4];
 extern u8 MbootPeer;
 
-u16 SearchProc_GameInfoSet(void)
+u16 REQ_configGameData(void)
 {
     return rfu_REQ_configGameData(TRUE, 0, GameName, UserNames[MbootPeer]);
 }

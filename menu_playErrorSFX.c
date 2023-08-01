@@ -9,7 +9,7 @@ extern struct Sound {
     u8 sfxNum;
 } Sound;
 
-void SearchMenuErrorBeep(void)
+void menu_playErrorSFX(void)
 {
     u8 x;
     u8 count;

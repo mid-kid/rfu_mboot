@@ -562,7 +562,7 @@ void AgbRFU_SoftReset(void)
     *(vu16 *)REG_SIOCNT = 0x5003;
 }
 
-u32 AgbRFU_SoftReset_and_checkID(void)
+u32 AgbRFU_softReset_and_checkID(void)
 {
     AgbRFU_SoftReset();
     return AgbRFU_checkID();

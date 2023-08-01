@@ -2,7 +2,7 @@
 extern u8 my_state;
 extern u8 SearchMenuErrorMsg;
 
-void checkAPI_Error(u16 State)
+void menu_checkError(u16 State)
 {
     if (!State) return;
 

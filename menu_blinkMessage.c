@@ -6,11 +6,11 @@ struct MenuMsg {
     const u16 *pos;
 };
 extern const struct MenuMsg *MenuMsg;
-extern u8 FrameCount;
+extern u8 blink_counter;
 
-extern void MenuMsgSet(u8 Msg, u16 PlttNo);
+extern void menu_drawMessage(u8 Msg, u16 PlttNo);
 
-void MenuMsgBlink(u8 Msg, u8 Rate)
+void menu_blinkMessage(u8 Msg, u8 Rate)
 {
     if (Msg == 6) {
         mf_clearRect(MenuMsg->pos[6], 2, 0x20);
@@ -18,7 +18,7 @@ void MenuMsgBlink(u8 Msg, u8 Rate)
         mf_clearRect(0x200, 2, 0x20);
     }
 
-    if ((FrameCount & Rate) == 0) MenuMsgSet(Msg, 0);
+    if ((blink_counter & Rate) == 0) menu_drawMessage(Msg, 0);
 
-    FrameCount++;
+    blink_counter++;
 }

@@ -5,7 +5,7 @@
 extern struct GameInfo GameList[4];
 extern u8 SearchMenuCursor;
 
-void SearchMenuClearGame(void)
+void menu_clearGameList(void)
 {
     u8 x;
 

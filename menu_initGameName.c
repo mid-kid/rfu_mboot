@@ -2,10 +2,10 @@
 
 extern u8 GameName[14];
 
-static const u8 GameNameInitial[] = "RFU-MB-DL";
-const u8 GameLogoInitial[] = "RFU-MBOOT";
+static const u8 str_my_gname_mboot[] = "RFU-MB-DL";
+const u8 str_header_mboot[] = "RFU-MBOOT";
 
-void GameNameInit(void)
+void menu_initGameName(void)
 {
     u8 i;
     u8 sum;
@@ -19,8 +19,8 @@ void GameNameInit(void)
 
     // Initialize the game name
     for (i = 0; i < sizeof(GameName); i++) {
-        if (i < sizeof(GameNameInitial)) {
-            GameName[i] = GameNameInitial[i];
+        if (i < sizeof(str_my_gname_mboot)) {
+            GameName[i] = str_my_gname_mboot[i];
         } else {
             GameName[i] = 0;
         }
@@ -29,7 +29,7 @@ void GameNameInit(void)
     // If a valid game is inserted, append the game code
     if (*cst == sum) {
         cst = (vu8 *)(ROM_BANK0 + 0xac);
-        for (i = sizeof(GameNameInitial);
+        for (i = sizeof(str_my_gname_mboot);
                 i < sizeof(GameName); i++) {
             GameName[i] = *cst++;
         }

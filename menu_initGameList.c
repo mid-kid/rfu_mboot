@@ -4,7 +4,7 @@
 extern u8 GameList[0x80];
 extern u8 MenuBusy;
 
-void GameListInit(void)
+void menu_initGameList(void)
 {
     MenuBusy = 0;
     mf_clearRect(0xe3, 8, 0x19);

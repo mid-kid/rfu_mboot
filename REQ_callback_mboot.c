@@ -2,10 +2,10 @@
 __asm__("
 .text
 	.align	2
-	.globl	RfuIntrDataTransfer
-	.type	 RfuIntrDataTransfer,function
+	.globl	REQ_callback_mboot
+	.type	 REQ_callback_mboot,function
 	.thumb_func
-RfuIntrDataTransfer:
+REQ_callback_mboot:
 	push	{r4, r5, r6, lr}
 	add	sp, sp, #-4
 	mov	r4, #0
@@ -88,7 +88,7 @@ RfuIntrDataTransfer:
 	.word	my_state
 	.word	SearchMenuErrorMsg
 .Lfe1:
-	.size	 RfuIntrDataTransfer,.Lfe1-RfuIntrDataTransfer
+	.size	 REQ_callback_mboot,.Lfe1-REQ_callback_mboot
 ");
 #else
 
@@ -104,7 +104,7 @@ extern u8 my_state;
 extern u8 SearchMenuErrorMsg;
 extern u8 MbootPeer;
 
-void RfuIntrDataTransfer(void)
+void REQ_callback_mboot(void)
 {
     u8 x;
     u8 res;

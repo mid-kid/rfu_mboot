@@ -7,7 +7,7 @@ struct MenuMsg {
 };
 extern const struct MenuMsg *MenuMsg;
 
-void MenuMsgSet(u8 Msg, u16 PlttNo)
+void menu_drawMessage(u8 Msg, u16 PlttNo)
 {
     mf_clearRect(MenuMsg->pos[Msg] & -0x20, 2, 0x20);
     mf_drawString(MenuMsg->pos[Msg], PlttNo, MenuMsg->msg[Msg]);
