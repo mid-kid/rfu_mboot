@@ -6,7 +6,7 @@ struct sndStaticTag {
     u8 time;
     u8 sfxNum;
 } sndStatic;
-extern u16 *SoundSfxTable[];
+extern u16 *sound_tbl[];
 void snd_stop(void);
 
 void snd_init(void)
@@ -60,7 +60,7 @@ void snd_syncVBlank(void)
 void snd_play(u8 Num)
 {
     if (sndStatic.sfxNum > Num && sndStatic.time != (u8)-1) return;
-    sndStatic.playPtr = SoundSfxTable[Num];
+    sndStatic.playPtr = sound_tbl[Num];
     sndStatic.basePtr = sndStatic.playPtr;
     sndStatic.time = 0;
     sndStatic.sfxNum = Num;

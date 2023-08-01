@@ -16,10 +16,8 @@ SECTIONS {
 
         searchMenu.o(.rodata)
         menuFunc.o(.rodata)
-        UserNames.o(.rodata)
-        MenuMsgInitial.o(.rodata)
-        Main.o(.rodata)
-        Sfx.o(.rodata)
+        data.o(.rodata)
+        soundData.o(.rodata)
         interrupt.o(.rodata)
         char/pals_LZ.o(.rodata)
         char/tmap_LZ.o(.rodata)

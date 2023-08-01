@@ -28,7 +28,7 @@ extern void rfu_NI_checkCommFailCounter(void);
 extern void rfu_setIDCallback(void (*Func)());
 extern void snd_play(u8 Num);
 
-extern char *UserNames[4];
+extern char *str_uname[4];
 extern char GameName[14];
 extern const u8 str_header_mboot[10];
 extern struct GameInfo GameList[4];
@@ -668,7 +668,7 @@ static u8 my_strcmp(const char *str1,const char *str2)
 
 static u16 REQ_configGameData(void)
 {
-	return rfu_REQ_configGameData(TRUE,0,GameName,UserNames[MbootPeer]);
+	return rfu_REQ_configGameData(TRUE,0,GameName,str_uname[MbootPeer]);
 }
 
 static u16 REQ_configSystem(void)

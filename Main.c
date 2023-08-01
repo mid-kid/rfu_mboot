@@ -19,16 +19,17 @@ struct MenuMsg {
 // extern data------------------------------------------
 extern const struct MenuMsg *MenuMsg;
 extern const struct MenuMsg MenuMsgInitial[];
+extern const u8 str_lang_en[];
 extern u16 Bg0Bak[32*20];
-extern u8 _binary_char_pals_LZ_bin_start[];
-extern u8 _binary_char_tmap_LZ_bin_start[];
-extern u8 _binary_char_tiles_LZ_bin_start[];
 extern u8 Lang;
 extern u8 MainMenuFadeOut;
 extern u8 MenuBusy;
-extern u8 my_state;
+extern u8 _binary_char_pals_LZ_bin_start[];
+extern u8 _binary_char_tiles_LZ_bin_start[];
+extern u8 _binary_char_tmap_LZ_bin_start[];
 extern u8 bss_end[];
 extern u8 bss_start[];
+extern u8 my_state;
 extern void (*nowProcess)();
 extern void intr_main(void);
 
@@ -153,7 +154,7 @@ void SEQ_title_init(void)
 	CpuClear(0,Bg0Bak,sizeof(Bg0Bak),16);
 	MenuMsgInit();
 	
-	mf_drawString(0xcb,0,"ENGLISH");
+	mf_drawString(0xcb,0,str_lang_en);
 	bg=Bg0Bak+(9*32+13);
 	charNo=0x10f;
 	for(i=0;i<3;i++)

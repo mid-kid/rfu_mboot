@@ -32,7 +32,6 @@ extern u8 blink_counter;
 extern u8 my_state;
 
 static const u8 str_my_gname_mboot[]="RFU-MB-DL";
-const u8 str_header_mboot[]="RFU-MBOOT";
 
 u8 menu_drawGameList(void)
 {
