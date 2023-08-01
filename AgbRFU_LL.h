@@ -404,9 +404,8 @@ extern u16  rfu_REQ_pollSearchParent(void);
 extern u16  rfu_REQ_endSearchParent(void);
     // Operate as child device; connect to specified parent device
 extern u16  rfu_REQ_startConnectParent(u16 pid);
-extern void rfu_REQ_pollConnectParent(void);
+extern u16  rfu_REQ_pollConnectParent(u8 *status,u8 *connect_slotNo);
 extern u16  rfu_REQ_endConnectParent(void);
-extern void rfu_getConnectParentStatus(u8 *status,u8 *connect_slotNo,u16 *pid);
     // Restore link from child device
 extern void rfu_REQ_CHILD_startConnectRecovery(u8 bm_recoverySlot);
 extern void rfu_REQ_CHILD_pollConnectRecovery(void);

@@ -3,18 +3,7 @@ SECTIONS {
     .text : {
         crt0_demo.o(.text)
         Main.o(.text)
-
         searchMenu.o(.text)
-        REQ_callback_mboot.o(.text)
-        my_strcmp.o(.text)
-        REQ_configGameData.o(.text)
-        REQ_configSystem.o(.text)
-        REQ_startConnectParent.o(.text)
-        REQ_pollConnectParent.o(.text)
-        REQ_changeMasterSlave.o(.text)
-        my_changeClockMaster.o(.text)
-        my_softReset_and_checkID.o(.text)
-
         menuFunc.o(.text)
         myFunc.o(.text)
         Sound.o(.text)

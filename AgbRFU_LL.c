@@ -423,7 +423,7 @@ rfu_REQ_pollConnectParent:
 	.size	 rfu_REQ_pollConnectParent,.LCfe1-rfu_REQ_pollConnectParent
 ");
 #else
-u16 rfu_REQ_pollConnectParent(u8 *Busy,u8 *PlayerNum)
+u16 rfu_REQ_pollConnectParent(u8 *status,u8 *connect_slotNo)
 {
 	u16 ime;
 	u16 ret;
@@ -434,18 +434,18 @@ u16 rfu_REQ_pollConnectParent(u8 *Busy,u8 *PlayerNum)
 	u8 bit;
 	
 	GameSrc=&GameTmp;
-	*Busy=-1;
-	*PlayerNum=-1;
+	*status=-1;
+	*connect_slotNo=-1;
 	
 	ret=STWI_send_CP_PollingREQ();
 	if(ret!=0)
 		return ret;
 	
-	rfu_getConnectParentStatus(Busy,PlayerNum,&ID);
-	if(*Busy!=0)
+	rfu_getConnectParentStatus(status,connect_slotNo,&ID);
+	if(*status!=0)
 		return 0;
 	
-	bit=1<<*PlayerNum;
+	bit=1<<*connect_slotNo;
 	if(rfuLinkStatus.connectSlot_flag & bit)
 		return 0;
 	
@@ -457,7 +457,7 @@ u16 rfu_REQ_pollConnectParent(u8 *Busy,u8 *PlayerNum)
 	
 	rfuLinkStatus.my.id=ID;
 	rfuLinkStatus.connectCount++;
-	rfuLinkStatus.strength[*PlayerNum]=-1;
+	rfuLinkStatus.strength[*connect_slotNo]=-1;
 	rfuLinkStatus.parent_child=0;
 	
 	for(x=0;x<4;x++) {
@@ -475,8 +475,8 @@ u16 rfu_REQ_pollConnectParent(u8 *Busy,u8 *PlayerNum)
 	}
 	
 	if(x<4) {
-		CpuCopy(GameSrc,rfuLinkStatus.partner+*PlayerNum,0x10*2,16);
-		rfuLinkStatus.partner[*PlayerNum].slot=*PlayerNum;
+		CpuCopy(GameSrc,rfuLinkStatus.partner+*connect_slotNo,0x10*2,16);
+		rfuLinkStatus.partner[*connect_slotNo].slot=*connect_slotNo;
 	}
 	
 	*(vu16 *)REG_IME=ime;
