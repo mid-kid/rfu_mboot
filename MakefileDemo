@@ -9,19 +9,25 @@ OBJCOPY = thumb-elf-objcopy
 
 AGBINC	=	$(AGBDIR)/include
 AGBLIB	=	$(AGBDIR)/lib
+RFULIB	=	$(PWD)/AgbRfuLib
 
-ASFLAGS    =          -I$(AGBINC) -mthumb-interwork
-CFLAGS     =   -g -O2 -I$(AGBINC) -mthumb-interwork \
+ASFLAGS    =          -I$(AGBINC) -I$(RFULIB) -mthumb-interwork
+CFLAGS     =   -g -O2 -I$(AGBINC) -I$(RFULIB) -mthumb-interwork \
                -nostdlib -Wall -Werror #-DNDEBUG
 LDFLAGS    +=  -Map $(MAPFILE) -nostartfiles \
                -T $(LINKFILE) \
-               -L$(AGBLIB) -lagbsyscall -lisagbprn
+			   -L$(RFULIB) -lagbrfu -L$(AGBLIB) -lagbsyscall
 
 LINKFILE   =   demo.ld
 DEPENDFILE =   demo.dep
 MAPFILE    =   demo.map
 TARGET_ELF =   demo.elf
 TARGET_BIN =   demo.bin
+
+
+default:
+	@$(MAKE) -C $(RFULIB)
+	@$(MAKE) -f MakefileDemo $(TARGET_BIN)
 
 
 $(TARGET_BIN): $(TARGET_ELF)
@@ -51,6 +57,7 @@ char/tiles.bin: char/tiles.bmp
 all:    clean $(TARGET_BIN)
 
 clean:
+	@$(MAKE) -C $(RFULIB) clean
 	-rm $(.OFILES) $(DEPENDFILE) $(MAPFILE) $(TARGET_ELF) $(TARGET_BIN)
 
 depend:
@@ -62,10 +69,6 @@ $(DEPENDFILE):
 
 # Matching hacks
 sound.o: CC := ThumbPatch-thumb-elf-gcc
-AgbRFU_STWI.o: CC := ThumbPatch-thumb-elf-gcc
-AgbRFU_Sio32ID.o: CFLAGS += -Wno-uninitialized
-AgbRFU_sio32intr.o: CC := arm-elf-gcc
-AgbRFU_sio32intr.o: CFLAGS += -Wno-uninitialized
 
 include GasdependDemo
 include $(DEPENDFILE)

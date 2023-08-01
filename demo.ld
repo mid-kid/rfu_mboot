@@ -8,10 +8,6 @@ SECTIONS {
         myFunc.o(.text)
         sound.o(.text)
         interrupt.o(.text)
-        AgbRFU_sio32intr.o(.text)
-        AgbRFU_STWI.o(.text)
-        AgbRFU_Sio32ID.o(.text)
-        AgbRFU_LL.o(.text)
         *(.text)
 
         searchMenu.o(.rodata)
@@ -21,11 +17,9 @@ SECTIONS {
         interrupt.o(.rodata)
         char/pals_LZ.o(.rodata)
         char/tmap_LZ.o(.rodata)
-        LZ_450c = .;
         char/search_tmap_LZ.o(.rodata)
         char/tiles_LZ.o(.rodata)
-        AgbRFU_Sio32ID.o(.rodata)
-        AgbRFU_LL.o(.rodata)
+        *(.rodata)
         *(.data)
     }
 

@@ -14,7 +14,7 @@ CFLAGS     =   -g -O2 -I$(AGBINC) -mthumb-interwork \
                -nostdlib #-DNDEBUG
 LDFLAGS    +=  -Map $(MAPFILE) -nostartfiles \
                -Ttext 0x08000000 -Tbss 0x03000000 \
-               -L$(AGBLIB) -lagbsyscall -lisagbprn
+               -L$(AGBLIB) -lagbsyscall
 
 DEPENDFILE   =   multi_boot.dep
 MAPFILE      =   multi_boot.map
