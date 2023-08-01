@@ -10,7 +10,7 @@ extern u8   menu_drawGameList(void);
 extern void REQ_callback_mboot(void);
 extern void SEQ_title(void);
 extern void SEQ_title_init(void);
-extern void SoundPlaySfx(u8 Num);
+extern void snd_play(u8 Num);
 extern void menu_blinkGame(u8 Blink);
 extern void menu_blinkMessage(u8 Msg,u8 Rate);
 extern void menu_checkError(u16 State);
@@ -174,7 +174,7 @@ void SEQ_search(void)
 					SearchMenuCursor=0;
 			}
 			*(vu16 *)REG_BG2VOFS=~(SearchMenuCursor*16+51);
-			SoundPlaySfx(0);
+			snd_play(0);
 		}
 		
 		// Select game
@@ -185,7 +185,7 @@ void SEQ_search(void)
 				my_state=STATE_SP_END;
 			else
 				my_state=STATE_CP_START;
-			SoundPlaySfx(2);
+			snd_play(2);
 		}
 	}
 	
@@ -194,7 +194,7 @@ void SEQ_search(void)
 			my_changeClockMaster();
 			my_state=STATE_RESET;
 			menu_initGameList();
-			SoundPlaySfx(3);
+			snd_play(3);
 		}
 		else if(!SearchMenuEnd&&!MenuBusy&&
 				SearchMenuErrorMsg==(u8)-1&&
@@ -203,7 +203,7 @@ void SEQ_search(void)
 			my_changeClockMaster();
 			my_state=STATE_RESET;
 			SearchMenuEnd=TRUE;
-			SoundPlaySfx(3);
+			snd_play(3);
 		}
 	}
 	
@@ -400,7 +400,7 @@ void SEQ_search(void)
 				my_state=STATE_INIT;
 			else {
 				// my_state == STATE_FATAL_ERROR
-				SoundPlaySfx(3);
+				snd_play(3);
 				SEQ_title_init();
 				nowProcess=SEQ_title;
 			}
@@ -449,7 +449,7 @@ static void SEQ_search_dl(void)
 		case STATE_DOWNLOAD_START:
 			menu_blinkMessage(10,0x40);  // WAITING FOR DATA...
 			if((data[0] & 0x8000)!=0) {
-				SoundPlaySfx(4);
+				snd_play(4);
 				menu_initBlinkCounter();
 				my_state=STATE_WAIT_DOWNLOAD_END;
 				MenuBusy=TRUE;
@@ -464,7 +464,7 @@ static void SEQ_search_dl(void)
 			menu_blinkMessage(0xb,0x20);  // DOWNLOADING...
 			if(data[0]==0x47) {
 				if(my_strcmp(str_header_mboot,(u8 *)EX_WRAM+4)==0) {
-					SoundPlaySfx(5);
+					snd_play(5);
 					SearchMenuTimer=2*60;
 					menu_drawMessage(0xc,2);  // DOWNLOAD COMPLETED!
 					my_state=STATE_DOWNLOAD_SUCCESS;

@@ -44,8 +44,8 @@ extern void rfu_initializeAPI_NI(void);
 extern void rfu_setTimer(u8 param_1);
 extern void SEQ_search(void);
 extern void SEQ_search_init(void);
-extern void SoundInit(void);
-extern void SoundPlaySfx(u8 Num);
+extern void snd_init(void);
+extern void snd_play(u8 Num);
 extern void mf_winFade(u8 Dir);
 extern void mf_winInit(void);
 
@@ -77,7 +77,7 @@ void AgbMain(void)
 	LZ77UnCompVram(_binary_char_pals_LZ_bin_start,(u8 *)PLTT);
 	LZ77UnCompVram(_binary_char_tmap_LZ_bin_start,(u8 *)VRAM+0x1800);
 	
-	SoundInit();
+	snd_init();
 	mf_winInit();
 	
 // BG SET
@@ -182,14 +182,14 @@ void SEQ_title(void)
 	menu_blinkMessage(6,0x40);
 	
 	if(key.Trg & (D_KEY | U_KEY)) {
-		SoundPlaySfx(0);
+		snd_play(0);
 		Lang^=1;
 		*(vu16 *)REG_BG2VOFS=~(56+Lang*24-1);
 	}
 	
 	if(key.Trg & A_BUTTON) {
 		MenuMsgInit();
-		SoundPlaySfx(2);
+		snd_play(2);
 		SEQ_search_init();
 		nowProcess=SEQ_search;
 	}

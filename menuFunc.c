@@ -3,18 +3,18 @@
 #include "myFunc.h"
 #include "rfuLinkStatus.h"
 
-extern void SoundPlaySfx(u8 Num);
+extern void snd_play(u8 Num);
 extern void menu_drawGame(u16 Pos,struct GameInfo *Game);
 extern void menu_drawMessage(u8 Msg,u16 PlttNo);
 extern void mf_clearGame(int Pos);
 extern const struct MenuMsg *MenuMsg;
 
-extern struct Sound {
+extern struct sndStatic {
 	u16 *basePtr;
 	u16 *playPtr;
 	u8 time;
 	u8 sfxNum;
-} Sound;
+} sndStatic;
 
 struct MenuMsg {
 	const char *const *msg;
@@ -82,7 +82,7 @@ u8 menu_drawGameList(void)
 	
 	// If any new game was found, play a ditty
 	if(GameListBitsNew!=0)
-		SoundPlaySfx(1);
+		snd_play(1);
 	
 	// Draw the game list
 	mf_clearRect(0xe3,8,0x19);
@@ -167,14 +167,14 @@ void menu_playErrorSFX(void)
 	u8 count;
 	
 	count=0;
-	SoundPlaySfx(6);
+	snd_play(6);
 	for(x=0;x<3*60;x++) {
 		VBlankIntrWait();
 		
 		// Play the SFX twice
-		if(Sound.time==(u8)-1&&count<1) {
+		if(sndStatic.time==(u8)-1&&count<1) {
 			count++;
-			SoundPlaySfx(6);
+			snd_play(6);
 		}
 	}
 }

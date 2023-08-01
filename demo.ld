@@ -6,7 +6,7 @@ SECTIONS {
         searchMenu.o(.text)
         menuFunc.o(.text)
         myFunc.o(.text)
-        Sound.o(.text)
+        sound.o(.text)
         interrupt.o(.text)
         AgbRFU_sio32intr.o(.text)
         AgbRFU_STWI.o(.text)
@@ -52,7 +52,7 @@ SECTIONS {
         MainMenuFadeOut = common; common += 4;
 
         bss_6.o(COMMON)
-        Sound.o(COMMON)
+        sound.o(COMMON)
         bss_8.o(COMMON)
         bss_9.o(COMMON)
         bss_Rfu.o(COMMON)

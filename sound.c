@@ -1,15 +1,15 @@
 #include <Agb.h>
 
-struct Sound {
+struct sndStaticTag {
     u16 *basePtr;
     u16 *playPtr;
     u8 time;
     u8 sfxNum;
-} Sound;
+} sndStatic;
 extern u16 *SoundSfxTable[];
-void SoundStop(void);
+void snd_stop(void);
 
-void SoundInit(void)
+void snd_init(void)
 {
     *(vu16 *)REG_SOUNDCNT_X = SOUND_DMG_ON;
     *(vu16 *)REG_SOUNDCNT_L =
@@ -18,56 +18,56 @@ void SoundInit(void)
         7 << SOUND_SO2_LEVEL_SHIFT;
     *(vu16 *)REG_SOUNDCNT_H = SOUND_DMG_MIX_FULL;
     *(vu16 *)REG_SOUNDBIAS = 3 << 14 | 0x200;
-    SoundStop();
+    snd_stop();
 }
 
-void SoundMain(void)
+void snd_syncVBlank(void)
 {
     u8 i;
     vu16 *soundCnt;
 
-    if (Sound.time == (u8)-1) return;
+    if (sndStatic.time == (u8)-1) return;
 
-    if (Sound.time == 0) {
+    if (sndStatic.time == 0) {
         for (;;) {
-            Sound.time = *Sound.playPtr >> 8;
+            sndStatic.time = *sndStatic.playPtr >> 8;
             soundCnt = (vu16 *)REG_SOUND1CNT;
-            if (Sound.time == (u8)-2) {
-                Sound.playPtr = Sound.basePtr;
+            if (sndStatic.time == (u8)-2) {
+                sndStatic.playPtr = sndStatic.basePtr;
                 continue;
             }
-            if (Sound.time == (u8)-1) {
+            if (sndStatic.time == (u8)-1) {
                 for (i = 0; i < 3; i++) *soundCnt++ = 0;
                 return;
             }
 
             *(vu16 *)REG_SOUND1CNT_X = 0;
             for (i = 0; i < 3; i++) {
-                *soundCnt = *Sound.playPtr;
+                *soundCnt = *sndStatic.playPtr;
                 if (i < 2) {
                     soundCnt++;
-                    Sound.playPtr++;
+                    sndStatic.playPtr++;
                 }
             }
-            *soundCnt = *Sound.playPtr++;
+            *soundCnt = *sndStatic.playPtr++;
             break;
         }
     }
 
-    Sound.time--;
+    sndStatic.time--;
 }
 
-void SoundPlaySfx(u8 Num)
+void snd_play(u8 Num)
 {
-    if (Sound.sfxNum > Num && Sound.time != (u8)-1) return;
-    Sound.playPtr = SoundSfxTable[Num];
-    Sound.basePtr = Sound.playPtr;
-    Sound.time = 0;
-    Sound.sfxNum = Num;
+    if (sndStatic.sfxNum > Num && sndStatic.time != (u8)-1) return;
+    sndStatic.playPtr = SoundSfxTable[Num];
+    sndStatic.basePtr = sndStatic.playPtr;
+    sndStatic.time = 0;
+    sndStatic.sfxNum = Num;
 }
 
-void SoundStop(void)
+void snd_stop(void)
 {
-    Sound.sfxNum = 0;
-    Sound.time = -1;
+    sndStatic.sfxNum = 0;
+    sndStatic.time = -1;
 }
