@@ -15,18 +15,7 @@ SECTIONS {
         my_changeClockMaster.o(.text)
         my_softReset_and_checkID.o(.text)
 
-        menu_drawGameList.o(.text)
-        menu_clearGameList.o(.text)
-        menu_initGameList.o(.text)
-        menu_blinkGame.o(.text)
-        menu_drawGame.o(.text)
-        menu_checkError.o(.text)
-        menu_playErrorSFX.o(.text)
-        menu_drawMessage.o(.text)
-        menu_initBlinkCounter.o(.text)
-        menu_blinkMessage.o(.text)
-        menu_initGameName.o(.text)
-
+        menuFunc.o(.text)
         myFunc.o(.text)
         Sound.o(.text)
         interrupt.o(.text)
@@ -37,7 +26,7 @@ SECTIONS {
         *(.text)
 
         SearchProcTable.o(.rodata)
-        menu_initGameName.o(.rodata)
+        menuFunc.o(.rodata)
         UserNames.o(.rodata)
         MenuMsgInitial.o(.rodata)
         Main.o(.rodata)
