@@ -2,7 +2,7 @@ CC = thumb-elf-gcc
 AS = thumb-elf-as
 OBJCOPY = thumb-elf-objcopy
 
-.SFILES    =   crt0_demo.s defs.s
+.SFILES    =   crt0_demo.s
 .CFILES    =   $(wildcard *.c)
 .BFILES    =   char/pals.bin char/tmap.bin char/search_tmap.bin char/tiles.bin
 .OFILES    =   $(.SFILES:.s=.o) $(.CFILES:.c=.o) $(.BFILES:.bin=_LZ.o)
