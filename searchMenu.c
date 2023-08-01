@@ -4,13 +4,15 @@
 #include "GameInfo.h"
 #include "AgbRFU_LL.h"
 
+extern u16  STWI_send_LinkStatusREQ(void);
+extern u16  STWI_send_StopModeREQ(void);
+extern u16  STWI_send_SystemStatusREQ(void);
 extern u16  rfu_REQ_changeMasterSlave_check(u8 param_1);
 extern u32  AgbRFU_softReset_and_checkID(void);
 extern u8   menu_drawGameList(void);
 extern void REQ_callback_mboot(void);
 extern void SEQ_title(void);
 extern void SEQ_title_init(void);
-extern void snd_play(u8 Num);
 extern void menu_blinkGame(u8 Blink);
 extern void menu_blinkMessage(u8 Msg,u8 Rate);
 extern void menu_checkError(u16 State);
@@ -24,12 +26,12 @@ extern void mf_winFade(u8 Dir);
 extern void my_changeClockMaster(void);
 extern void rfu_NI_checkCommFailCounter(void);
 extern void rfu_setIDCallback(void (*Func)());
+extern void snd_play(u8 Num);
 
 extern char *UserNames[4];
 extern char GameName[14];
 extern const u8 str_header_mboot[10];
 extern struct GameInfo GameList[4];
-extern u16 (*SearchProcTable[])(void);
 extern u16 Bg0Bak[32*20];
 extern u16 MbootBeaconID;
 extern u16 MbootBeaconID;
@@ -83,10 +85,33 @@ enum {
 	STATE_EXEC = 0xc7
 };
 
-static void my_drawListTitle(u16 Pos,u8 Len,u16 CharNo);
+static u16  REQ_changeMasterSlave(void);
+static u16  REQ_configGameData(void);
+static u16  REQ_configSystem(void);
+static u16  REQ_pollConnectParent(void);
+static u16  REQ_startConnectParent(void);
+static u16  my_softReset_and_checkID(void);
+static u8   my_strcmp(const char *str1,const char *str2);
 static void SEQ_search_dl(void);
 static void SEQ_search_mboot(void);
-static u8   my_strcmp(const char *str1,const char *str2);
+static void my_drawListTitle(u16 Pos,u8 Len,u16 CharNo);
+
+static u16(*const SearchProcTable[])(void)={
+	rfu_REQ_reset,
+	REQ_configSystem,
+	REQ_configGameData,
+	rfu_REQ_startSearchParent,
+	rfu_REQ_pollSearchParent,
+	rfu_REQ_endSearchParent,
+	REQ_startConnectParent,
+	REQ_pollConnectParent,
+	rfu_REQ_endConnectParent,
+	REQ_changeMasterSlave,
+	my_softReset_and_checkID,
+	STWI_send_StopModeREQ,
+	STWI_send_LinkStatusREQ,
+	STWI_send_SystemStatusREQ
+};
 
 void SEQ_search_init(void)
 {
@@ -641,22 +666,22 @@ static u8 my_strcmp(const char *str1,const char *str2)
 	return 0;
 }
 
-u16 REQ_configGameData(void)
+static u16 REQ_configGameData(void)
 {
 	return rfu_REQ_configGameData(TRUE,0,GameName,UserNames[MbootPeer]);
 }
 
-u16 REQ_configSystem(void)
+static u16 REQ_configSystem(void)
 {
 	return rfu_REQ_configSystem(0x1c,4,0x20);
 }
 
-u16 REQ_startConnectParent(void)
+static u16 REQ_startConnectParent(void)
 {
 	return rfu_REQ_startConnectParent(MbootBeaconID);
 }
 
-u16 REQ_pollConnectParent(void)
+static u16 REQ_pollConnectParent(void)
 {
 	u16 ret;
 	u8 temp[4];
@@ -667,7 +692,7 @@ u16 REQ_pollConnectParent(void)
 	return ret;
 }
 
-u16 REQ_changeMasterSlave(void)
+static u16 REQ_changeMasterSlave(void)
 {
 	return rfu_REQ_changeMasterSlave_check(0);
 }
@@ -678,7 +703,7 @@ void my_changeClockMaster(void)
 	while(!rfu_getMasterSlave());
 }
 
-u16 my_softReset_and_checkID(void)
+static u16 my_softReset_and_checkID(void)
 {
 	if(AgbRFU_softReset_and_checkID()==0x8001)
 		return 0;

@@ -14,7 +14,7 @@ SECTIONS {
         AgbRFU_LL.o(.text)
         *(.text)
 
-        SearchProcTable.o(.rodata)
+        searchMenu.o(.rodata)
         menuFunc.o(.rodata)
         UserNames.o(.rodata)
         MenuMsgInitial.o(.rodata)
