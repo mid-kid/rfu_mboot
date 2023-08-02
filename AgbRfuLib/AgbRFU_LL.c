@@ -3,7 +3,6 @@
 
 #include "GameInfo.h"
 #include "STWI_status.h"
-#include "rfuLinkStatus.h"
 #include "AgbRFU_LL.h"
 #include "AgbRFU_STWI.h"
 #include "AgbRFU_LL_private.h"
