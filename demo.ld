@@ -27,11 +27,6 @@ SECTIONS {
         bss_Rfu.o(COMMON)
         bss_10.o(COMMON)
         bss_11.o(COMMON)
-
-        common = .;
-        bss_12.o(COMMON)
-        rfuFixed = common; common += 0x68;
-        rfuBuf = common; common += 0x118;
     }
     bss_end = .;
 }

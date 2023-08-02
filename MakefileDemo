@@ -4,7 +4,7 @@ OBJCOPY = thumb-elf-objcopy
 
 .SFILES    =   crt0_demo.s
 .CFILES    =   Main.c searchMenu.c menuFunc.c myFunc.c data.c sound.c soundData.c interrupt.c \
-               bss_4.c bss_5.c bss_6.c bss_8.c bss_9.c bss_Rfu.c bss_10.c bss_11.c bss_12.c
+               bss_4.c bss_5.c bss_6.c bss_8.c bss_9.c bss_Rfu.c bss_10.c bss_11.c
 .BFILES    =   char/pals.bin char/tmap.bin char/search_tmap.bin char/tiles.bin
 .OFILES    =   $(.SFILES:.s=.o) $(.CFILES:.c=.o) $(.BFILES:.bin=_LZ.o)
 
