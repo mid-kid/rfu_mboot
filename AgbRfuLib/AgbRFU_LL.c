@@ -10,7 +10,7 @@
 
 extern struct STWI_status STWI_status;
 extern struct rfuStatic rfuStatic;
-extern u8 RfuDataSendBuf[];
+extern u8 rfuBuf[];
 extern u8 STWI_buffer_recv[0x120];
 extern void (*STWI_callback_ID)(void);
 
@@ -1043,7 +1043,7 @@ u16 rfu_REQ_sendData(void)
 	rfuStatic.unk_12=0;
 	size=rfu_constructSendLLFrame();
 	if(rfuStatic.unk_12!=0)
-		res=STWI_send_DataTxREQ(RfuDataSendBuf,size+4);
+		res=STWI_send_DataTxREQ(rfuBuf,size+4);
 	
 	if(res==0) {
 		for(x=0;x<4;x++) {
@@ -1071,7 +1071,7 @@ u32 rfu_constructSendLLFrame(void)
 	u32 size;
 	
 	size=0;
-	data=RfuDataSendBuf+4;
+	data=rfuBuf+4;
 	
 	for(x=0;x<4;x++) {
 		peersize=0;
@@ -1093,10 +1093,10 @@ u32 rfu_constructSendLLFrame(void)
 	if(size!=0) {
 		while((u32)data & 3)
 			*data++=0;
-		*(u32 *)RfuDataSendBuf=size;
+		*(u32 *)rfuBuf=size;
 		
 		if(rfuLinkStatus.parent_child==0)
-			size=data-4-RfuDataSendBuf;
+			size=data-4-rfuBuf;
 	}
 	return size;
 }

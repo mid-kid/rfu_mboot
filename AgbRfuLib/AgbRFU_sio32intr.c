@@ -10,11 +10,14 @@ extern u8 u8_03005efc;
 extern void (*STWI_callback_ID)(void);
 extern struct STWI_status STWI_status;
 extern u8 STWI_buffer_recv[0x120];
-extern u8 u8_03005729;
-extern u8 u8_03005728;
 extern u8 STWI_buffer_send[0x120];
-extern u8 RfuIntrCmd;
-extern u8 RfuIntrSize;
+
+__attribute__((unused)) static u8 u8_03005728;
+__attribute__((unused)) static u8 u8_03005729;
+__attribute__((unused)) static u8 RfuIntrSize;
+__attribute__((unused)) static u32 DAT_0300572c;
+__attribute__((unused)) static u8 RfuIntrCmd;
+__attribute__((unused)) static u32 DAT_03005734;
 
 #define BufWrite(Buf, Offs, Data, Bit) \
 { \

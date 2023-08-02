@@ -31,21 +31,11 @@ extern void snd_play(u8 Num);
 extern char *str_uname[4];
 extern char GameName[14];
 extern const u8 str_header_mboot[10];
-extern struct GameInfo GameList[4];
 extern u16 Bg0Bak[32*20];
-extern u16 MbootBeaconID;
-extern u16 MbootBeaconID;
-extern u16 SearchMenuTimer;
-extern u8 GameListBits;
 extern u8 Lang;
-extern u8 MbootPeer;
 extern u8 MenuBusy;
-extern u8 SearchMenuCursor;
-extern u8 SearchMenuEnd;
-extern u8 SearchMenuErrorMsg;
 extern u8 SearchMenuErrorTimer;
 extern u8 _binary_char_search_tmap_LZ_bin_start[];
-extern u8 blink_counter;
 extern u8 my_state;
 extern void (*nowProcess)();
 
@@ -96,7 +86,7 @@ static void SEQ_search_dl(void);
 static void SEQ_search_mboot(void);
 static void my_drawListTitle(u16 Pos,u8 Len,u16 CharNo);
 
-static u16(*const SearchProcTable[])(void)={
+static u16 (*const SearchProcTable[])(void)={
 	rfu_REQ_reset,
 	REQ_configSystem,
 	REQ_configGameData,
@@ -112,6 +102,18 @@ static u16(*const SearchProcTable[])(void)={
 	STWI_send_LinkStatusREQ,
 	STWI_send_SystemStatusREQ
 };
+
+__attribute__((nocommon)) u8 SearchMenuEnd;
+__attribute__((nocommon)) u8 SearchMenuCursor;
+__attribute__((nocommon)) u8 MbootPeer;
+__attribute__((nocommon)) u8 SearchMenuErrorMsg;
+__attribute__((nocommon)) u16 MbootBeaconID;
+__attribute__((nocommon)) u16 SearchMenuTimer;
+__attribute__((nocommon)) u8 blink_counter;
+__attribute__((nocommon)) u32 DAT_0300569c;
+__attribute__((nocommon)) struct GameInfo GameList[4];
+__attribute__((nocommon)) u8 GameListBits;
+__attribute__((nocommon)) u8 GameListBitsNew;
 
 void SEQ_search_init(void)
 {

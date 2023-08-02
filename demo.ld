@@ -6,12 +6,7 @@ SECTIONS {
 
     bss_start = .;
     .bss : {
-        bss_Menu.o(.bss)
-        bss_Game.o(COMMON)
-        bss_Game.o(.bss)
-        myFunc.o(.bss)
-        bss_4.o(.bss)
-        bss_Sio32.o(.bss)
+        *(.bss)
 
         /* COMMON ordering shenanigans */
         . = ALIGN(0x10);
@@ -30,9 +25,13 @@ SECTIONS {
         myFunc.o(COMMON)
         bss_9.o(COMMON)
         bss_Rfu.o(COMMON)
-        bss_11.o(.bss)
+        bss_10.o(COMMON)
         bss_11.o(COMMON)
+
+        common = .;
         bss_12.o(COMMON)
+        rfuFixed = common; common += 0x68;
+        rfuBuf = common; common += 0x118;
     }
     bss_end = .;
 }

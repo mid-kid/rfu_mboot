@@ -1,7 +1,6 @@
 #include <Agb.h>
 
 #include "Sio32.h"
-extern struct Sio32 Sio32;
 extern u32  Sio32IDMain(void);
 extern void Sio32IDInit(void);
 extern void Sio32IDIntr(void);
@@ -10,6 +9,8 @@ extern void (*STWI_callback_ID)(void);
 
 static const char Sio32ConnectionData[]={'N','I','N','T','E','N','D','O'};
 static const char Sio32IDLib_Var[]="Sio32ID_011008";
+
+static struct Sio32 Sio32;
 
 u32 AgbRFU_checkID(void)
 {
