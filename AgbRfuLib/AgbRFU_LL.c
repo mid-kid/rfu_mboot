@@ -1,7 +1,6 @@
 #include <Agb.h>
 #include <stddef.h>
 
-#include "GameInfo.h"
 #include "STWI_status.h"
 #include "AgbRFU_LL.h"
 #include "AgbRFU_STWI.h"
@@ -584,7 +583,7 @@ static void rfu_STC_removeLinkData(u8 slot,u8 clear)
 		rfuLinkStatus.parent_child=-1;
 	
 	if(clear)
-		CpuClear(0,rfuLinkStatus.partner+slot,sizeof(struct GameInfo),16);
+		CpuClear(0,rfuLinkStatus.partner+slot,sizeof(rfuTgtData),16);
 }
 
 static void rfu_STC_fastCopy(u8 **Src,u8 **Dst,int Size)

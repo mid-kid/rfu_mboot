@@ -1,10 +1,9 @@
 #include <Agb.h>
-#include "GameInfo.h"
 #include "myFunc.h"
 #include "AgbRFU_LL.h"
 
 extern void snd_play(u8 Num);
-extern void menu_drawGame(u16 Pos,struct GameInfo *Game);
+extern void menu_drawGame(u16 Pos,rfuTgtData *Game);
 extern void menu_drawMessage(u8 Msg,u16 PlttNo);
 extern void mf_clearGame(int Pos);
 extern const struct MenuMsg *MenuMsg;
@@ -21,7 +20,7 @@ struct MenuMsg {
 	const u16 *pos;
 };
 
-extern struct GameInfo GameList[4];
+extern rfuTgtData GameList[4];
 extern u8 GameListBitsNew;
 extern u8 GameName[14];
 extern u8 MenuBusy;
@@ -48,7 +47,7 @@ u8 menu_drawGameList(void)
 				rfuLinkStatus.partner[x].mboot_flag&&
 				rfuLinkStatus.partner[x].slot<4) {
 			for(y=0;y<4;y++) {
-				if(GameList[y].beaconID!=rfuLinkStatus.partner[x].id)
+				if(GameList[y].id!=rfuLinkStatus.partner[x].id)
 					continue;
 				GamesOld|=1<<y;
 				break;
@@ -61,7 +60,7 @@ u8 menu_drawGameList(void)
 	// Remove any games that don't exist anymore from the list
 	for(x=0;x<4;x++)
 		if(!(GamesOld & 1<<x))
-			GameList[x].beaconID=0;
+			GameList[x].id=0;
 	
 	// Copy new games into the games list
 	GameListBitsNew=0;
@@ -69,10 +68,9 @@ u8 menu_drawGameList(void)
 		if(!(GamesNew & 1<<x))
 			continue;
 		for(y=0;y<4;y++) {
-			if(GameList[y].beaconID)
+			if(GameList[y].id)
 				continue;
-			CpuCopy(&rfuLinkStatus.partner[x],&GameList[y],
-				sizeof(struct GameInfo),16);
+			CpuCopy(&rfuLinkStatus.partner[x],GameList+y,sizeof(rfuTgtData),16);
 			GameListBitsNew|=1<<y;
 			break;
 		}
@@ -86,8 +84,8 @@ u8 menu_drawGameList(void)
 	mf_clearRect(0xe3,8,0x19);
 	Pos=0xe3;
 	for(x=0;x<4;x++) {
-		if(GameList[x].beaconID!=0)
-			menu_drawGame(Pos,&GameList[x]);
+		if(GameList[x].id!=0)
+			menu_drawGame(Pos,GameList+x);
 		Pos+=0x40;
 	}
 	return GamesOld | GamesNew;
@@ -100,7 +98,7 @@ void menu_clearGameList(void)
 	for(x=0;x<4;x++) {
 		if(x==SearchMenuCursor)
 			continue;
-		GameList[x].beaconID=0;
+		GameList[x].id=0;
 		mf_clearRect(x*0x40+0xe3,1,0x19);
 	}
 }
@@ -131,17 +129,17 @@ void menu_blinkGame(u8 Blink)
 	blink_counter++;
 }
 
-void menu_drawGame(u16 Pos,struct GameInfo *Game)
+void menu_drawGame(u16 Pos,rfuTgtData *Game)
 {
-	if(!Game->gameName[0])
+	if(!Game->gname[0])
 		mf_clearGame(Pos);
 	else
-		mf_drawString(Pos,0,Game->gameName);
+		mf_drawString(Pos,0,Game->gname);
 	
-	if(!Game->userName[0])
+	if(!Game->uname[0])
 		mf_clearGame(Pos+15);
 	else
-		mf_drawString(Pos+15,0,Game->userName);
+		mf_drawString(Pos+15,0,Game->uname);
 }
 
 void menu_checkError(u16 State)

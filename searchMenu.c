@@ -1,7 +1,5 @@
 #include <Agb.h>
 #include "myFunc.h"
-
-#include "GameInfo.h"
 #include "AgbRFU_LL.h"
 
 extern u16  STWI_send_LinkStatusREQ(void);
@@ -111,7 +109,7 @@ __attribute__((nocommon)) u16 MbootBeaconID;
 __attribute__((nocommon)) u16 SearchMenuTimer;
 __attribute__((nocommon)) u8 blink_counter;
 __attribute__((nocommon)) u32 DAT_0300569c;
-__attribute__((nocommon)) struct GameInfo GameList[4];
+__attribute__((nocommon)) rfuTgtData GameList[4];
 __attribute__((nocommon)) u8 GameListBits;
 __attribute__((nocommon)) u8 GameListBitsNew;
 
@@ -142,7 +140,7 @@ void SEQ_search_init(void)
 	}
 	
 	for(x=0;x<4;x++)
-		GameList[x].beaconID=0;
+		GameList[x].id=0;
 	rfu_clearAllSlot();
 	SearchMenuEnd=FALSE;
 	SearchMenuCursor=0;
@@ -205,9 +203,9 @@ void SEQ_search(void)
 		}
 		
 		// Select game
-		if(key.Trg & A_BUTTON&&GameList[SearchMenuCursor].beaconID) {
+		if(key.Trg & A_BUTTON&&GameList[SearchMenuCursor].id) {
 			menu_blinkGame(FALSE);
-			MbootBeaconID=GameList[SearchMenuCursor].beaconID;
+			MbootBeaconID=GameList[SearchMenuCursor].id;
 			if(my_state==STATE_WAIT_SP)
 				my_state=STATE_SP_END;
 			else
