@@ -4,23 +4,13 @@
 #include "GameInfo.h"
 #include "STWI_status.h"
 #include "rfuLinkStatus.h"
-#include "rfuStatic.h"
 #include "AgbRFU_LL.h"
 #include "AgbRFU_STWI.h"
+#include "AgbRFU_LL_private.h"
 
 extern struct STWI_status STWI_status;
-extern struct rfuStatic rfuStatic;
 extern u8 STWI_buffer_recv[0x120];
 extern void (*STWI_callback_ID)(void);
-
-typedef struct RFU_fixedTag {
-	u8 *recv;  // dst
-	void (*fastCopy_p)();
-	u8 fastCopy_buff[0x60];
-    u8 STWI_buf[280];
-}RFU_FIXED;
-
-extern RFU_FIXED rfuFixed;
 
 static const struct RfuEnc {
 	u8 unk_01;
