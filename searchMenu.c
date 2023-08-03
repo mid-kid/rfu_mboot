@@ -28,14 +28,9 @@ extern void rfu_setIDCallback(void (*Func)());
 extern void snd_play(u8 Num);
 
 extern char *str_uname[4];
-extern char GameName[14];
 extern const u8 str_header_mboot[10];
 extern u16 Bg0Bak[32*20];
-extern u8 Lang;
-extern u8 MenuBusy;
-extern u8 SearchMenuErrorTimer;
 extern u8 _binary_char_search_tmap_LZ_bin_start[];
-extern u8 my_state;
 extern void (*nowProcess)();
 
 enum {
@@ -108,6 +103,14 @@ __attribute__((nocommon)) u32 DAT_0300569c;
 __attribute__((nocommon)) rfuTgtData GameList[4];
 __attribute__((nocommon)) u8 GameListBits;
 __attribute__((nocommon)) u8 GameListBitsNew;
+
+u8 SearchMenuErrorTimer;
+u8 MenuBusy;
+u8 Lang;
+void *MenuMsg;
+u8 my_state;
+u8 MainMenuFadeOut;
+char GameName[16];
 
 void SEQ_search_init(void)
 {

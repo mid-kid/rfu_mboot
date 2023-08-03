@@ -4,23 +4,25 @@ SECTIONS {
     .rodata : { *(.rodata) }
     .data : { *(.data) }
 
+    /DISCARD/ : {
+        searchMenu.o(COMMON)
+    }
+
     bss_start = .;
+    .bss : { *(.bss) }
+    /* COMMON ordering shenanigans */
     .bss : {
-        *(.bss)
-
-        /* COMMON ordering shenanigans */
+        /* searchMenu.o(COMMON) */
         . = ALIGN(0x10);
-        common = .;
-        bss_5.o(COMMON)
-        SearchMenuErrorTimer = common; common += 4;
-        MenuBusy = common; common += 4;
-        Lang = common; common += 4;
-        MenuMsg = common; common += 4;
-        my_state = common; common += 4;
-        MainMenuFadeOut = common; common += 4;
+        SearchMenuErrorTimer = .; . += 4;
+        MenuBusy = .; . += 4;
+        Lang = .; . += 4;
+        MenuMsg = .; . += 4;
+        my_state = .; . += 4;
+        MainMenuFadeOut = .; . += 4;
+        . = ALIGN(0x10);
+        GameName = .; . += 16;
 
-        bss_6.o(COMMON)
-        sound.o(COMMON)
         *(COMMON)
     }
     bss_end = .;
