@@ -413,6 +413,8 @@ extern u8   rfu_getMasterSlave(void);
 
 
 // Communication Configuration
+    // MSC Callback Configuration
+extern void rfu_setMSCCallback(void (*callbackFuncp)(void));
     // Shared by NI- and UNI-type communications
         // Clear Communication Status
 extern u16  rfu_clearAllSlot(void);
@@ -434,6 +436,8 @@ extern u16  rfu_NI_CHILD_setSendGameName(u8 slotNo,u16 subFrameSize);
 extern u16  rfu_REQ_sendData(void);
         // Read receive data
 extern u16  rfu_REQ_recvData(void);
+        // Check communication failures
+extern void rfu_NI_checkCommFailCounter(void);
 
 
 

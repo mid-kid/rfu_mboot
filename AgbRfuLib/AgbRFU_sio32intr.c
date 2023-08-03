@@ -11,7 +11,7 @@ __attribute__((unused)) static u32 DAT_0300572c;
 __attribute__((unused)) static u8 RfuIntrCmd;
 __attribute__((unused)) static u32 DAT_03005734;
 
-void (*STWI_callback_ID)();
+void (*STWI_callback_MSC)();
 
 u32  sio32intr_clock_master(void);
 u32  sio32intr_clock_slave(void);
@@ -26,8 +26,8 @@ void Callback_Dummy(void (*)());
 
 void IntrSIO32(void)
 {
-	if(STWI_callback_ID_set==TRUE) {
-		Callback_Dummy(STWI_callback_ID);
+	if(STWI_callback_ID==TRUE) {
+		Callback_Dummy(STWI_callback_MSC);
 		return;
 	}
 	
@@ -589,7 +589,7 @@ sio32intr_clock_slave:
 	.word	RfuIntrCmd
 	.word	STWI_buffer_send
 	.word	-1721368082
-	.word	STWI_callback_ID
+	.word	STWI_callback_MSC
 .LY29:
 	mov	r3, #20480
 	add	r3, r3, #130
@@ -724,7 +724,7 @@ u32 sio32intr_clock_slave(void)
 		*(vu16 *)REG_SIOCNT=0;
 		*(vu16 *)REG_SIOCNT=0x5003;
 		
-		Callback_Dummy(STWI_callback_ID);
+		Callback_Dummy(STWI_callback_MSC);
 	}
 	else
 		*(vu16 *)REG_SIOCNT=0x5082;

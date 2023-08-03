@@ -10,7 +10,7 @@ static const char Sio32IDLib_Var[]="Sio32ID_011008";
 static Sio32IDArea S32id;
 
 u32 unused;
-u8 STWI_callback_ID_set;
+u8 STWI_callback_ID;
 
 #define STATIC
 static void Sio32IDInit(void);
@@ -24,8 +24,8 @@ u32 AgbRFU_checkID(void)
 	u16 ie;
 	
 	ie=*(vu16 *)REG_IE;
-	STWI_callback_ID_set=TRUE;
-	STWI_callback_ID=Sio32IDIntr;
+	STWI_callback_ID=TRUE;
+	STWI_callback_MSC=Sio32IDIntr;
 	
 	Sio32IDInit();
 	for(x=0;x<0x3c;x++) {
@@ -39,7 +39,7 @@ u32 AgbRFU_checkID(void)
 	*(vu16 *)REG_IE=ie;
 	*(vu16 *)REG_IME=1;
 	
-	STWI_callback_ID_set=FALSE;
+	STWI_callback_ID=FALSE;
 	return ret;
 }
 

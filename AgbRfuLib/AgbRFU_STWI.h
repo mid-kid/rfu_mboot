@@ -11,7 +11,7 @@
 #define STWI_CMDERR_CLOCK_SLAVE 4
 #define STWI_CMDERR_IME_DISABLE 6
 
-extern void (*STWI_callback_ID)(void);
+extern void (*STWI_callback_MSC)(void);
 extern u8 STWI_buffer_recv[280];
 extern u8 STWI_buffer_send[280];
 
@@ -36,6 +36,8 @@ extern u16 STWI_send_DataRxREQ(void);
 extern u16 STWI_send_MS_ChangeREQ(void);
 extern u16 STWI_send_DisconnectREQ(u8 param_1);
 extern u16 STWI_send_StopModeREQ(void);
+extern void AgbRFU_SoftReset(void);
+extern u32 AgbRFU_softReset_and_checkID(void);
 
 #endif
 

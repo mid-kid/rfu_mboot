@@ -5,7 +5,6 @@
 #include "rfuDefine.h"
 
 extern void snd_play(u8 Num);
-extern void menu_drawGame(u16 Pos,rfuTgtData *Game);
 extern void menu_drawMessage(u8 Msg,u16 PlttNo);
 extern void mf_clearGame(int Pos);
 
@@ -25,6 +24,8 @@ extern u8 blink_counter;
 extern u8 my_state;
 
 static const u8 str_my_gname_mboot[]="RFU-MB-DL";
+
+static void menu_STC_drawGame(u16 Pos,rfuTgtData *Game);
 
 u8 menu_drawGameList(void)
 {
@@ -80,7 +81,7 @@ u8 menu_drawGameList(void)
 	Pos=0xe3;
 	for(x=0;x<4;x++) {
 		if(GameList[x].id!=0)
-			menu_drawGame(Pos,GameList+x);
+			menu_STC_drawGame(Pos,GameList+x);
 		Pos+=0x40;
 	}
 	return GamesOld | GamesNew;
@@ -106,7 +107,7 @@ void menu_initGameList(void)
 	CpuClear(0,GameList,sizeof(GameList),16);
 }
 
-void menu_blinkGame(u8 Blink)
+void menu_blinkGame(u8 blink)
 {
 	u8 x;
 	u16 pos;
@@ -115,8 +116,8 @@ void menu_blinkGame(u8 Blink)
 		if(!(GameListBitsNew & 1<<x))
 			continue;
 		
-		if(!Blink||(blink_counter & 0x20)==0)
-			menu_drawGame(pos,GameList+x);
+		if(!blink||(blink_counter & 0x20)==0)
+			menu_STC_drawGame(pos,GameList+x);
 		else
 			mf_clearRect(pos,1,0x19);
 	}
@@ -124,7 +125,7 @@ void menu_blinkGame(u8 Blink)
 	blink_counter++;
 }
 
-void menu_drawGame(u16 Pos,rfuTgtData *Game)
+static void menu_STC_drawGame(u16 Pos,rfuTgtData *Game)
 {
 	if(!Game->gname[0])
 		mf_clearGame(Pos);
@@ -137,9 +138,9 @@ void menu_drawGame(u16 Pos,rfuTgtData *Game)
 		mf_drawString(Pos+15,0,Game->uname);
 }
 
-void menu_checkError(u16 State)
+void menu_checkError(u16 state)
 {
-	if(!State)
+	if(!state)
 		return;
 	
 	if(my_state==10)
@@ -170,10 +171,10 @@ void menu_playErrorSFX(void)
 	}
 }
 
-void menu_drawMessage(u8 Msg,u16 PlttNo)
+void menu_drawMessage(u8 msg,u16 pltt)
 {
-	mf_clearRect(MenuMsg->pos[Msg] & -0x20,2,0x20);
-	mf_drawString(MenuMsg->pos[Msg],PlttNo,MenuMsg->msg[Msg]);
+	mf_clearRect(MenuMsg->pos[msg] & -0x20,2,0x20);
+	mf_drawString(MenuMsg->pos[msg],pltt,MenuMsg->msg[msg]);
 }
 
 void menu_initBlinkCounter(void)
@@ -181,15 +182,15 @@ void menu_initBlinkCounter(void)
 	blink_counter=0;
 }
 
-void menu_blinkMessage(u8 Msg,u8 Rate)
+void menu_blinkMessage(u8 msg,u8 rate)
 {
-	if(Msg==6)
+	if(msg==6)
 		mf_clearRect(MenuMsg->pos[6],2,0x20);
 	else
 		mf_clearRect(0x200,2,0x20);
 	
-	if((blink_counter & Rate)==0)
-		menu_drawMessage(Msg,0);
+	if((blink_counter & rate)==0)
+		menu_drawMessage(msg,0);
 	
 	blink_counter++;
 }

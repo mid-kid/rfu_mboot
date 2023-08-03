@@ -119,7 +119,6 @@ static void rfu_STC_readParentCandidateList(void);
 static void rfu_STC_removeLinkData(u8 slot,u8 clear);
 static u32  rfu_constructSendLLFrame(void);
 
-void rfu_setIDCallback(void (*callbackFuncp)(void));
 u16  rfu_STC_setSendData_org(u8 param_1,u8 param_2,u16 param_3,const u16 *GameID,u32 param_5);
 
 u16 rfu_REQ_RFUStatus(u8 *rfuState)
@@ -154,7 +153,7 @@ void rfu_initializeAPI(void)
 	
 	src=(u16 *)((u32)rfu_STC_fastCopy & ~1);
 	dst=(u16 *)rfuFixed.fastCopy_buff;
-	size=(u16 *)rfu_setIDCallback-(u16 *)rfu_STC_fastCopy;
+	size=(u16 *)rfu_setMSCCallback-(u16 *)rfu_STC_fastCopy;
 	while(--size!=(u16)-1)
 		*dst++=*src++;
 	
@@ -671,9 +670,9 @@ static void rfu_STC_fastCopy(u8 **Src,u8 **Dst,int Size)
 	*Dst=dst;
 }
 
-void rfu_setIDCallback(void (*callbackFuncp)(void))
+void rfu_setMSCCallback(void (*callbackFuncp)(void))
 {
-	STWI_callback_ID=callbackFuncp;
+	STWI_callback_MSC=callbackFuncp;
 }
 
 u16 rfu_REQ_changeMasterSlave_check(u8 param_1)

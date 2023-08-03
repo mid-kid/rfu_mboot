@@ -2,40 +2,14 @@
 
 #include "AgbRFU_LL.h"
 #include "AgbRFU_LL_private.h"
+#include "AgbRFU_STWI.h"
 
 #include "myFunc.h"
 #include "rfuDefine.h"
 #include "data.h"
+#include "sound.h"
 
-extern u16  STWI_send_LinkStatusREQ(void);
-extern u16  STWI_send_StopModeREQ(void);
-extern u16  STWI_send_SystemStatusREQ(void);
-extern u16  rfu_REQ_changeMasterSlave_check(u8 param_1);
-extern u32  AgbRFU_softReset_and_checkID(void);
-extern u8   menu_drawGameList(void);
-extern void REQ_callback_mboot(void);
-extern void SEQ_title(void);
-extern void SEQ_title_init(void);
-extern void menu_blinkGame(u8 Blink);
-extern void menu_blinkMessage(u8 Msg,u8 Rate);
-extern void menu_checkError(u16 State);
-extern void menu_clearGameList(void);
-extern void menu_drawMessage(u8 Msg,u16 PlttNo);
-extern void menu_initBlinkCounter(void);
-extern void menu_initGameList(void);
-extern void menu_initGameName(void);
-extern void menu_playErrorSFX(void);
-extern void mf_winFade(u8 Dir);
-extern void my_changeClockMaster(void);
-extern void rfu_NI_checkCommFailCounter(void);
-extern void rfu_setIDCallback(void (*Func)());
-extern void snd_play(u8 Num);
-
-extern char *str_uname[4];
-extern const u8 str_header_mboot[10];
-extern u16 Bg0Bak[32*20];
 extern u8 _binary_char_search_tmap_LZ_bin_start[];
-extern void (*nowProcess)();
 
 enum {
 	// Correspond to entries in SearchProcTable
@@ -68,34 +42,6 @@ enum {
 	STATE_EXEC = 0xc7
 };
 
-static u16  REQ_changeMasterSlave(void);
-static u16  REQ_configGameData(void);
-static u16  REQ_configSystem(void);
-static u16  REQ_pollConnectParent(void);
-static u16  REQ_startConnectParent(void);
-static u16  my_softReset_and_checkID(void);
-static u8   my_strcmp(const char *str1,const char *str2);
-static void SEQ_search_dl(void);
-static void SEQ_search_mboot(void);
-static void my_drawListTitle(u16 Pos,u8 Len,u16 CharNo);
-
-static u16(*const SearchProcTable[])(void)={
-	rfu_REQ_reset,
-	REQ_configSystem,
-	REQ_configGameData,
-	rfu_REQ_startSearchParent,
-	rfu_REQ_pollSearchParent,
-	rfu_REQ_endSearchParent,
-	REQ_startConnectParent,
-	REQ_pollConnectParent,
-	rfu_REQ_endConnectParent,
-	REQ_changeMasterSlave,
-	my_softReset_and_checkID,
-	STWI_send_StopModeREQ,
-	STWI_send_LinkStatusREQ,
-	STWI_send_SystemStatusREQ
-};
-
 __attribute__((nocommon)) u8 SearchMenuEnd;
 __attribute__((nocommon)) u8 SearchMenuCursor;
 __attribute__((nocommon)) u8 MbootPeer;
@@ -115,6 +61,37 @@ const MSGDATA *MenuMsg;
 u8 my_state;
 u8 MainMenuFadeOut;
 char GameName[14];
+
+#define STATIC
+static u16  REQ_changeMasterSlave(void);
+static u16  REQ_configGameData(void);
+static u16  REQ_configSystem(void);
+static u16  REQ_pollConnectParent(void);
+static u16  REQ_startConnectParent(void);
+static u16  my_softReset_and_checkID(void);
+static u8   my_strcmp(const char *str1,const char *str2);
+static void my_changeClockMaster(void);
+STATIC void REQ_callback_mboot(void);
+static void SEQ_search_dl(void);
+static void SEQ_search_mboot(void);
+static void my_drawListTitle(u16 Pos,u8 Len,u16 CharNo);
+
+static u16(*const SearchProcTable[])(void)={
+    rfu_REQ_reset,
+    REQ_configSystem,
+    REQ_configGameData,
+    rfu_REQ_startSearchParent,
+    rfu_REQ_pollSearchParent,
+    rfu_REQ_endSearchParent,
+    REQ_startConnectParent,
+    REQ_pollConnectParent,
+    rfu_REQ_endConnectParent,
+    REQ_changeMasterSlave,
+    my_softReset_and_checkID,
+    STWI_send_StopModeREQ,
+    STWI_send_LinkStatusREQ,
+    STWI_send_SystemStatusREQ
+};
 
 void SEQ_search_init(void)
 {
@@ -361,7 +338,7 @@ void SEQ_search(void)
 			if(procRes==0) {
 				if(SearchMenuTimer>0&&rfuFixed.dst[7]==0) {
 					menu_clearGameList();
-					rfu_setIDCallback(REQ_callback_mboot);
+					rfu_setMSCCallback(REQ_callback_mboot);
 					rfu_setRecvBuffer(0x20,MbootPeer,(u8 *)EX_WRAM,EX_WRAM_SIZE);
 					my_state=STATE_CONFIG_GAME;
 				}
@@ -700,7 +677,7 @@ static u16 REQ_changeMasterSlave(void)
 	return rfu_REQ_changeMasterSlave_check(0);
 }
 
-void my_changeClockMaster(void)
+static void my_changeClockMaster(void)
 {
 	rfu_REQ_changeMasterSlave_check(1);
 	while(!rfu_getMasterSlave());
