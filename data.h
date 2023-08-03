@@ -5,13 +5,13 @@
 
 // define data----------------------------------
 typedef struct keyDataTag {
-    u16 Trg;
-    u16 Cont;
+	u16 Trg;
+	u16 Cont;
 }KEY_DATA;
 
 typedef struct msgdataTag {
-    const u8 *const *msg;
-    const u16 *pos;
+	const u8 *const *msg;
+	const u16 *pos;
 }MSGDATA;
 
 // extern data----------------------------------
@@ -26,3 +26,4 @@ extern const MSGDATA MenuMsgInitial[];
 extern const u8 str_lang_en[];
 
 #endif
+

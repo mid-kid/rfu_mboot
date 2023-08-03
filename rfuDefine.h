@@ -48,3 +48,4 @@ extern void menu_blinkMessage(u8 msg,u8 rate);
 extern void menu_initGameName(void);
 
 #endif
+

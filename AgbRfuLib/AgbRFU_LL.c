@@ -120,7 +120,7 @@ static void rfu_STC_readParentCandidateList(void);
 static void rfu_STC_removeLinkData(u8 slot,u8 clear);
 static void rfu_getConnectParentStatus(u8 *status,u8 *connect_slotNo,u16 *pid);
 
-u16  rfu_STC_setSendData_org(u8 param_1,u8 param_2,u16 param_3,const u16 *GameID,u32 param_5);
+u16 rfu_STC_setSendData_org(u8 param_1,u8 param_2,u16 param_3,const u16 *GameID,u32 param_5);
 
 u16 rfu_REQ_RFUStatus(u8 *rfuState)
 {

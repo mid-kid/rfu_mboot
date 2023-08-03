@@ -78,20 +78,20 @@ static void SEQ_search_mboot(void);
 static void my_drawListTitle(u16 Pos,u8 Len,u16 CharNo);
 
 static u16(*const SearchProcTable[])(void)={
-    rfu_REQ_reset,
-    REQ_configSystem,
-    REQ_configGameData,
-    rfu_REQ_startSearchParent,
-    rfu_REQ_pollSearchParent,
-    rfu_REQ_endSearchParent,
-    REQ_startConnectParent,
-    REQ_pollConnectParent,
-    rfu_REQ_endConnectParent,
-    REQ_changeMasterSlave,
-    my_softReset_and_checkID,
-    STWI_send_StopModeREQ,
-    STWI_send_LinkStatusREQ,
-    STWI_send_SystemStatusREQ
+	rfu_REQ_reset,
+	REQ_configSystem,
+	REQ_configGameData,
+	rfu_REQ_startSearchParent,
+	rfu_REQ_pollSearchParent,
+	rfu_REQ_endSearchParent,
+	REQ_startConnectParent,
+	REQ_pollConnectParent,
+	rfu_REQ_endConnectParent,
+	REQ_changeMasterSlave,
+	my_softReset_and_checkID,
+	STWI_send_StopModeREQ,
+	STWI_send_LinkStatusREQ,
+	STWI_send_SystemStatusREQ
 };
 
 void SEQ_search_init(void)
