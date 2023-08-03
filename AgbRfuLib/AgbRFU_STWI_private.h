@@ -10,6 +10,25 @@
 #define STWI_STATUS_STATE 2
 #define STWI_STATUS_CMD_ID 3
 
+// ---- pubnames:
+// timer_state
+// NOT_USED
+// WAIT50MS
+// WAIT80MS
+// WAIT100MS
+// WAIT130MS
+// comm_state
+// M_TxREQ
+// M_RxACK_HEADER
+// M_RxACK_END
+// M_COMPLETE
+// S_RxREQ_HEADER
+// S_RxREQ_CONTENTS
+// S_TxACK
+// S_TxACK_END
+// S_COMPLETE
+// ID_CHECK
+
 typedef struct {
     u32 state;  // state
     u32 cmdHeader;  // REQ_header
@@ -20,7 +39,7 @@ typedef struct {
     u8 unk_07;
     u8 unk_08;
     u8 unk_09;
-    u8 timer;
+    u8 timer;  // recovery_count
     u8 unk_11;
     u8 unk_12;  // sending_flag
 }STWI_command_status;

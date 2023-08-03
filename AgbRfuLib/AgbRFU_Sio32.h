@@ -22,4 +22,12 @@
 #define SIO32_CHILD 0x0000
 #define SIO32_CONNECTED_FLAG 0x0100
 
+// ---- pubnames:
+// Sio32Packet
+// Sio32Area
+// RecvFuncBuf
+// IntrFuncBuf
+// S32a
+// Sio32Return
+
 #endif
