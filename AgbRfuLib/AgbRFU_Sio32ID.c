@@ -1,6 +1,6 @@
-#include <Agb.h>
-
 #include "AgbRFU_Sio32ID.h"
+
+#include <Agb.h>
 #include "AgbRFU_STWI_private.h"
 
 #define SIO32ID_SEND_WAIT_COUNT 600

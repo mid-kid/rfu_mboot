@@ -1,8 +1,8 @@
-#include <Agb.h>
+#include "rfuDefine.h"
 
+#include <Agb.h>
 #include "myFunc.h"
 #include "data.h"
-#include "rfuDefine.h"
 #include "sound.h"
 
 // define data------------------------------------------

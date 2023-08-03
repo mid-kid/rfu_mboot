@@ -1,6 +1,8 @@
 #ifndef __DATA_H__
 #define __DATA_H__
 
+#include <AgbTypes.h>
+
 // define data----------------------------------
 typedef struct keyDataTag {
     u16 Trg;

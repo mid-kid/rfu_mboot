@@ -1,6 +1,8 @@
 #ifndef __RFU_LINK_LAYER_PRV_H__
 #define __RFU_LINK_LAYER_PRV_H__
 
+#include "AgbRFU_LL.h"
+
 #define ID_VERSION_STATUS_REQ 0x0012
 #define ID_CONFIG_STATUS_REQ 0x0015
 #define ID_SLOT_STATUS_REQ 0x0014

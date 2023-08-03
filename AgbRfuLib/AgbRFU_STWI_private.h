@@ -1,6 +1,8 @@
 #ifndef _RFU_STWI_PRIVATE_H
 #define _RFU_STWI_PRIVATE_H
 
+#include "AgbRFU_STWI.h"
+
 #define STWI_SIO_BUF_SIZE 0x960
 #define SIO_CNT_RESET 0x5003
 #define SIO_SEND_SPEED 0x5083

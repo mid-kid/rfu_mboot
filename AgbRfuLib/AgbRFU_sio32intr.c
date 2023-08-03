@@ -1,8 +1,8 @@
 #include <Agb.h>
 #include "AgbRFU_STWI_private.h"
 
-extern u8 STWI_buffer_recv[0x120];
-extern u8 STWI_buffer_send[0x120];
+extern u8 STWI_buffer_recv[280];
+extern u8 STWI_buffer_send[280];
 
 __attribute__((unused)) static u8 u8_03005728;
 __attribute__((unused)) static u8 u8_03005729;

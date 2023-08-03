@@ -1,7 +1,6 @@
-#include <Agb.h>
-
-#include "AgbRFU_STWI.h"
 #include "AgbRFU_STWI_private.h"
+
+#include <Agb.h>
 #include "AgbRFU_Sio32ID.h"
 
 u8 STWI_buffer_send[280];  // STWI_send_buf

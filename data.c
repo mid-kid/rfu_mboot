@@ -1,6 +1,6 @@
-#include <Agb.h>
-
 #include "data.h"
+
+#include <Agb.h>
 #include "myFunc.h"
 
 // global variables-----------------------------

@@ -1,11 +1,9 @@
-#include <Agb.h>
-
-#include "AgbRFU_LL.h"
-#include "AgbRFU_LL_private.h"
-#include "AgbRFU_STWI.h"
-
-#include "myFunc.h"
 #include "rfuDefine.h"
+
+#include <Agb.h>
+#include <AgbRFU_LL_private.h>
+#include <AgbRFU_STWI.h>
+#include "myFunc.h"
 #include "data.h"
 #include "sound.h"
 

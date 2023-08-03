@@ -1,6 +1,8 @@
 #ifndef __SOUND_H__
 #define __SOUND_H__
 
+#include <AgbTypes.h>
+
 typedef struct sndStaticTag {
     u16 *basePtr;
     u16 *playPtr;

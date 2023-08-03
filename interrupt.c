@@ -1,7 +1,5 @@
 #include <Agb.h>
-
-#include "AgbRFU_LL.h"
-
+#include <AgbRFU_LL.h>
 #include "data.h"
 #include "sound.h"
 

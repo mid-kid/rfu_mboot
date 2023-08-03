@@ -1,6 +1,8 @@
 #ifndef __MY_FUNC_H__
 #define __MY_FUNC_H__
 
+#include <AgbTypes.h>
+
 // define data----------------------------------
 
 // extern data----------------------------------

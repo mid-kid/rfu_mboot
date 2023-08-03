@@ -1,9 +1,7 @@
-#include <Agb.h>
-#include <stddef.h>
-
-#include "AgbRFU_LL.h"
 #include "AgbRFU_LL_private.h"
-#include "AgbRFU_STWI.h"
+
+#include <stddef.h>
+#include <Agb.h>
 #include "AgbRFU_STWI_private.h"
 
 #define LL_VER 0

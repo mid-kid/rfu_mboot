@@ -1,6 +1,8 @@
 #ifndef _AGBRFU_STWI_H
 #define _AGBRFU_STWI_H
 
+#include <AgbTypes.h>
+
 #define STWI_BUF_SIZE 0x29e
 #define STWI_BUF_SIZE_ROM 0x46
 #define STWI_RECV_BUF_SIZE 0x74
