@@ -6,8 +6,6 @@ u32 sio32intr_clock_slave(void);
 u16 handshake_wait(u16 State);
 void Call_thumb(void (*)());
 
-extern u8 u8_03005efc;
-extern void (*STWI_callback_ID)(void);
 extern u8 STWI_buffer_recv[0x120];
 extern u8 STWI_buffer_send[0x120];
 
@@ -18,6 +16,8 @@ __attribute__((unused)) static u32 DAT_0300572c;
 __attribute__((unused)) static u8 RfuIntrCmd;
 __attribute__((unused)) static u32 DAT_03005734;
 
+void (*STWI_callback_ID)();
+
 #define BufWrite(Buf, Offs, Data, Bit) \
 { \
     u8 *buf = (u8 *)&(Buf); \
@@ -26,7 +26,7 @@ __attribute__((unused)) static u32 DAT_03005734;
 
 void IntrSIO32(void)
 {
-    if (u8_03005efc == 1) {
+    if (STWI_callback_ID_set == TRUE) {
         Call_thumb(STWI_callback_ID);
         return;
     }

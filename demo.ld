@@ -22,10 +22,6 @@ SECTIONS {
         bss_6.o(COMMON)
         sound.o(COMMON)
         bss_8.o(COMMON)
-        myFunc.o(COMMON)
-        bss_9.o(COMMON)
-        bss_Rfu.o(COMMON)
-        bss_10.o(COMMON)
         *(COMMON)
     }
     bss_end = .;

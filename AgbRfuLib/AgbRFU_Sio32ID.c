@@ -1,18 +1,20 @@
 #include <Agb.h>
 
 #include "AgbRFU_Sio32ID.h"
+#include "AgbRFU_STWI_private.h"
 
 #define SIO32ID_SEND_WAIT_COUNT 600
 
 extern u32  Sio32IDMain(void);
 extern void Sio32IDInit(void);
 extern void Sio32IDIntr(void);
-extern u8 u8_03005efc;
-extern void (*STWI_callback_ID)(void);
 
 static const char Sio32ConnectionData[]={'N','I','N','T','E','N','D','O'};
 static const char Sio32IDLib_Var[]="Sio32ID_011008";
 static Sio32IDArea S32id;
+
+u32 unused;
+u8 STWI_callback_ID_set;
 
 u32 AgbRFU_checkID(void)
 {
@@ -21,9 +23,9 @@ u32 AgbRFU_checkID(void)
 	u16 ie;
 	
 	ie=*(vu16 *)REG_IE;
-	u8_03005efc=1;
-	
+	STWI_callback_ID_set=TRUE;
 	STWI_callback_ID=Sio32IDIntr;
+
 	Sio32IDInit();
 	for(x=0;x<0x3c;x++) {
 		VBlankIntrWait();
@@ -36,7 +38,7 @@ u32 AgbRFU_checkID(void)
 	*(vu16 *)REG_IE=ie;
 	*(vu16 *)REG_IME=1;
 	
-	u8_03005efc=0;
+	STWI_callback_ID_set=FALSE;
 	return ret;
 }
 

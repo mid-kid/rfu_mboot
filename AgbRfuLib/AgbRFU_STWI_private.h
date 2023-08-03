@@ -46,4 +46,7 @@ typedef struct {
 
 extern STWI_command_status STWI_status;
 
+extern u8 STWI_callback_ID_set;
+extern void (*STWI_callback_ID)(void);
+
 #endif
