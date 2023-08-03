@@ -1,4 +1,6 @@
-#include <Agb.h>
+#include <AgbDefine.h>
+#include <AgbMemoryMap.h>
+#include <AgbMacro.h>
 #include <AgbRFU_LL.h>
 #include "data.h"
 #include "sound.h"

@@ -1,6 +1,7 @@
 #include "myFunc.h"
 
-#include <Agb.h>
+#include <AgbMemoryMap.h>
+#include <AgbSystemCall.h>
 #include "data.h"
 
 // define data----------------------------------

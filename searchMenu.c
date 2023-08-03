@@ -1,6 +1,9 @@
 #include "rfuDefine.h"
 
-#include <Agb.h>
+#include <AgbDefine.h>
+#include <AgbMemoryMap.h>
+#include <AgbMacro.h>
+#include <AgbSystemCall.h>
 #include <AgbRFU_LL_private.h>
 #include <AgbRFU_STWI.h>
 #include "myFunc.h"

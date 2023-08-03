@@ -1,4 +1,4 @@
-#include <Agb.h>
+#include <AgbTypes.h>
 
 static const u16 sound0[]=
 {0x0108,0x9080,0x87A7,0x0108,0x3080,0x8790,0xFF00};

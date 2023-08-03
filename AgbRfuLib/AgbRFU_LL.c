@@ -1,7 +1,9 @@
 #include "AgbRFU_LL_private.h"
 
 #include <stddef.h>
-#include <Agb.h>
+#include <AgbDefine.h>
+#include <AgbMemoryMap.h>
+#include <AgbMacro.h>
 #include "AgbRFU_STWI_private.h"
 
 #define LL_VER 0

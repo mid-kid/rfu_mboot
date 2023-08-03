@@ -1,4 +1,4 @@
-#include <Agb.h>
+#include <AgbDefine.h>
 #include "AgbRFU_STWI_private.h"
 
 extern u8 STWI_buffer_recv[280];

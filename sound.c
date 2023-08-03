@@ -1,6 +1,7 @@
 #include "sound.h"
 
-#include <Agb.h>
+#include <AgbDefine.h>
+#include <AgbMemoryMap.h>
 
 extern u16 *sound_tbl[];
 
