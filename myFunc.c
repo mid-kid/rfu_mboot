@@ -5,12 +5,12 @@
 
 // extern data----------------------------------
 extern u16 Bg0Bak[32*20];
+extern KEY_DATA key;
 
 // function's prototype-------------------------
 static void mf_clearBg2(void);
 
 // global data----------------------------------
-KEY_DATA key;
 
 // static variable------------------------------
 static u8  key_rapid[4];

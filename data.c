@@ -1,4 +1,10 @@
 #include <Agb.h>
+#include "myFunc.h"
+
+// global variables-----------------------------
+u16 Bg0Bak[32*20];
+void (*nowProcess)();
+KEY_DATA key;
 
 struct MenuMsg {
 	const char *const *msg;

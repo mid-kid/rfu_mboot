@@ -21,7 +21,6 @@ SECTIONS {
 
         bss_6.o(COMMON)
         sound.o(COMMON)
-        bss_8.o(COMMON)
         *(COMMON)
     }
     bss_end = .;
