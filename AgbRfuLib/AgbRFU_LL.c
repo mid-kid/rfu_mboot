@@ -58,9 +58,6 @@
 #define CHILD_LS_FIXED_COUNT 240
 #define CHILD_LS_DEFAULT_VALUE 0x10
 
-extern u8 STWI_buffer_recv[0x120];
-extern void (*STWI_callback_ID)(void);
-
 typedef struct LinkLayerSubFrame_StructTag {
     u8 unk_01;  // header_size
     u8 unk_02;  // lver_s
@@ -120,9 +117,9 @@ static void rfu_STC_fastCopy(u8 **Src,u8 **Dst,int Size);
 static void rfu_STC_incCommFailCounter(u8 param_1);
 static void rfu_STC_readParentCandidateList(void);
 static void rfu_STC_removeLinkData(u8 slot,u8 clear);
+static u32  rfu_constructSendLLFrame(void);
 
 void rfu_setIDCallback(void (*callbackFuncp)(void));
-u32  rfu_constructSendLLFrame(void);
 u16  rfu_STC_setSendData_org(u8 param_1,u8 param_2,u16 param_3,const u16 *GameID,u32 param_5);
 
 u16 rfu_getRFUStatus(u8 *rfuState)
@@ -804,7 +801,6 @@ u16 rfu_NI_CHILD_setSendGameName(u8 slotNo,u16 subFrameSize)
 }
 
 #ifndef NONMATCHING
-//#if 0
 __asm__ ("
 .text
 	.align	2
@@ -1129,7 +1125,7 @@ u16 rfu_REQ_sendData(void)
 	return res;
 }
 
-u32 rfu_constructSendLLFrame(void)
+static u32 rfu_constructSendLLFrame(void)
 {
 	u8 x;
 	u8 *data;

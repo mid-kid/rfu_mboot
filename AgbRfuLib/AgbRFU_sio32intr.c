@@ -1,11 +1,6 @@
 #include <Agb.h>
 #include "AgbRFU_STWI_private.h"
 
-u32 sio32intr_clock_master(void);
-u32 sio32intr_clock_slave(void);
-u16 handshake_wait(u16 State);
-void Call_thumb(void (*)());
-
 extern u8 STWI_buffer_recv[0x120];
 extern u8 STWI_buffer_send[0x120];
 
@@ -18,6 +13,11 @@ __attribute__((unused)) static u32 DAT_03005734;
 
 void (*STWI_callback_ID)();
 
+u32 sio32intr_clock_master(void);
+u32 sio32intr_clock_slave(void);
+u16 handshake_wait(u16 State);
+void Callback_Dummy(void (*)());
+
 #define BufWrite(Buf, Offs, Data, Bit) \
 { \
     u8 *buf = (u8 *)&(Buf); \
@@ -27,7 +27,7 @@ void (*STWI_callback_ID)();
 void IntrSIO32(void)
 {
     if (STWI_callback_ID_set == TRUE) {
-        Call_thumb(STWI_callback_ID);
+        Callback_Dummy(STWI_callback_ID);
         return;
     }
 
@@ -570,7 +570,7 @@ sio32intr_clock_slave:
 	ldr	r0, [r3, #0]
 	add	r2, r7, #3
 	strh	r2, [r5, #0]	@ movhi   ;; CYGNUS LOCAL nickc
-	bl	Call_thumb
+	bl	Callback_Dummy
 	b	.LY31
 .LY35:
 	.align	0
@@ -705,7 +705,7 @@ u32 sio32intr_clock_slave(void)
         *(vu16 *)REG_SIOCNT = 0;
         *(vu16 *)REG_SIOCNT = 0x5003;
 
-        Call_thumb(STWI_callback_ID);
+        Callback_Dummy(STWI_callback_ID);
     } else {
         *(vu16 *)REG_SIOCNT = 0x5082;
     }
@@ -790,6 +790,6 @@ u16 handshake_wait(u16 State)
 #endif
 
 __asm__("
-Call_thumb:
+Callback_Dummy:
     bx r0
 ");

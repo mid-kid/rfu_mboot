@@ -5,16 +5,17 @@
 
 #define SIO32ID_SEND_WAIT_COUNT 600
 
-extern u32  Sio32IDMain(void);
-extern void Sio32IDInit(void);
-extern void Sio32IDIntr(void);
-
 static const char Sio32ConnectionData[]={'N','I','N','T','E','N','D','O'};
 static const char Sio32IDLib_Var[]="Sio32ID_011008";
 static Sio32IDArea S32id;
 
 u32 unused;
 u8 STWI_callback_ID_set;
+
+#define STATIC
+static void Sio32IDInit(void);
+static u32 Sio32IDMain(void);
+STATIC void Sio32IDIntr(void);
 
 u32 AgbRFU_checkID(void)
 {
@@ -42,7 +43,7 @@ u32 AgbRFU_checkID(void)
 	return ret;
 }
 
-void Sio32IDInit(void)
+static void Sio32IDInit(void)
 {
 	*(vu16 *)REG_IME=0;
 	*(vu16 *)REG_IE&=~(SIO_INTR_FLAG | TIMER3_INTR_FLAG);
@@ -55,7 +56,7 @@ void Sio32IDInit(void)
 	*(vu16 *)REG_IF=SIO_INTR_FLAG | TIMER3_INTR_FLAG;
 }
 
-u32 Sio32IDMain(void)
+static u32 Sio32IDMain(void)
 {
 	switch(S32id.State) {
 		case 0:

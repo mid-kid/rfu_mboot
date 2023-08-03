@@ -2,13 +2,11 @@
 
 #include "AgbRFU_STWI.h"
 #include "AgbRFU_STWI_private.h"
-extern u16 STWI_poll_CommandEnd(void);
-extern u16 STWI_check_Command(u32 Cmd,u8 VarSize);
-extern u32 AgbRFU_checkID(void);
+#include "AgbRFU_Sio32ID.h"
 
-STWI_command_status STWI_status;
 u8 STWI_buffer_send[280];  // STWI_send_buf
 u8 STWI_buffer_recv[280];  // STWI_recv_buf
+STWI_command_status STWI_status;
 
 u32 STWI_init(void)
 {

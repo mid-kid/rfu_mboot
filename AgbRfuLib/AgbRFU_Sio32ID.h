@@ -13,4 +13,6 @@ typedef struct {
     u16 Connected;
 }Sio32IDArea;
 
+extern u32 AgbRFU_checkID(void);
+
 #endif
