@@ -103,6 +103,11 @@ static const LLSF_STRUCT llsf_struct[2]={
 
 static const char str_checkMbootLL[]="RFU-MBOOT";
 
+RFU_SLOT_STATUS_NI rfuSlotStatus_NI[4];
+RFU_LINK_STATUS rfuLinkStatus;
+RFU_STATIC rfuStatic;
+RFU_FIXED rfuFixed;
+
 static u16  rfu_STC_NI_constructLLSF(u8 Peer,u8 **Destp,NI_COMM *Comm);
 static u16  rfu_STC_NI_initSlot_asRecvDataEntity(u8 Peer,NI_COMM *Comm);
 static u16  rfu_STC_analyzeLLSF(u32 unused,u8 *Srcp,u16 Size);

@@ -26,7 +26,7 @@ SECTIONS {
         bss_9.o(COMMON)
         bss_Rfu.o(COMMON)
         bss_10.o(COMMON)
-        bss_11.o(COMMON)
+        *(COMMON)
     }
     bss_end = .;
 }
