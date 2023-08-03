@@ -1,17 +1,20 @@
 #include <Agb.h>
 
+#include "AgbRFU_LL.h"
+
+#include "data.h"
+#include "sound.h"
+
 extern void IntrSIO32(void);
-extern void VBlankIntr(void);
-extern void snd_syncVBlank(void);
-extern void rfu_syncVBlank(void);
-extern u16 Bg0Bak[32*20];
+
+static void VBlankIntr(void);
 
 void(*const IntrTable[])(void)={
 	IntrSIO32,
 	VBlankIntr
 };
 
-void VBlankIntr(void)
+static void VBlankIntr(void)
 {
 	DmaArrayCopy(3,Bg0Bak,VRAM,32);
 	

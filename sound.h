@@ -11,6 +11,7 @@ typedef struct sndStaticTag {
 extern SND_STATIC sndStatic;
 
 extern void snd_init(void);
+extern void snd_syncVBlank(void);
 extern void snd_play(u8 num);
 
 #endif

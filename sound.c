@@ -2,10 +2,11 @@
 
 #include "sound.h"
 
+extern u16 *sound_tbl[];
+
 SND_STATIC sndStatic;
 
-extern u16 *sound_tbl[];
-void snd_stop(void);
+static void snd_stop(void);
 
 void snd_init(void)
 {
@@ -66,7 +67,7 @@ void snd_play(u8 num)
 	sndStatic.sfxNum=num;
 }
 
-void snd_stop(void)
+static void snd_stop(void)
 {
 	sndStatic.sfxNum=0;
 	sndStatic.time=-1;
