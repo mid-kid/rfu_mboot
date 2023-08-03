@@ -1,6 +1,16 @@
 #ifndef _AGBRFU_STWI_H
 #define _AGBRFU_STWI_H
 
+#define STWI_BUF_SIZE 0x29e
+#define STWI_BUF_SIZE_ROM 0x46
+#define STWI_RECV_BUF_SIZE 0x74
+#define STWI_ERROR_NO_ERROR 0
+#define STWI_ERROR_CLOCK_DRIFT 1
+#define STWI_ERROR_COMMAND_SENDING 2
+#define STWI_CMDERR_ACK_REJECTION 3
+#define STWI_CMDERR_CLOCK_SLAVE 4
+#define STWI_CMDERR_IME_DISABLE 6
+
 u32 STWI_init(void);
 u32 STWI_init_all(void);
 u16 STWI_poll_CommandEnd(void);

@@ -2,6 +2,8 @@
 
 #include "AgbRFU_Sio32ID.h"
 
+#define SIO32ID_SEND_WAIT_COUNT 600
+
 extern u32  Sio32IDMain(void);
 extern void Sio32IDInit(void);
 extern void Sio32IDIntr(void);

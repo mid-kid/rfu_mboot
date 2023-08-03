@@ -1,5 +1,14 @@
-#ifndef _AGBRFU_STWI_PRIVATE_H
-#define _AGBRFU_STWI_PRIVATE_H
+#ifndef _RFU_STWI_PRIVATE_H
+#define _RFU_STWI_PRIVATE_H
+
+#define STWI_SIO_BUF_SIZE 0x960
+#define SIO_CNT_RESET 0x5003
+#define SIO_SEND_SPEED 0x5083
+#define SIO_RECEIVE_SPEED 0x5082
+#define STWI_STATUS_ERROR 0
+#define STWI_STATUS_MSMODE 1
+#define STWI_STATUS_STATE 2
+#define STWI_STATUS_CMD_ID 3
 
 typedef struct {
     u32 state;  // state
