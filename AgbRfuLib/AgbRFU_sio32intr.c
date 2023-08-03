@@ -13,34 +13,33 @@ __attribute__((unused)) static u32 DAT_03005734;
 
 void (*STWI_callback_ID)();
 
-u32 sio32intr_clock_master(void);
-u32 sio32intr_clock_slave(void);
-u16 handshake_wait(u16 State);
+u32  sio32intr_clock_master(void);
+u32  sio32intr_clock_slave(void);
+u16  handshake_wait(u16 State);
 void Callback_Dummy(void (*)());
 
-#define BufWrite(Buf, Offs, Data, Bit) \
-{ \
-    u8 *buf = (u8 *)&(Buf); \
-    *(u##Bit *)(buf + (Offs)) = (Data); \
-}
+#define BufWrite(Buf,Offs,Data,Bit) \
+		{ \
+			u8 *buf=(u8 *)&(Buf); \
+			*(u##Bit *)(buf+(Offs))=(Data); \
+		}
 
 void IntrSIO32(void)
 {
-    if (STWI_callback_ID_set == TRUE) {
-        Callback_Dummy(STWI_callback_ID);
-        return;
-    }
-
-    STWI_status.unk_10 = 0;
-    if (STWI_status.MS_mode == TRUE) {
-        sio32intr_clock_master();
-    } else {
-        sio32intr_clock_slave();
-    }
+	if(STWI_callback_ID_set==TRUE) {
+		Callback_Dummy(STWI_callback_ID);
+		return;
+	}
+	
+	STWI_status.unk_10=0;
+	if(STWI_status.MS_mode==TRUE)
+		sio32intr_clock_master();
+	else
+		sio32intr_clock_slave();
 }
 
 #ifndef NONMATCHING
-__asm__("
+__asm__ ("
     .text
 	.global	sio32intr_clock_master
 	.type	 sio32intr_clock_master,function
@@ -271,110 +270,119 @@ sio32intr_clock_master:
 #else
 u32 sio32intr_clock_master(void)
 {
-    u32 data;
-    u32 *buf;
-
-    data = *(u32 *)REG_SIODATA32;
-
-    if (STWI_status.state == 3) {
-        BufWrite(STWI_buffer_recv, u8_03005729 * 4, data, 32);
-        u8_03005729++;
-
-        if (u8_03005728 == 0) {
-            STWI_status.error = 0;
-            STWI_status.state = 4;
-        } else {
-            u8_03005728--;
-            *(u32 *)REG_SIODATA32 = 0x80000000;
-            STWI_status.REQ_header += data;
-        }
-    } else if (STWI_status.state == 0) {
-        if (data != 0x80000000) {
-            STWI_status.sending_flag = 1;
-            STWI_status.unk_08++;
-            return 0;
-        }
-
-        if (STWI_status.REQ_length + 1 > STWI_status.REQ_next) {
-            buf = &((u32 *)STWI_buffer_send)[STWI_status.REQ_next];
-            *(u32 *)REG_SIODATA32 = *buf;
-            STWI_status.REQ_header += *buf;
-            STWI_status.REQ_next++;
-        } else {
-            STWI_status.state = 2;
-            *(u32 *)REG_SIODATA32 = data;
-        }
-    } else if (STWI_status.state == 1) {
-        if (data != 0x80000000) {
-            STWI_status.sending_flag = 1;
-            STWI_status.unk_08++;
-            return 0;
-        }
-
-        STWI_status.state = 2;
-        *(u32 *)REG_SIODATA32 = data;
-    } else if (STWI_status.state == 2) {
-        STWI_status.REQ_header = data;
-        u8_03005729 = 0;
-
-        BufWrite(STWI_buffer_recv, u8_03005729, data, 32);
-        u8_03005729++;
-
-        if (data >> 0x10 == 0x9966) {
-            u8_03005728 = (data & 0xff00) >> 8;
-            if (u8_03005728 > 0x45) u8_03005728 = 0x45;
-
-            if (u8_03005728 == 0) {
-                STWI_status.error = 0;
-                STWI_status.state = 4;
-            } else {
-                u8_03005728--;
-                STWI_status.state = 3;
-            }
-        } else {
-            STWI_status.sending_flag = 1;
-            STWI_status.unk_08++;
-            return 0;
-        }
-
-        *(u32 *)REG_SIODATA32 = 0x80000000;
-    }
-
-    if (handshake_wait(1) == 1) return 0;
-    *(vu16 *)REG_SIOCNT = 0x500b;
-    if (handshake_wait(0) == 1) return 0;
-
-    if (STWI_status.state == 4) {
-        if (*(u32 *)STWI_buffer_recv == 0x996600a7 ||
-                *(u32 *)STWI_buffer_recv == 0x996600a5 ||
-                *(u32 *)STWI_buffer_recv == 0x996600b5 ||
-                *(u32 *)STWI_buffer_recv == 0x996600b7) {
-            STWI_status.MS_mode = FALSE;
-            *(vu32 *)REG_SIODATA32 = 0x80000000;
-            *(vu16 *)REG_SIOCNT = 0x5002;
-            *(vu16 *)REG_SIOCNT = 0x5082;
-            STWI_status.state = 5;
-        } else {
-            *(vu16 *)REG_SIOCNT = 0x5003;
-        }
-
-        STWI_status.unk_08 = 0;
-        STWI_status.unk_10 = -1;
-        STWI_status.sending_flag = 1;
-    } else {
-        *(vu16 *)REG_SIOCNT = 0x5003;
-    }
-
-    if (STWI_status.sending_flag == 0) {
-        *(vu16 *)REG_SIOCNT = 0x5083;
-    }
-
-    return 0;
+	u32 data;
+	u32 *buf;
+	
+	data=*(u32 *)REG_SIODATA32;
+	
+	if(STWI_status.state==3) {
+		BufWrite(STWI_buffer_recv,u8_03005729*4,data,32);
+		u8_03005729++;
+		
+		if(u8_03005728==0) {
+			STWI_status.error=0;
+			STWI_status.state=4;
+		}
+		else {
+			u8_03005728--;
+			*(u32 *)REG_SIODATA32=0x80000000;
+			STWI_status.REQ_header+=data;
+		}
+	}
+	else if(STWI_status.state==0) {
+		if(data!=0x80000000) {
+			STWI_status.sending_flag=1;
+			STWI_status.unk_08++;
+			return 0;
+		}
+		
+		if(STWI_status.REQ_length+1>STWI_status.REQ_next) {
+			buf=&((u32 *)STWI_buffer_send)[STWI_status.REQ_next];
+			*(u32 *)REG_SIODATA32=*buf;
+			STWI_status.REQ_header+=*buf;
+			STWI_status.REQ_next++;
+		}
+		else {
+			STWI_status.state=2;
+			*(u32 *)REG_SIODATA32=data;
+		}
+	}
+	else if(STWI_status.state==1) {
+		if(data!=0x80000000) {
+			STWI_status.sending_flag=1;
+			STWI_status.unk_08++;
+			return 0;
+		}
+		
+		STWI_status.state=2;
+		*(u32 *)REG_SIODATA32=data;
+	}
+	else if(STWI_status.state==2) {
+		STWI_status.REQ_header=data;
+		u8_03005729=0;
+		
+		BufWrite(STWI_buffer_recv,u8_03005729,data,32);
+		u8_03005729++;
+		
+		if(data >> 0x10==0x9966) {
+			u8_03005728=(data & 0xff00) >> 8;
+			if(u8_03005728>0x45)
+				u8_03005728=0x45;
+			
+			if(u8_03005728==0) {
+				STWI_status.error=0;
+				STWI_status.state=4;
+			}
+			else {
+				u8_03005728--;
+				STWI_status.state=3;
+			}
+		}
+		else {
+			STWI_status.sending_flag=1;
+			STWI_status.unk_08++;
+			return 0;
+		}
+		
+		*(u32 *)REG_SIODATA32=0x80000000;
+	}
+	
+	if(handshake_wait(1)==1)
+		return 0;
+	*(vu16 *)REG_SIOCNT=0x500b;
+	if(handshake_wait(0)==1)
+		return 0;
+	
+	if(STWI_status.state==4) {
+		if(*(u32 *)STWI_buffer_recv==0x996600a7||
+				*(u32 *)STWI_buffer_recv==0x996600a5||
+				*(u32 *)STWI_buffer_recv==0x996600b5||
+				*(u32 *)STWI_buffer_recv==0x996600b7) {
+			STWI_status.MS_mode=FALSE;
+			*(vu32 *)REG_SIODATA32=0x80000000;
+			*(vu16 *)REG_SIOCNT=0x5002;
+			*(vu16 *)REG_SIOCNT=0x5082;
+			STWI_status.state=5;
+		}
+		else
+			*(vu16 *)REG_SIOCNT=0x5003;
+		
+		STWI_status.unk_08=0;
+		STWI_status.unk_10=-1;
+		STWI_status.sending_flag=1;
+	}
+	else
+		*(vu16 *)REG_SIOCNT=0x5003;
+	
+	if(STWI_status.sending_flag==0)
+		*(vu16 *)REG_SIOCNT=0x5083;
+	
+	return 0;
 }
 #endif
 
 #ifndef NONMATCHING
-__asm__("
+__asm__ ("
 	.text
 	.global	sio32intr_clock_slave
 	.type	 sio32intr_clock_slave,function
@@ -596,126 +604,137 @@ sio32intr_clock_slave:
 #else
 u32 sio32intr_clock_slave(void)
 {
-    u32 data;
-    u32 data_send;
-    u16 intrsize;
-    u32 *buf;
-
-    if (handshake_wait(0) == 1) return 0;
-    *(vu16 *)REG_SIOCNT = 0x500a;
-
-    data = *(vu32 *)REG_SIODATA32;
-
-    if (STWI_status.state == 5) {
-        STWI_status.REQ_next = 0;
-        BufWrite(STWI_buffer_recv, STWI_status.REQ_next, data, 32);
-        STWI_status.REQ_next++;
-
-        STWI_status.REQ_header = data;
-
-        if (data >> 0x10 == 0x9966) {
-            intrsize = (data & 0xff00) >> 8;
-            STWI_status.REQ_length = intrsize;
-            RfuIntrSize = STWI_status.REQ_length;
-            RfuIntrCmd = data;
-
-            if (intrsize == 0) {
-                u8 cmd = RfuIntrCmd;
-                if (cmd == 0x27 || cmd == 0x28 || cmd == 0x29 || cmd == 0x36) {
-                    STWI_status.REQ_length = 0;
-                    RfuIntrSize = STWI_status.REQ_length;
-                    BufWrite(STWI_buffer_send, 0, 0x99660080 + cmd, 32);
-                } else {
-                    STWI_status.REQ_length = 1;
-                    RfuIntrSize = STWI_status.REQ_length;
-                    BufWrite(STWI_buffer_send, 0, 0x996601ee, 32);
-                    BufWrite(STWI_buffer_send, 4, 0x00000001, 32);
-                }
-
-                STWI_status.REQ_next = 0;
-                STWI_status.state = 7;
-                data_send = *(u32 *)STWI_buffer_send;
-                STWI_status.REQ_header = *(u32 *)STWI_buffer_send;
-                STWI_status.REQ_next++;
-
-            } else {
-                RfuIntrSize--;
-                STWI_status.state = 6;
-                data_send = 0x80000000;
-            }
-        } else {
-            STWI_status.state = 5;
-            data_send = 0x80000000;
-        }
-    } else if (STWI_status.state == 6) {
-        BufWrite(STWI_buffer_recv, STWI_status.REQ_next * 4, data, 32);
-        STWI_status.REQ_next++;
-
-        if (RfuIntrSize == 0) {
-            u8 cmd = RfuIntrCmd;
-            if (cmd == 0x28 || cmd == 0x29 || cmd == 0x36) {
-                STWI_status.REQ_length = 0;
-                RfuIntrSize = STWI_status.REQ_length;
-                *(u32 *)STWI_buffer_send = 0x99660080 + cmd;
-            } else {
-                STWI_status.REQ_length = 1;
-                RfuIntrSize = STWI_status.REQ_length;
-                BufWrite(STWI_buffer_send, 0, 0x996601ee, 32);
-                BufWrite(STWI_buffer_send, 4, 0x00000001, 32);
-            }
-            STWI_status.REQ_next = 0;
-            STWI_status.state = 7;
-            data_send = *(u32 *)STWI_buffer_send;
-            STWI_status.REQ_header = *(u32 *)STWI_buffer_send;
-            STWI_status.REQ_next++;
-        } else {
-            RfuIntrSize--;
-            STWI_status.REQ_header += data;
-            data_send = 0x80000000;
-        }
-    } else if (STWI_status.state == 7) {
-        if (RfuIntrSize != 0) {
-            RfuIntrSize--;
-            buf = (u32 *)STWI_buffer_send;
-            data_send = buf[STWI_status.REQ_next];
-            STWI_status.REQ_header += buf[STWI_status.REQ_next];
-            STWI_status.REQ_next++;
-        } else {
-            STWI_status.state = 9;
-            BufWrite(STWI_buffer_send, STWI_status.REQ_next * 4, STWI_status.REQ_header, 32);
-            data_send = 0x80000000;
-        }
-    } else {
-        data_send = 0x80000000;
-    }
-    *(vu32 *)REG_SIODATA32 = data_send;
-
-    if (handshake_wait(1) == 1) return 0;
-
-    *(vu16 *)REG_SIOCNT = 0x5002;
-
-    if (STWI_status.state == 9) {
-        if (handshake_wait(0) == 1) return 0;
-
-        *(vu32 *)REG_SIODATA32 = 0;
-        __asm__("str %0, %1" : : "r"(0), "o"(STWI_status.state) : "r3");
-        __asm__("strb %0, %1" : : "r"(TRUE), "o"(STWI_status.MS_mode) : "r2");
-        __asm__("strb %0, %1" : : "r"(-1), "o"(STWI_status.unk_10) : "r3");
-        __asm__("strb %0, %1" : : "r"(0), "o"(STWI_status.unk_08));
-        *(vu16 *)REG_SIOCNT = 0;
-        *(vu16 *)REG_SIOCNT = 0x5003;
-
-        Callback_Dummy(STWI_callback_ID);
-    } else {
-        *(vu16 *)REG_SIOCNT = 0x5082;
-    }
-
-    return 0;
+	u32 data;
+	u32 data_send;
+	u16 intrsize;
+	u32 *buf;
+	
+	if(handshake_wait(0)==1)
+		return 0;
+	*(vu16 *)REG_SIOCNT=0x500a;
+	
+	data=*(vu32 *)REG_SIODATA32;
+	
+	if(STWI_status.state==5) {
+		STWI_status.REQ_next=0;
+		BufWrite(STWI_buffer_recv,STWI_status.REQ_next,data,32);
+		STWI_status.REQ_next++;
+		
+		STWI_status.REQ_header=data;
+		
+		if(data>>0x10==0x9966) {
+			intrsize=(data & 0xff00)>>8;
+			STWI_status.REQ_length=intrsize;
+			RfuIntrSize=STWI_status.REQ_length;
+			RfuIntrCmd=data;
+			
+			if(intrsize==0) {
+				u8 cmd=RfuIntrCmd;
+				if(cmd==0x27||cmd==0x28||cmd==0x29||cmd==0x36) {
+					STWI_status.REQ_length=0;
+					RfuIntrSize=STWI_status.REQ_length;
+					BufWrite(STWI_buffer_send,0,0x99660080+cmd,32);
+				}
+				else {
+					STWI_status.REQ_length=1;
+					RfuIntrSize=STWI_status.REQ_length;
+					BufWrite(STWI_buffer_send,0,0x996601ee,32);
+					BufWrite(STWI_buffer_send,4,0x00000001,32);
+				}
+				
+				STWI_status.REQ_next=0;
+				STWI_status.state=7;
+				data_send=*(u32 *)STWI_buffer_send;
+				STWI_status.REQ_header=*(u32 *)STWI_buffer_send;
+				STWI_status.REQ_next++;
+				
+			}
+			else {
+				RfuIntrSize--;
+				STWI_status.state=6;
+				data_send=0x80000000;
+			}
+		}
+		else {
+			STWI_status.state=5;
+			data_send=0x80000000;
+		}
+	}
+	else if(STWI_status.state==6) {
+		BufWrite(STWI_buffer_recv,STWI_status.REQ_next*4,data,32);
+		STWI_status.REQ_next++;
+		
+		if(RfuIntrSize==0) {
+			u8 cmd=RfuIntrCmd;
+			if(cmd==0x28||cmd==0x29||cmd==0x36) {
+				STWI_status.REQ_length=0;
+				RfuIntrSize=STWI_status.REQ_length;
+				*(u32 *)STWI_buffer_send=0x99660080+cmd;
+			}
+			else {
+				STWI_status.REQ_length=1;
+				RfuIntrSize=STWI_status.REQ_length;
+				BufWrite(STWI_buffer_send,0,0x996601ee,32);
+				BufWrite(STWI_buffer_send,4,0x00000001,32);
+			}
+			STWI_status.REQ_next=0;
+			STWI_status.state=7;
+			data_send=*(u32 *)STWI_buffer_send;
+			STWI_status.REQ_header=*(u32 *)STWI_buffer_send;
+			STWI_status.REQ_next++;
+		}
+		else {
+			RfuIntrSize--;
+			STWI_status.REQ_header+=data;
+			data_send=0x80000000;
+		}
+	}
+	else if(STWI_status.state==7) {
+		if(RfuIntrSize!=0) {
+			RfuIntrSize--;
+			buf=(u32 *)STWI_buffer_send;
+			data_send=buf[STWI_status.REQ_next];
+			STWI_status.REQ_header+=buf[STWI_status.REQ_next];
+			STWI_status.REQ_next++;
+		}
+		else {
+			STWI_status.state=9;
+			BufWrite(STWI_buffer_send,STWI_status.REQ_next*4,STWI_status.REQ_header,32);
+			data_send=0x80000000;
+		}
+	}
+	else
+		data_send=0x80000000;
+	*(vu32 *)REG_SIODATA32=data_send;
+	
+	if(handshake_wait(1)==1)
+		return 0;
+	
+	*(vu16 *)REG_SIOCNT=0x5002;
+	
+	if(STWI_status.state==9) {
+		if(handshake_wait(0)==1)
+			return 0;
+		
+		*(vu32 *)REG_SIODATA32=0;
+		__asm__ ("str %0, %1" : : "r" (0),"o" (STWI_status.state) : "r3");
+		__asm__ ("strb %0, %1" : : "r" (TRUE),"o" (STWI_status.MS_mode) : "r2");
+		__asm__ ("strb %0, %1" : : "r" (-1),"o" (STWI_status.unk_10) : "r3");
+		__asm__ ("strb %0, %1" : : "r" (0),"o" (STWI_status.unk_08));
+		*(vu16 *)REG_SIOCNT=0;
+		*(vu16 *)REG_SIOCNT=0x5003;
+		
+		Callback_Dummy(STWI_callback_ID);
+	}
+	else
+		*(vu16 *)REG_SIOCNT=0x5082;
+	
+	return 0;
 }
 #endif
 
 #ifndef NONMATCHING
-__asm__("
+__asm__ ("
 .text
 .type handshake_wait, function
 handshake_wait:
@@ -777,19 +796,20 @@ handshake_wait:
 #else
 u16 handshake_wait(u16 State)
 {
-    u32 x;
-
-    for (x = 0; STWI_status.HS_error != 1 || x != 0x9800; x++) {
-        if ((*(vu16 *)REG_SIOCNT & SIO_MULTI_SI) == (State << 2)) return 0;
-    }
-
-    STWI_status.error = 3;
-    STWI_status.sending_flag = 1;
-    return 0;
+	u32 x;
+	
+	for(x=0;STWI_status.HS_error!=1||x!=0x9800;x++)
+		if((*(vu16 *)REG_SIOCNT & SIO_MULTI_SI)==State<<2)
+			return 0;
+	
+	STWI_status.error=3;
+	STWI_status.sending_flag=1;
+	return 0;
 }
 #endif
 
-__asm__("
+__asm__ ("
 Callback_Dummy:
     bx r0
 ");
+

@@ -113,3 +113,4 @@ const struct MenuMsg MenuMsgInitial[]={
 };
 
 const u8 str_lang_en[]="ENGLISH";
+

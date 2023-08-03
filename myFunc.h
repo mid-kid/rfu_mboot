@@ -3,8 +3,8 @@
 
 // define data----------------------------------
 typedef struct keyDataTag {
-    u16 Trg;
-    u16 Cont;
+	u16 Trg;
+	u16 Cont;
 }KEY_DATA;
 
 // extern data----------------------------------
@@ -20,3 +20,4 @@ extern void mf_clearRect(u16 topPos,u8 height,u8 width);
 extern void mf_wait3sec(void);
 
 #endif
+

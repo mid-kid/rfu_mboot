@@ -35,12 +35,12 @@ extern "C" {
     Calculate the number of the transferable DMA count based on this 42 cycles and the access cycles of the destination and source.
     For example, if both the CPU internal RAM --> VRAM have a one cycle access, then a 21 count DMA can occur.
 
-  
-  If RFU is used outside of these restrictions, problems, such as the loss of data caused by the failure of the AGB, as a clock slave, 
+
+  If RFU is used outside of these restrictions, problems, such as the loss of data caused by the failure of the AGB, as a clock slave,
   to notify that data has been received from the RFU, will occur.
   When this problem occurs, the REQ callback will send a REQ_commandID=ID_CLOCK_SLAVE_MS_CHANGE_ERROR_BY_DMA_REQ notification.
    (When using Link Manager, the LMAN call back will send a LMAN_msg=LMAN_MSG_CLOCK_SLAVE_MS_CHANGE_ERROR_BY_DMA notification.)
-  
+
 */
 
 

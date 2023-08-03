@@ -38,3 +38,4 @@ extern u16 STWI_send_DisconnectREQ(u8 param_1);
 extern u16 STWI_send_StopModeREQ(void);
 
 #endif
+

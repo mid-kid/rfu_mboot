@@ -59,43 +59,43 @@
 #define CHILD_LS_DEFAULT_VALUE 0x10
 
 typedef struct LinkLayerSubFrame_StructTag {
-    u8 unk_01;  // header_size
-    u8 unk_02;  // lver_s
-    u8 unk_03;  // bmslot_s
-    u8 unk_04;  // lcom_s
-    u8 unk_05;  // ack_s
-    u8 unk_06;  // phase_s
-    u8 unk_07;  // n_s
-    u8 unk_08;  // lver_mask
-    u8 unk_09;  // bmslot_mask
-    u8 unk_10;  // lcom_mask
-    u8 unk_11;  // ack_mask
-    u8 unk_12;  // phase_mask
-    u8 unk_13;  // n_mask
-    u16 unk_15;  // length_mask
+	u8 unk_01;  // header_size
+	u8 unk_02;  // lver_s
+	u8 unk_03;  // bmslot_s
+	u8 unk_04;  // lcom_s
+	u8 unk_05;  // ack_s
+	u8 unk_06;  // phase_s
+	u8 unk_07;  // n_s
+	u8 unk_08;  // lver_mask
+	u8 unk_09;  // bmslot_mask
+	u8 unk_10;  // lcom_mask
+	u8 unk_11;  // ack_mask
+	u8 unk_12;  // phase_mask
+	u8 unk_13;  // n_mask
+	u16 unk_15;  // length_mask
 }LLSF_STRUCT;
 
 typedef struct LinkLayerSubFrame_HeaderTag {
-    u8 lver;
-    u8 bmslot;
-    u8 lcom;
-    u8 ack;
-    u8 phase;
-    u8 n;
-    u16 length;
+	u8 lver;
+	u8 bmslot;
+	u8 lcom;
+	u8 ack;
+	u8 phase;
+	u8 n;
+	u16 length;
 }LLSF_HEADER;
 
 typedef struct UNameTag {
-    // name
-    // language_flag
-    // dummy
-    // sum
-    // sum_rev
+	// name
+	// language_flag
+	// dummy
+	// sum
+	// sum_rev
 }U_NAME;
 
 static const LLSF_STRUCT llsf_struct[2]={
-    {0x02, 0x0e, 0x00, 0x0a, 0x09, 0x05, 0x07, 0x02, 0x00, 0x0f, 0x01, 0x03, 0x03, 0x1f},
-    {0x03, 0x16, 0x12, 0x0e, 0x0d, 0x09, 0x0b, 0x03, 0x0f, 0x0f, 0x01, 0x03, 0x03, 0x7f}
+	{0x02,0x0e,0x00,0x0a,0x09,0x05,0x07,0x02,0x00,0x0f,0x01,0x03,0x03,0x1f},
+	{0x03,0x16,0x12,0x0e,0x0d,0x09,0x0b,0x03,0x0f,0x0f,0x01,0x03,0x03,0x7f}
 };
 
 static const char str_checkMbootLL[]="RFU-MBOOT";

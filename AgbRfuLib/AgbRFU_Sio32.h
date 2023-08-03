@@ -3,7 +3,7 @@
 
 #define SIO32_BLOCK_SIZE 32
 #define SIO32_SYNC_DATA 0xfefefefe
-#define SIO32_DI_FUNC_FAST 
+#define SIO32_DI_FUNC_FAST
 #define SIO32_INTR_DELAY_MAX 2048
 #define SIO32_INTR_CLOCK_MAX 256
 #define SIO32_SHIFT_CLOCK (256 * 1024)
@@ -31,3 +31,4 @@
 // Sio32Return
 
 #endif
+

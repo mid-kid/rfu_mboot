@@ -30,18 +30,18 @@
 // ID_CHECK
 
 typedef struct {
-    u32 state;
-    u32 REQ_header;
-    u8 REQ_length;
-    u8 REQ_next;
-    u8 error;
-    u8 MS_mode;
-    u8 sending_flag;
-    u8 unk_08;
-    u8 unk_09;
-    u8 unk_10;
-    u8 unk_11;
-    u8 HS_error;
+	u32 state;
+	u32 REQ_header;
+	u8 REQ_length;
+	u8 REQ_next;
+	u8 error;
+	u8 MS_mode;
+	u8 sending_flag;
+	u8 unk_08;
+	u8 unk_09;
+	u8 unk_10;
+	u8 unk_11;
+	u8 HS_error;
 }STWI_command_status;
 
 extern STWI_command_status STWI_status;
@@ -50,3 +50,4 @@ extern u8 STWI_callback_ID_set;
 extern void (*STWI_callback_ID)(void);
 
 #endif
+

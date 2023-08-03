@@ -59,29 +59,30 @@
 #define FAST_COPY_BUFF_SIZE 0x60
 
 typedef struct RFU_staticTag {
-    u8 unk_01;  // unused
-    u8 MS_mode;
-    u8 unk_03;  // unused
-    u8 now_watchInterval;
-    u8 ni_end_recv_flag;
-    u8 recv_renewal_flag;
-    u8 send_renewal_flag;
-    u8 unk_08;  // unused
-    u8 unk_09;  // unused
-    u8 commExist_flag;
-    u8 unk_11;  // unused
-    vu8 llf_ready_flag;
-    u16 cid_bak;
+	u8 unk_01;  // unused
+	u8 MS_mode;
+	u8 unk_03;  // unused
+	u8 now_watchInterval;
+	u8 ni_end_recv_flag;
+	u8 recv_renewal_flag;
+	u8 send_renewal_flag;
+	u8 unk_08;  // unused
+	u8 unk_09;  // unused
+	u8 commExist_flag;
+	u8 unk_11;  // unused
+	vu8 llf_ready_flag;
+	u16 cid_bak;
 }RFU_STATIC;
 
 typedef struct RFU_fixedTag {
-    u8 *dst;
-    void (*fastCopy_p)();
-    u8 fastCopy_buff[0x60];
-    u8 STWI_buf[280];
+	u8 *dst;
+	void (*fastCopy_p)();
+	u8 fastCopy_buff[0x60];
+	u8 STWI_buf[280];
 }RFU_FIXED;
 
 extern RFU_STATIC rfuStatic;
 extern RFU_FIXED rfuFixed;
 
 #endif
+

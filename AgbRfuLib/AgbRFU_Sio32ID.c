@@ -14,7 +14,7 @@ u8 STWI_callback_ID_set;
 
 #define STATIC
 static void Sio32IDInit(void);
-static u32 Sio32IDMain(void);
+static u32  Sio32IDMain(void);
 STATIC void Sio32IDIntr(void);
 
 u32 AgbRFU_checkID(void)
@@ -26,7 +26,7 @@ u32 AgbRFU_checkID(void)
 	ie=*(vu16 *)REG_IE;
 	STWI_callback_ID_set=TRUE;
 	STWI_callback_ID=Sio32IDIntr;
-
+	
 	Sio32IDInit();
 	for(x=0;x<0x3c;x++) {
 		VBlankIntrWait();
@@ -241,7 +241,7 @@ void Sio32IDIntr(void)
 	if(S32id.Connected==0) {
 		if(DataHi==S32id.RecvBak) {
 			if(S32id.SendCheckCount<4) {
-				if((u16)~S32id.SendBak==DataHi&&(u16)~S32id.RecvBak==DataLo)
+				if((u16) ~S32id.SendBak==DataHi&&(u16) ~S32id.RecvBak==DataLo)
 					S32id.SendCheckCount++;
 			}
 			else

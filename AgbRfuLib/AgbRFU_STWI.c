@@ -257,7 +257,7 @@ u16 STWI_send_ResetREQ(void)
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
-    return STWI_check_Command(0x99660090,FALSE);
+	return STWI_check_Command(0x99660090,FALSE);
 }
 
 u16 STWI_send_LinkStatusREQ(void)
@@ -268,7 +268,7 @@ u16 STWI_send_LinkStatusREQ(void)
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
-    return STWI_check_Command(0x99660191,FALSE);
+	return STWI_check_Command(0x99660191,FALSE);
 }
 
 u16 STWI_send_SystemStatusREQ(void)
@@ -279,7 +279,7 @@ u16 STWI_send_SystemStatusREQ(void)
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
-    return STWI_check_Command(0x99660193,FALSE);
+	return STWI_check_Command(0x99660193,FALSE);
 }
 
 #ifndef NONMATCHING
@@ -397,7 +397,7 @@ u16 STWI_send_GameConfigREQ(const u8 *GameData,const u8 *UserName)
 	STWI_status.REQ_length=6;
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
-    return STWI_check_Command(0x99660096,FALSE);
+	return STWI_check_Command(0x99660096,FALSE);
 }
 #endif
 
@@ -412,7 +412,7 @@ u16 STWI_send_SystemConfigREQ(u16 param_1,u8 param_2,u8 param_3)
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
-    return STWI_check_Command(0x99660097,FALSE);
+	return STWI_check_Command(0x99660097,FALSE);
 }
 
 u16 STWI_send_SP_StartREQ(void)
@@ -423,7 +423,7 @@ u16 STWI_send_SP_StartREQ(void)
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
-    return STWI_check_Command(0x9966009c,FALSE);
+	return STWI_check_Command(0x9966009c,FALSE);
 }
 
 u16 STWI_send_SP_PollingREQ(void)
@@ -434,7 +434,7 @@ u16 STWI_send_SP_PollingREQ(void)
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
-    return STWI_check_Command(0x9966009d,TRUE);
+	return STWI_check_Command(0x9966009d,TRUE);
 }
 
 u16 STWI_send_SP_EndREQ(void)
@@ -445,7 +445,7 @@ u16 STWI_send_SP_EndREQ(void)
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
-    return STWI_check_Command(0x9966009e,TRUE);
+	return STWI_check_Command(0x9966009e,TRUE);
 }
 
 u16 STWI_send_CP_StartREQ(u16 BeaconID)
@@ -457,7 +457,7 @@ u16 STWI_send_CP_StartREQ(u16 BeaconID)
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
-    return STWI_check_Command(0x9966009f,FALSE);
+	return STWI_check_Command(0x9966009f,FALSE);
 }
 
 u16 STWI_send_CP_PollingREQ(void)
@@ -468,7 +468,7 @@ u16 STWI_send_CP_PollingREQ(void)
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
-    return STWI_check_Command(0x996601a0,FALSE);
+	return STWI_check_Command(0x996601a0,FALSE);
 }
 
 u16 STWI_send_CP_EndREQ(void)
@@ -479,7 +479,7 @@ u16 STWI_send_CP_EndREQ(void)
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
-    return STWI_check_Command(0x996601a1,FALSE);
+	return STWI_check_Command(0x996601a1,FALSE);
 }
 
 u16 STWI_send_DataTxREQ(u8 *Srcp,u8 Size)
@@ -499,7 +499,7 @@ u16 STWI_send_DataTxREQ(u8 *Srcp,u8 Size)
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
-    return STWI_check_Command(0x996600a4,TRUE);
+	return STWI_check_Command(0x996600a4,TRUE);
 }
 
 u16 STWI_send_DataRxREQ(void)
@@ -510,7 +510,7 @@ u16 STWI_send_DataRxREQ(void)
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
-    return STWI_check_Command(0x996600a6,TRUE);
+	return STWI_check_Command(0x996600a6,TRUE);
 }
 
 u16 STWI_send_MS_ChangeREQ(void)
@@ -521,7 +521,7 @@ u16 STWI_send_MS_ChangeREQ(void)
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
-    return STWI_check_Command(0x996600a7,FALSE);
+	return STWI_check_Command(0x996600a7,FALSE);
 }
 
 u16 STWI_send_DisconnectREQ(u8 param_1)
@@ -533,7 +533,7 @@ u16 STWI_send_DisconnectREQ(u8 param_1)
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
-    return STWI_check_Command(0x996600b0,FALSE);
+	return STWI_check_Command(0x996600b0,FALSE);
 }
 
 u16 STWI_send_StopModeREQ(void)
@@ -544,26 +544,27 @@ u16 STWI_send_StopModeREQ(void)
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
-    return STWI_check_Command(0x996600bd,FALSE);
+	return STWI_check_Command(0x996600bd,FALSE);
 }
 
 void AgbRFU_SoftReset(void)
 {
-    u16 x;
-
-    *(vu16 *)REG_RCNT = 0x8000;
-
-    // Pulse the SD pin
-    *(vu16 *)REG_RCNT = 0x80a0;
-    for (x = 0; x < 1000; x++) *(vu16 *)REG_RCNT = 0x80a2;
-    *(vu16 *)REG_RCNT = 0x80a0;
-
-    *(vu16 *)REG_SIOCNT = 0x5003;
+	u16 x;
+	
+	*(vu16 *)REG_RCNT=0x8000;
+	
+	// Pulse the SD pin
+	*(vu16 *)REG_RCNT=0x80a0;
+	for(x=0;x<1000;x++)
+		*(vu16 *)REG_RCNT=0x80a2;
+	*(vu16 *)REG_RCNT=0x80a0;
+	
+	*(vu16 *)REG_SIOCNT=0x5003;
 }
 
 u32 AgbRFU_softReset_and_checkID(void)
 {
-    AgbRFU_SoftReset();
-    return AgbRFU_checkID();
+	AgbRFU_SoftReset();
+	return AgbRFU_checkID();
 }
 
