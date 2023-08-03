@@ -1,14 +1,13 @@
 #include <Agb.h>
+#include "AgbRFU_STWI_private.h"
 
 u32 Sio32IntrMaster(void);
 u32 Sio32IntrSlave(void);
 u16 Sio32WaitSIState(u16 State);
 void Call_thumb(void (*)());
 
-#include "STWI_status.h"
 extern u8 u8_03005efc;
 extern void (*STWI_callback_ID)(void);
-extern struct STWI_status STWI_status;
 extern u8 STWI_buffer_recv[0x120];
 extern u8 STWI_buffer_send[0x120];
 

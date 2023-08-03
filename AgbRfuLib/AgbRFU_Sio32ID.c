@@ -1,6 +1,7 @@
 #include <Agb.h>
 
-#include "Sio32.h"
+#include "AgbRFU_Sio32ID.h"
+
 extern u32  Sio32IDMain(void);
 extern void Sio32IDInit(void);
 extern void Sio32IDIntr(void);
@@ -9,8 +10,7 @@ extern void (*STWI_callback_ID)(void);
 
 static const char Sio32ConnectionData[]={'N','I','N','T','E','N','D','O'};
 static const char Sio32IDLib_Var[]="Sio32ID_011008";
-
-static struct Sio32 Sio32;
+static Sio32IDArea S32id;
 
 u32 AgbRFU_checkID(void)
 {
@@ -47,32 +47,32 @@ void Sio32IDInit(void)
 	*(vu16 *)REG_RCNT=0;
 	*(vu16 *)REG_SIOCNT=SIO_32BIT_MODE;
 	*(vu16 *)REG_SIOCNT|=SIO_IF_ENABLE | SIO_ENABLE;
-	CpuClear(0,&Sio32,sizeof(Sio32),32);
+	CpuClear(0,&S32id,sizeof(S32id),32);
 	*(vu16 *)REG_IF=SIO_INTR_FLAG | TIMER3_INTR_FLAG;
 }
 
 u32 Sio32IDMain(void)
 {
-	switch(Sio32.state) {
+	switch(S32id.State) {
 		case 0:
-			Sio32.slave=TRUE;
+			S32id.Type=TRUE;
 			*(vu16 *)REG_SIOCNT|=SIO_SCK_IN;
 			
 			*(vu16 *)REG_IME=FALSE;
 			*(vu16 *)REG_IE|=SIO_INTR_FLAG;
 			*(vu16 *)REG_IME=TRUE;
 			
-			Sio32.state=1;
+			S32id.State=1;
 			*(vu8 *)REG_SIOCNT|=SIO_ENABLE;
 			break;
 			
 		case 1:
-			if(Sio32.deviceID==0) {
-				if(Sio32.dataLo==0x8001)
+			if(S32id.Connected==0) {
+				if(S32id.SendBak==0x8001)
 					break;
-				if(Sio32.slave)
+				if(S32id.Type)
 					break;
-				if(Sio32.handshakeStep!=0)
+				if(S32id.SendCheckCount!=0)
 					break;
 				
 				*(vu16 *)REG_IME=FALSE;
@@ -90,10 +90,10 @@ u32 Sio32IDMain(void)
 				break;
 			}
 			
-			Sio32.state=2;
+			S32id.State=2;
 			
 		default:
-			return Sio32.deviceID;
+			return S32id.Connected;
 	}
 	
 	return 0;
@@ -147,7 +147,7 @@ Sio32IDIntr:
 	.align	2
 .LA14:
 	.word	67109152
-	.word	Sio32
+	.word	S32id
 	.word	67109160
 .LA6:
 	ldrh	r0, [r4, #4]
@@ -227,35 +227,35 @@ void Sio32IDIntr(void)
 	u32 DataLo;
 	
 	data=*(vu32 *)REG_SIODATA32;
-	if(Sio32.slave!=TRUE)
+	if(S32id.Type!=TRUE)
 		*(vu16 *)REG_SIOCNT|=0x80;
 	
-	DataHi=data<<((0+Sio32.slave)*16)>>16;
-	DataLo=data<<((1-Sio32.slave)*16)>>16;
+	DataHi=data<<((0+S32id.Type)*16)>>16;
+	DataLo=data<<((1-S32id.Type)*16)>>16;
 	
-	if(Sio32.deviceID==0) {
-		if(DataHi==Sio32.dataHi) {
-			if(Sio32.handshakeStep<4) {
-				if((u16)~Sio32.dataLo==DataHi&&(u16)~Sio32.dataHi==DataLo)
-					Sio32.handshakeStep++;
+	if(S32id.Connected==0) {
+		if(DataHi==S32id.RecvBak) {
+			if(S32id.SendCheckCount<4) {
+				if((u16)~S32id.SendBak==DataHi&&(u16)~S32id.RecvBak==DataLo)
+					S32id.SendCheckCount++;
 			}
 			else
-				Sio32.deviceID=DataLo;
+				S32id.Connected=DataLo;
 		}
 		else
-			Sio32.handshakeStep=0;
+			S32id.SendCheckCount=0;
 	}
-	if(Sio32.handshakeStep<4)
-		Sio32.dataLo=*(u16 *)(Sio32ConnectionData+Sio32.handshakeStep*2);
+	if(S32id.SendCheckCount<4)
+		S32id.SendBak=*(u16 *)(Sio32ConnectionData+S32id.SendCheckCount*2);
 	else
-		Sio32.dataLo=0x8001; // Send device ID
-	Sio32.dataHi=~DataLo;
+		S32id.SendBak=0x8001; // Send device ID
+	S32id.RecvBak=~DataLo;
 	
 	*(vu32 *)REG_SIODATA32=
-		(Sio32.dataLo<<((1-Sio32.slave)*0x10))+
-		(Sio32.dataHi<<((0+Sio32.slave)*0x10));
+		(S32id.SendBak<<((1-S32id.Type)*0x10))+
+		(S32id.RecvBak<<((0+S32id.Type)*0x10));
 	
-	if(Sio32.slave==TRUE&&Sio32.deviceID==0)
+	if(S32id.Type==TRUE&&S32id.Connected==0)
 		*(vu16 *)REG_SIOCNT|=0x80;
 }
 #endif

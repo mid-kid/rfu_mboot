@@ -1,13 +1,12 @@
 #include <Agb.h>
 
 #include "AgbRFU_STWI.h"
-#include "STWI_status.h"
+#include "AgbRFU_STWI_private.h"
 extern u16 STWI_poll_CommandEnd(void);
 extern u16 STWI_check_Command(u32 Cmd,u8 VarSize);
 extern u32 AgbRFU_checkID(void);
 extern u8 STWI_buffer_send[0x120];
 extern u8 STWI_buffer_recv[0x120];
-extern struct STWI_status STWI_status;
 
 u32 STWI_init(void)
 {

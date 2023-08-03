@@ -10,7 +10,7 @@ OBJCOPY = thumb-elf-objcopy
 
 AGBINC	=	$(AGBDIR)/include
 AGBLIB	=	$(AGBDIR)/lib
-RFULIB	=	$(PWD)/AgbRfuLib
+RFULIB	=	./AgbRfuLib
 
 ASFLAGS    =          -I$(AGBINC) -I$(RFULIB) -mthumb-interwork
 CFLAGS     =   -g -O2 -I$(AGBINC) -I$(RFULIB) -mthumb-interwork \
@@ -34,7 +34,7 @@ default:
 $(TARGET_BIN): $(TARGET_ELF)
 	$(OBJCOPY) -v -O binary $< $@
 
-$(TARGET_ELF): $(.OFILES) Makefile $(LINKFILE) $(DEPENDFILE)
+$(TARGET_ELF): $(.OFILES) Makefile $(LINKFILE) $(DEPENDFILE) $(RFULIB)/libagbrfu.a
 	@echo > $(MAPFILE)
 	$(CC) -g -o $@ $(.OFILES) -Wl,$(LDFLAGS)
 

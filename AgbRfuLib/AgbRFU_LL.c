@@ -1,12 +1,11 @@
 #include <Agb.h>
 #include <stddef.h>
 
-#include "STWI_status.h"
 #include "AgbRFU_LL.h"
-#include "AgbRFU_STWI.h"
 #include "AgbRFU_LL_private.h"
+#include "AgbRFU_STWI.h"
+#include "AgbRFU_STWI_private.h"
 
-extern struct STWI_status STWI_status;
 extern u8 STWI_buffer_recv[0x120];
 extern void (*STWI_callback_ID)(void);
 
