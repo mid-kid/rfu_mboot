@@ -1,31 +1,16 @@
 #include <Agb.h>
 
 #include "AgbRFU_LL.h"
+
 #include "myFunc.h"
 #include "rfuDefine.h"
+#include "data.h"
+#include "sound.h"
 
-extern void snd_play(u8 Num);
-extern void menu_drawMessage(u8 Msg,u16 PlttNo);
-extern void mf_clearGame(int Pos);
+// This function is not delcared in myFunc.h, giving it an implicit prototype
+extern void mf_clearGame(int pos);
 
-extern struct sndStatic {
-	u16 *basePtr;
-	u16 *playPtr;
-	u8 time;
-	u8 sfxNum;
-} sndStatic;
-
-extern rfuTgtData GameList[4];
-extern u8 GameListBitsNew;
-extern u8 MenuBusy;
-extern u8 SearchMenuCursor;
-extern u8 SearchMenuErrorMsg;
-extern u8 blink_counter;
-extern u8 my_state;
-
-static const u8 str_my_gname_mboot[]="RFU-MB-DL";
-
-static void menu_STC_drawGame(u16 Pos,rfuTgtData *Game);
+static void menu_STC_drawGame(u16 pos,rfuTgtData *tgt);
 
 u8 menu_drawGameList(void)
 {
@@ -33,7 +18,7 @@ u8 menu_drawGameList(void)
 	u8 y;
 	u8 GamesOld;
 	u8 GamesNew;
-	u16 Pos;
+	u16 pos;
 	
 	// Find out which games are already in the list, and which ones aren't
 	GamesOld=0;
@@ -78,11 +63,11 @@ u8 menu_drawGameList(void)
 	
 	// Draw the game list
 	mf_clearRect(0xe3,8,0x19);
-	Pos=0xe3;
+	pos=0xe3;
 	for(x=0;x<4;x++) {
 		if(GameList[x].id!=0)
-			menu_STC_drawGame(Pos,GameList+x);
-		Pos+=0x40;
+			menu_STC_drawGame(pos,GameList+x);
+		pos+=0x40;
 	}
 	return GamesOld | GamesNew;
 }
@@ -125,17 +110,17 @@ void menu_blinkGame(u8 blink)
 	blink_counter++;
 }
 
-static void menu_STC_drawGame(u16 Pos,rfuTgtData *Game)
+static void menu_STC_drawGame(u16 pos,rfuTgtData *tgt)
 {
-	if(!Game->gname[0])
-		mf_clearGame(Pos);
+	if(!tgt->gname[0])
+		mf_clearGame(pos);
 	else
-		mf_drawString(Pos,0,Game->gname);
+		mf_drawString(pos,0,tgt->gname);
 	
-	if(!Game->uname[0])
-		mf_clearGame(Pos+15);
+	if(!tgt->uname[0])
+		mf_clearGame(pos+15);
 	else
-		mf_drawString(Pos+15,0,Game->uname);
+		mf_drawString(pos+15,0,tgt->uname);
 }
 
 void menu_checkError(u16 state)

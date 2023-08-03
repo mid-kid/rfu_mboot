@@ -2,12 +2,8 @@
 
 #include "sound.h"
 
-struct sndStaticTag {
-	u16 *basePtr;
-	u16 *playPtr;
-	u8 time;
-	u8 sfxNum;
-} sndStatic;
+SND_STATIC sndStatic;
+
 extern u16 *sound_tbl[];
 void snd_stop(void);
 

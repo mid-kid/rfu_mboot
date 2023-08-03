@@ -17,6 +17,7 @@ extern u16 Bg0Bak[32*20];
 extern void (*nowProcess)();
 extern KEY_DATA key;
 
+extern const u8 str_my_gname_mboot[10];
 extern const u8 str_header_mboot[10];
 extern const u8 *str_uname[];
 extern const MSGDATA MenuMsgInitial[];

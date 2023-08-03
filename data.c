@@ -8,6 +8,8 @@ u16 Bg0Bak[32*20];
 void (*nowProcess)();
 KEY_DATA key;
 
+const u8 str_my_gname_mboot[]="RFU-MB-DL";
+
 const u8 str_header_mboot[]="RFU-MBOOT";
 
 const u8 *str_uname[]={

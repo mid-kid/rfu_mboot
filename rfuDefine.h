@@ -35,7 +35,7 @@ extern void SEQ_title(void);
 extern void SEQ_search_init(void);
 extern void SEQ_search(void);
 
-// menuFuncs.c
+// menuFunc.c
 extern u8   menu_drawGameList(void);
 extern void menu_clearGameList(void);
 extern void menu_initGameList(void);
