@@ -122,7 +122,7 @@ static u32  rfu_constructSendLLFrame(void);
 void rfu_setIDCallback(void (*callbackFuncp)(void));
 u16  rfu_STC_setSendData_org(u8 param_1,u8 param_2,u16 param_3,const u16 *GameID,u32 param_5);
 
-u16 rfu_getRFUStatus(u8 *rfuState)
+u16 rfu_REQ_RFUStatus(u8 *rfuState)
 {
 	u16 ret;
 	
@@ -135,7 +135,7 @@ u16 rfu_getRFUStatus(u8 *rfuState)
 	return ret;
 }
 
-void rfu_initializeAPI_NI(void)
+void rfu_initializeAPI(void)
 {
 	u16 peer;
 	u16 size;
@@ -562,7 +562,7 @@ void rfu_getConnectParentStatus(u8 *status,u8 *connect_slotNo,u16 *pid)
 	*status=data[7];
 }
 
-void rfu_setTimer(u8 val)
+void rfu_setWatchInterval(u8 val)
 {
 	RFU_LINK_STATUS *ptr=&rfuLinkStatus;
 	rfuStatic.now_watchInterval=val;

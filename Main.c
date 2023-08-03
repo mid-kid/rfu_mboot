@@ -26,9 +26,6 @@ extern void intr_main(void);
 // function's prototype---------------------------------
 static void MenuMsgInit(void);
 
-extern void rfu_initializeAPI_NI(void);
-extern void rfu_setTimer(u8 param_1);
-
 // global variable -------------------------------------
 
 // static variable -------------------------------------
@@ -86,14 +83,14 @@ void AgbMain(void)
 	*(vu16 *)REG_DISPCNT=DISP_BG0_ON | DISP_BG3_ON;
 	
 // Initialize
-	rfu_initializeAPI_NI();
+	rfu_initializeAPI();
 	
 // INTERRUPT ENABLE
 	*(vu16 *)REG_IE=SIO_INTR_FLAG | V_BLANK_INTR_FLAG;
 	*(vu16 *)REG_STAT=STAT_V_BLANK_IF_ENABLE;
 	*(vu16 *)REG_IME=1;
 	
-	rfu_setTimer(8);
+	rfu_setWatchInterval(8);
 	MainMenuFadeOut=FALSE;
 	Lang=0;
 	
