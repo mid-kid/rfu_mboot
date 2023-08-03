@@ -1,13 +1,13 @@
 #include <Agb.h>
 
-extern void Sio32Intr(void);
+extern void IntrSIO32(void);
 extern void VBlankIntr(void);
 extern void snd_syncVBlank(void);
 extern void rfu_syncVBlank(void);
 extern u16 Bg0Bak[32*20];
 
 void (*const IntrTable[])(void) = {
-    Sio32Intr,
+    IntrSIO32,
     VBlankIntr
 };
 

@@ -1,6 +1,7 @@
 #include <Agb.h>
 #include "myFunc.h"
 #include "AgbRFU_LL.h"
+#include "AgbRFU_LL_private.h"
 
 extern u16  STWI_send_LinkStatusREQ(void);
 extern u16  STWI_send_StopModeREQ(void);
@@ -36,11 +37,6 @@ extern u8 SearchMenuErrorTimer;
 extern u8 _binary_char_search_tmap_LZ_bin_start[];
 extern u8 my_state;
 extern void (*nowProcess)();
-
-extern struct rfuFixed {
-	u8 *recv;
-	u8 *send;
-} rfuFixed;
 
 enum {
 	// Correspond to entries in SearchProcTable
@@ -356,7 +352,7 @@ void SEQ_search(void)
 		case STATE_CP_END:
 			// Finalize connection
 			if(procRes==0) {
-				if(SearchMenuTimer>0&&rfuFixed.recv[7]==0) {
+				if(SearchMenuTimer>0&&rfuFixed.dst[7]==0) {
 					menu_clearGameList();
 					rfu_setIDCallback(REQ_callback_mboot);
 					rfu_setRecvBuffer(0x20,MbootPeer,(u8 *)EX_WRAM,EX_WRAM_SIZE);
@@ -380,7 +376,7 @@ void SEQ_search(void)
 		case STATE_LINK_STATUS:
 			// Check if parent is still connected
 			if(procRes==0) {
-				if(rfuFixed.recv[4+MbootPeer]) {
+				if(rfuFixed.dst[4+MbootPeer]) {
 					my_state=STATE_CHANGE_CLOCK_SLAVE;
 					mf_drawString(0x6b,2,rfuLinkStatus.my.uname);
 					break;

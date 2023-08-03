@@ -30,18 +30,18 @@
 // ID_CHECK
 
 typedef struct {
-    u32 state;  // state
-    u32 cmdHeader;  // REQ_header
-    u8 cmdSize;  // REQ_length
-    u8 field3_0x9;  // REQ_next
-    u8 error;   // HS_error/error
-    u8 modeMaster;  // MS_mode
-    u8 unk_07;
+    u32 state;
+    u32 REQ_header;
+    u8 REQ_length;
+    u8 REQ_next;
+    u8 error;
+    u8 MS_mode;
+    u8 sending_flag;
     u8 unk_08;
     u8 unk_09;
-    u8 timer;  // recovery_count
+    u8 unk_10;
     u8 unk_11;
-    u8 unk_12;  // sending_flag
+    u8 HS_error;
 }STWI_command_status;
 
 extern STWI_command_status STWI_status;

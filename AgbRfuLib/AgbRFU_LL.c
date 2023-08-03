@@ -126,7 +126,7 @@ u16 rfu_getRFUStatus(u8 *rfuState)
 	
 	ret=STWI_send_SystemStatusREQ();
 	if(ret==0)
-		*rfuState=rfuFixed.recv[7];
+		*rfuState=rfuFixed.dst[7];
 	else
 		*rfuState=-1;
 	
@@ -143,7 +143,7 @@ void rfu_initializeAPI_NI(void)
 	STWI_init_all();
 	rfu_STC_clearAPIVariables();
 	rfuLinkStatus.watchInterval=0;
-	rfuFixed.recv=STWI_buffer_recv;
+	rfuFixed.dst=STWI_buffer_recv;
 	
 	for(peer=0;peer<4;peer++) {
 		rfuSlotStatus_NI[peer].recvBuff=NULL;
@@ -166,7 +166,7 @@ static void rfu_STC_clearAPIVariables(void)
 	CpuClear(0,&rfuStatic,16,16);
 	save=rfuLinkStatus.watchInterval;
 	CpuClear(0,&rfuLinkStatus,0x5a*2,16);
-	rfuStatic.timer=save;
+	rfuStatic.now_watchInterval=save;
 	rfuLinkStatus.watchInterval=save;
 	rfuLinkStatus.parent_child=-1;
 	rfu_clearAllSlot();
@@ -263,7 +263,7 @@ static void rfu_STC_readParentCandidateList(void)
 	u8 peer;
 	char *tmp;
 	
-	data=rfuFixed.recv;
+	data=rfuFixed.dst;
 	len=data[1];
 	data+=4;
 	
@@ -306,7 +306,7 @@ u16 rfu_REQ_startConnectParent(u16 pid)
 	
 	ret=STWI_send_CP_StartREQ(pid);
 	if(ret==0)
-		rfuStatic.beaconID=pid;
+		rfuStatic.cid_bak=pid;
 	return ret;
 }
 
@@ -522,7 +522,7 @@ u16 rfu_REQ_pollConnectParent(u8 *status,u8 *connect_slotNo)
 	rfuLinkStatus.parent_child=0;
 	
 	for(x=0;x<4;x++) {
-		if(rfuLinkStatus.partner[x].id==rfuStatic.beaconID) {
+		if(rfuLinkStatus.partner[x].id==rfuStatic.cid_bak) {
 			if(rfuLinkStatus.findParentCount==0)
 				GameSrc=rfuLinkStatus.partner;
 			else {
@@ -554,7 +554,7 @@ void rfu_getConnectParentStatus(u8 *status,u8 *connect_slotNo,u16 *pid)
 {
 	u8 *data;
 	
-	data=rfuFixed.recv;
+	data=rfuFixed.dst;
 	*pid=*(u16 *)(data+4);
 	*connect_slotNo=data[6];
 	*status=data[7];
@@ -563,15 +563,15 @@ void rfu_getConnectParentStatus(u8 *status,u8 *connect_slotNo,u16 *pid)
 void rfu_setTimer(u8 val)
 {
 	RFU_LINK_STATUS *ptr=&rfuLinkStatus;
-	rfuStatic.timer=val;
+	rfuStatic.now_watchInterval=val;
 	ptr->watchInterval=val;
 }
 
 void rfu_syncVBlank(void)
 {
 	if(rfuLinkStatus.parent_child!=(u8)-1)
-		if(rfuStatic.timer)
-			rfuStatic.timer--;
+		if(rfuStatic.now_watchInterval)
+			rfuStatic.now_watchInterval--;
 	STWI_intr_vblank();
 }
 
@@ -593,14 +593,14 @@ u16 rfu_REQBN_watchLink(u8 *bm_linkLossSlot,u8 *bm_linkLossReason,u8 *parent_bm_
 	if(rfuLinkStatus.parent_child==(u8)-1)
 		return 0;
 	
-	if(!rfuStatic.timer) {
-		rfuStatic.timer=rfuLinkStatus.watchInterval;
+	if(!rfuStatic.now_watchInterval) {
+		rfuStatic.now_watchInterval=rfuLinkStatus.watchInterval;
 		mode=1;
 	}
 	
-	if(rfuFixed.recv[0]==0x29) {
-		*bm_linkLossSlot=rfuFixed.recv[4];
-		*bm_linkLossReason=rfuFixed.recv[5];
+	if(rfuFixed.dst[0]==0x29) {
+		*bm_linkLossSlot=rfuFixed.dst[4];
+		*bm_linkLossReason=rfuFixed.dst[5];
 		if(*bm_linkLossReason==1)
 			*bm_linkLossSlot=rfuLinkStatus.connectSlot_flag;
 		mode=2;
@@ -609,7 +609,7 @@ u16 rfu_REQBN_watchLink(u8 *bm_linkLossSlot,u8 *bm_linkLossReason,u8 *parent_bm_
 	if(mode) {
 		ret=STWI_send_LinkStatusREQ();
 		if(ret==0) {
-			puVar6=rfuFixed.recv+4;
+			puVar6=rfuFixed.dst+4;
 			for(x=0;x<4;x++) {
 				bit=1<<x;
 				
@@ -679,14 +679,14 @@ u16 rfu_REQ_changeMasterSlave_check(u8 param_1)
 	u16 ret=0;
 	
 	if(param_1==0) {
-		if(STWI_status.modeMaster==TRUE) {
+		if(STWI_status.MS_mode==TRUE) {
 			ret=STWI_send_MS_ChangeREQ();
 			if(ret==0)
-				rfuStatic.unk_02=0;
+				rfuStatic.MS_mode=0;
 		}
 	}
-	else if(STWI_status.modeMaster==FALSE)
-		rfuStatic.unk_02=param_1;
+	else if(STWI_status.MS_mode==FALSE)
+		rfuStatic.MS_mode=param_1;
 	
 	return ret;
 }
@@ -695,17 +695,17 @@ u16 rfu_REQ_changeMasterSlave(void)
 {
 	u16 ret=0;
 	
-	if(rfuStatic.unk_02==0)
+	if(rfuStatic.MS_mode==0)
 		ret=STWI_send_MS_ChangeREQ();
 	else
-		rfuStatic.unk_02=0;
+		rfuStatic.MS_mode=0;
 	
 	return ret;
 }
 
 u8 rfu_getMasterSlave(void)
 {
-	return STWI_status.modeMaster;
+	return STWI_status.MS_mode;
 }
 
 u16 rfu_clearAllSlot(void)
@@ -721,8 +721,8 @@ u16 rfu_clearAllSlot(void)
 	rfuLinkStatus.sendSlot_NI_flag=0;
 	rfuLinkStatus.recvSlot_NI_flag=0;
 	rfuLinkStatus.sendSlot_UNI_flag=0;
-	rfuStatic.unk_06=0;
-	rfuStatic.unk_07=0;
+	rfuStatic.recv_renewal_flag=0;
+	rfuStatic.send_renewal_flag=0;
 	
 	return 0;
 }
@@ -1101,9 +1101,9 @@ u16 rfu_REQ_sendData(void)
 	if(rfuLinkStatus.parent_child==(u8)-1)
 		return 0;
 	
-	rfuStatic.unk_12=0;
+	rfuStatic.llf_ready_flag=0;
 	size=rfu_constructSendLLFrame();
-	if(rfuStatic.unk_12!=0)
+	if(rfuStatic.llf_ready_flag!=0)
 		res=STWI_send_DataTxREQ(rfuFixed.STWI_buf,size+4);
 	
 	if(res==0) {
@@ -1224,7 +1224,7 @@ static u16 rfu_STC_NI_constructLLSF(u8 Peer,u8 **Destp,NI_COMM *Comm)
 			Comm->phase=0;
 	}
 	
-	rfuStatic.unk_12|=1<<Peer;
+	rfuStatic.llf_ready_flag|=1<<Peer;
 	
 	return size+enc[0];
 }
@@ -1238,20 +1238,20 @@ u16 rfu_REQ_recvData(void)
 	if(rfuLinkStatus.parent_child==(u8)-1)
 		return 0;
 	
-	rfuStatic.unk_10=
+	rfuStatic.commExist_flag=
 		rfuLinkStatus.sendSlot_NI_flag|
 		rfuLinkStatus.recvSlot_NI_flag|
 		rfuLinkStatus.sendSlot_UNI_flag;
 	
 	res=STWI_send_DataRxREQ();
-	if(res==0&&rfuFixed.recv[1]!=0) {
-		rfuStatic.unk_05=0;
+	if(res==0&&rfuFixed.dst[1]!=0) {
+		rfuStatic.ni_end_recv_flag=0;
 		rfu_STC_CHILD_analyzeRecvPacket();
 		
 		for(x=0;x<4;x++) {
 			if(rfuSlotStatus_NI[x].recv.state!=0x8043)
 				continue;
-			if(rfuStatic.unk_05 & 1<<x)
+			if(rfuStatic.ni_end_recv_flag & 1<<x)
 				continue;
 			
 			comm=&rfuSlotStatus_NI[x].recv;
@@ -1272,11 +1272,11 @@ static void rfu_STC_CHILD_analyzeRecvPacket(void)
 	u16 size;
 	u8 *Srcp;
 	
-	size=*(u16 *)(rfuFixed.recv+4) & 0x7f;
-	Srcp=rfuFixed.recv+8;
+	size=*(u16 *)(rfuFixed.dst+4) & 0x7f;
+	Srcp=rfuFixed.dst+8;
 	
 	if(size==0)
-		rfuStatic.unk_05=0xf;
+		rfuStatic.ni_end_recv_flag=0xf;
 	
 	while(size!=0) {
 		done=rfu_STC_analyzeLLSF(0,Srcp,(u16)size);
@@ -1386,7 +1386,7 @@ static void rfu_STC_NI_receive_Sender(u8 Peer,u8 param_2,u8 *param_3,u8 *param_4
 	if(comm->state!=save_unk_01||
 			comm->n[param_3[4]]!=save_unk_12||
 			comm->recv_ack_flag[param_3[4]] & 1<<param_2) {
-		rfuStatic.unk_07|=1<<param_2;
+		rfuStatic.send_renewal_flag|=1<<param_2;
 		rfuSlotStatus_NI[param_2].send.failCounter=0;
 	}
 }
@@ -1408,7 +1408,7 @@ static void rfu_STC_NI_receive_Receiver(u8 Peer,u8 *param_2,u8 *param_3)
 		return;
 	
 	if(param_2[2]==3) {
-		rfuStatic.unk_05|=1<<Peer;
+		rfuStatic.ni_end_recv_flag|=1<<Peer;
 		ptr_unk_11=&comm->phase;
 		if(comm->state==0x8042) {
 			*ptr_unk_11=0;
@@ -1441,7 +1441,7 @@ static void rfu_STC_NI_receive_Receiver(u8 Peer,u8 *param_2,u8 *param_3)
 	if(comm->state!=save_unk_01||
 			comm->n[param_2[4]]!=save_unk_12||
 			comm->n[param_2[4]]==param_2[5]) {
-		rfuStatic.unk_06|=1<<Peer;
+		rfuStatic.recv_renewal_flag|=1<<Peer;
 		comm->failCounter=0;
 	}
 }
@@ -1509,8 +1509,8 @@ void rfu_NI_checkCommFailCounter(void)
 		rfu_STC_incCommFailCounter(0);
 	if(rfuLinkStatus.recvSlot_NI_flag)
 		rfu_STC_incCommFailCounter(1);
-	rfuStatic.unk_07=0;
-	rfuStatic.unk_06=0;
+	rfuStatic.send_renewal_flag=0;
+	rfuStatic.recv_renewal_flag=0;
 	
 	*(vu16 *)REG_IME=ime;
 }
@@ -1524,11 +1524,11 @@ static void rfu_STC_incCommFailCounter(u8 which)
 	
 	if(which==0) {
 		puVar4=&rfuLinkStatus.sendSlot_NI_flag;
-		puVar3=&rfuStatic.unk_07;
+		puVar3=&rfuStatic.send_renewal_flag;
 	}
 	else {
 		puVar4=&rfuLinkStatus.recvSlot_NI_flag;
-		puVar3=&rfuStatic.unk_06;
+		puVar3=&rfuStatic.recv_renewal_flag;
 	}
 	
 	for(x=0;x<4;x++) {

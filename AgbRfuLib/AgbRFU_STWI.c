@@ -12,16 +12,16 @@ u32 STWI_init(void)
 {
 	*(vu16 *)REG_RCNT=0x100;
 	*(vu16 *)REG_SIOCNT=0x5003;
-	STWI_status.modeMaster=TRUE;
+	STWI_status.MS_mode=TRUE;
 	STWI_status.state=0;
-	STWI_status.cmdHeader=0;
-	STWI_status.cmdSize=0;
-	STWI_status.field3_0x9=0;
+	STWI_status.REQ_header=0;
+	STWI_status.REQ_length=0;
+	STWI_status.REQ_next=0;
 	STWI_status.error=0;
-	STWI_status.modeMaster=TRUE;
-	STWI_status.unk_07=0;
+	STWI_status.MS_mode=TRUE;
+	STWI_status.sending_flag=0;
 	STWI_status.unk_08=0;
-	STWI_status.timer=-1;
+	STWI_status.unk_10=-1;
 	STWI_status.unk_11=0;
 	return 0;
 }
@@ -30,7 +30,7 @@ u32 STWI_init_all(void)
 {
 	STWI_init();
 	STWI_status.unk_09=8;
-	STWI_status.unk_12=1;
+	STWI_status.HS_error=1;
 	*(vu16 *)REG_IME=0;
 	*(vu16 *)REG_IE|=0x81;
 	*(vu16 *)REG_IME=1;
@@ -161,16 +161,16 @@ u16 STWI_poll_CommandEnd(void)
 	u8 *ptr8;
 	u16 val;
 	
-	if(!STWI_status.modeMaster)
+	if(!STWI_status.MS_mode)
 		return 1;
 	
 retry:
 	*(vu32 *)REG_SIODATA32=*(u32 *)STWI_buffer_send;
-	STWI_status.cmdHeader=*(u32 *)STWI_buffer_send;
-	STWI_status.field3_0x9=1;
+	STWI_status.REQ_header=*(u32 *)STWI_buffer_send;
+	STWI_status.REQ_next=1;
 	*(vu16 *)REG_SIOCNT=0x5083;
 	
-	ptr8=&STWI_status.unk_07;
+	ptr8=&STWI_status.sending_flag;
 wait:
 	if(*ptr8==0)
 		goto wait;
@@ -225,25 +225,25 @@ u16 STWI_check_Command(u32 Cmd,u8 VarSize)
 
 u32 STWI_intr_vblank(void)
 {
-	if(STWI_status.modeMaster==TRUE)
+	if(STWI_status.MS_mode==TRUE)
 		return 0;
 	
-	if(STWI_status.timer!=(u8)-1)
-		STWI_status.timer++;
+	if(STWI_status.unk_10!=(u8)-1)
+		STWI_status.unk_10++;
 	
-	if(STWI_status.timer==6) {
+	if(STWI_status.unk_10==6) {
 		STWI_status.state=5;
-		STWI_status.cmdHeader=0;
-		STWI_status.cmdSize=0;
-		STWI_status.field3_0x9=0;
+		STWI_status.REQ_header=0;
+		STWI_status.REQ_length=0;
+		STWI_status.REQ_next=0;
 		STWI_status.error=0;
-		STWI_status.unk_07=0;
+		STWI_status.sending_flag=0;
 		STWI_status.unk_08=0;
 		*(vu32 *)REG_SIODATA32=0x80000000;
 		*(vu16 *)REG_SIOCNT=0;
 		*(vu16 *)REG_SIOCNT=0x5003;
 		*(vu16 *)REG_SIOCNT=0x5082;
-		STWI_status.timer=-1;
+		STWI_status.unk_10=-1;
 		return 1;
 	}
 	return 0;
@@ -253,7 +253,7 @@ u16 STWI_send_ResetREQ(void)
 {
 	STWI_init();
 	*(u32 *)(STWI_buffer_send+0)=0x99660010;
-	STWI_status.cmdSize=0;
+	STWI_status.REQ_length=0;
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
@@ -264,7 +264,7 @@ u16 STWI_send_LinkStatusREQ(void)
 {
 	STWI_init();
 	*(u32 *)(STWI_buffer_send+0)=0x99660011;
-	STWI_status.cmdSize=0;
+	STWI_status.REQ_length=0;
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
@@ -275,7 +275,7 @@ u16 STWI_send_SystemStatusREQ(void)
 {
 	STWI_init();
 	*(u32 *)(STWI_buffer_send+0)=0x99660013;
-	STWI_status.cmdSize=0;
+	STWI_status.REQ_length=0;
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
@@ -394,7 +394,7 @@ u16 STWI_send_GameConfigREQ(const u8 *GameData,const u8 *UserName)
 		*dst++=*src++;
 	}
 	
-	STWI_status.cmdSize=6;
+	STWI_status.REQ_length=6;
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
     return STWI_check_Command(0x99660096,FALSE);
@@ -408,7 +408,7 @@ u16 STWI_send_SystemConfigREQ(u16 param_1,u8 param_2,u8 param_3)
 	*(u8 *)(STWI_buffer_send+4)=param_3;
 	*(u8 *)(STWI_buffer_send+5)=param_2;
 	*(u16 *)(STWI_buffer_send+6)=param_1;
-	STWI_status.cmdSize=1;
+	STWI_status.REQ_length=1;
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
@@ -419,7 +419,7 @@ u16 STWI_send_SP_StartREQ(void)
 {
 	STWI_init();
 	*(u32 *)(STWI_buffer_send+0)=0x9966001c;
-	STWI_status.cmdSize=0;
+	STWI_status.REQ_length=0;
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
@@ -430,7 +430,7 @@ u16 STWI_send_SP_PollingREQ(void)
 {
 	STWI_init();
 	*(u32 *)(STWI_buffer_send+0)=0x9966001d;
-	STWI_status.cmdSize=0;
+	STWI_status.REQ_length=0;
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
@@ -441,7 +441,7 @@ u16 STWI_send_SP_EndREQ(void)
 {
 	STWI_init();
 	*(u32 *)(STWI_buffer_send+0)=0x9966001e;
-	STWI_status.cmdSize=0;
+	STWI_status.REQ_length=0;
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
@@ -453,7 +453,7 @@ u16 STWI_send_CP_StartREQ(u16 BeaconID)
 	STWI_init();
 	*(u32 *)(STWI_buffer_send+0)=0x9966011f;
 	*(u32 *)(STWI_buffer_send+4)=BeaconID;
-	STWI_status.cmdSize=1;
+	STWI_status.REQ_length=1;
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
@@ -464,7 +464,7 @@ u16 STWI_send_CP_PollingREQ(void)
 {
 	STWI_init();
 	*(u32 *)(STWI_buffer_send+0)=0x99660020;
-	STWI_status.cmdSize=0;
+	STWI_status.REQ_length=0;
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
@@ -475,7 +475,7 @@ u16 STWI_send_CP_EndREQ(void)
 {
 	STWI_init();
 	*(u32 *)(STWI_buffer_send+0)=0x99660021;
-	STWI_status.cmdSize=0;
+	STWI_status.REQ_length=0;
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
@@ -491,11 +491,11 @@ u16 STWI_send_DataTxREQ(u8 *Srcp,u8 Size)
 	CmdSize=Size/4;
 	if(Size%4)
 		CmdSize++;
-	STWI_status.cmdSize=CmdSize;
+	STWI_status.REQ_length=CmdSize;
 	CmdSize<<=8;
 	
 	*(u32 *)(STWI_buffer_send+0)=0x99660024+CmdSize;
-	CpuSet(Srcp,STWI_buffer_send+4,STWI_status.cmdSize | DMA_32BIT_BUS);
+	CpuSet(Srcp,STWI_buffer_send+4,STWI_status.REQ_length | DMA_32BIT_BUS);
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
@@ -506,7 +506,7 @@ u16 STWI_send_DataRxREQ(void)
 {
 	STWI_init();
 	*(u32 *)(STWI_buffer_send+0)=0x99660026;
-	STWI_status.cmdSize=0;
+	STWI_status.REQ_length=0;
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
@@ -517,7 +517,7 @@ u16 STWI_send_MS_ChangeREQ(void)
 {
 	STWI_init();
 	*(u32 *)(STWI_buffer_send+0)=0x99660027;
-	STWI_status.cmdSize=0;
+	STWI_status.REQ_length=0;
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
@@ -529,7 +529,7 @@ u16 STWI_send_DisconnectREQ(u8 param_1)
 	STWI_init();
 	*(u32 *)(STWI_buffer_send+0)=0x99660130;
 	*(u32 *)(STWI_buffer_send+4)=param_1;
-	STWI_status.cmdSize=1;
+	STWI_status.REQ_length=1;
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
@@ -540,7 +540,7 @@ u16 STWI_send_StopModeREQ(void)
 {
 	STWI_init();
 	*(u32 *)(STWI_buffer_send+0)=0x9966003d;
-	STWI_status.cmdSize=0;
+	STWI_status.REQ_length=0;
 	
 	if(STWI_poll_CommandEnd()==1)
 		return 5;
