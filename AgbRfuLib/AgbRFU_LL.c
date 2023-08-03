@@ -109,6 +109,7 @@ static u16  rfu_STC_NI_constructLLSF(u8 Peer,u8 **Destp,NI_COMM *Comm);
 static u16  rfu_STC_NI_initSlot_asRecvDataEntity(u8 Peer,NI_COMM *Comm);
 static u16  rfu_STC_analyzeLLSF(u32 unused,u8 *Srcp,u16 Size);
 static u32  rfu_STC_NI_initSlot_asRecvControllData(u8 Peer,NI_COMM *Comm);
+static u32  rfu_constructSendLLFrame(void);
 static void rfu_STC_CHILD_analyzeRecvPacket(void);
 static void rfu_STC_NI_receive_Receiver(u8 param_1,u8 *param_2,u8 *param_3);
 static void rfu_STC_NI_receive_Sender(u8 param_1,u8 param_2,u8 *param_3,u8 *param_4);
@@ -117,7 +118,7 @@ static void rfu_STC_fastCopy(u8 **Src,u8 **Dst,int Size);
 static void rfu_STC_incCommFailCounter(u8 param_1);
 static void rfu_STC_readParentCandidateList(void);
 static void rfu_STC_removeLinkData(u8 slot,u8 clear);
-static u32  rfu_constructSendLLFrame(void);
+static void rfu_getConnectParentStatus(u8 *status,u8 *connect_slotNo,u16 *pid);
 
 u16  rfu_STC_setSendData_org(u8 param_1,u8 param_2,u16 param_3,const u16 *GameID,u32 param_5);
 
@@ -490,8 +491,8 @@ u16 rfu_REQ_pollConnectParent(u8 *status,u8 *connect_slotNo)
 	u16 ime;
 	u16 ret;
 	u8 x;
-	struct GameInfo *GameSrc;
-	struct GameInfo GameTmp;
+	rfuTgtData *GameSrc;
+	rfuTgtData GameTmp;
 	u16 ID;
 	u8 bit;
 	
@@ -551,7 +552,7 @@ u16 rfu_REQ_endConnectParent(void)
 	return STWI_send_CP_EndREQ();
 }
 
-void rfu_getConnectParentStatus(u8 *status,u8 *connect_slotNo,u16 *pid)
+static void rfu_getConnectParentStatus(u8 *status,u8 *connect_slotNo,u16 *pid)
 {
 	u8 *data;
 	
@@ -1030,7 +1031,7 @@ rfu_STC_setSendData_org:
 	.size	 rfu_STC_setSendData_org,.LBfe1-rfu_STC_setSendData_org
 ");
 #else
-u16 rfu_STC_setSendData_org(u8 param_1,u8 param_2,u16 param_3,u16 *GameID,u32 param_5)
+u16 rfu_STC_setSendData_org(u8 param_1,u8 param_2,u16 param_3,const u16 *GameID,u32 param_5)
 {
 	u8 peer;
 	u8 max;

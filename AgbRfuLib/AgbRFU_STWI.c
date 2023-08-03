@@ -372,7 +372,7 @@ STWI_send_GameConfigREQ:
 u16 STWI_send_GameConfigREQ(const u8 *GameData,const u8 *UserName)
 {
 	u8 *dst;
-	u8 *src;
+	const u8 *src;
 	int x;
 	
 	STWI_init();
