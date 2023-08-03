@@ -50,6 +50,8 @@ char/tiles.bin: char/tiles.bmp
 	bmp2agb -np -bi $<
 	truncate -s 11712 $@
 
+sound.o: CC := ThumbPatch-thumb-elf-gcc
+
 
 .PHONY: all clean depend
 
@@ -65,10 +67,6 @@ depend:
 
 $(DEPENDFILE): 
 	$(CC) $(CFLAGS) -M $(.CFILES) > $(DEPENDFILE)
-
-
-# Matching hacks
-sound.o: CC := ThumbPatch-thumb-elf-gcc
 
 include GasdependDemo
 include $(DEPENDFILE)

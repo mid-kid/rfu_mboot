@@ -1,5 +1,9 @@
 #include <Agb.h>
+
 #include "myFunc.h"
+#include "data.h"
+#include "rfuDefine.h"
+#include "sound.h"
 
 // define data------------------------------------------
 #define BG0_SCBLK				0
@@ -11,44 +15,19 @@
 #define BG2_CHBLK				1
 #define BG3_CHBLK				1
 
-struct MenuMsg {
-	const char *const *msg;
-	const u16 *pos;
-};
-
 // extern data------------------------------------------
-extern const struct MenuMsg *MenuMsg;
-extern const struct MenuMsg MenuMsgInitial[];
-extern const u8 str_lang_en[];
-extern u16 Bg0Bak[32*20];
-extern u8 Lang;
-extern u8 MainMenuFadeOut;
-extern u8 MenuBusy;
 extern u8 _binary_char_pals_LZ_bin_start[];
 extern u8 _binary_char_tiles_LZ_bin_start[];
 extern u8 _binary_char_tmap_LZ_bin_start[];
 extern u8 bss_end[];
 extern u8 bss_start[];
-extern u8 my_state;
-extern void (*nowProcess)();
 extern void intr_main(void);
 
 // function's prototype---------------------------------
-void SEQ_title(void);
-void SEQ_title_init(void);
-
 static void MenuMsgInit(void);
 
-extern void menu_initBlinkCounter(void);
-extern void menu_blinkMessage(u8 Msg,u8 Rate);
 extern void rfu_initializeAPI_NI(void);
 extern void rfu_setTimer(u8 param_1);
-extern void SEQ_search(void);
-extern void SEQ_search_init(void);
-extern void snd_init(void);
-extern void snd_play(u8 Num);
-extern void mf_winFade(u8 Dir);
-extern void mf_winInit(void);
 
 // global variable -------------------------------------
 

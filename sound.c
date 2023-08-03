@@ -1,5 +1,7 @@
 #include <Agb.h>
 
+#include "sound.h"
+
 struct sndStaticTag {
 	u16 *basePtr;
 	u16 *playPtr;
@@ -58,14 +60,14 @@ void snd_syncVBlank(void)
 	sndStatic.time--;
 }
 
-void snd_play(u8 Num)
+void snd_play(u8 num)
 {
-	if(sndStatic.sfxNum>Num&&sndStatic.time!=(u8)-1)
+	if(sndStatic.sfxNum>num&&sndStatic.time!=(u8)-1)
 		return;
-	sndStatic.playPtr=sound_tbl[Num];
+	sndStatic.playPtr=sound_tbl[num];
 	sndStatic.basePtr=sndStatic.playPtr;
 	sndStatic.time=0;
-	sndStatic.sfxNum=Num;
+	sndStatic.sfxNum=num;
 }
 
 void snd_stop(void)

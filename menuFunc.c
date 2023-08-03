@@ -1,12 +1,13 @@
 #include <Agb.h>
-#include "myFunc.h"
+
 #include "AgbRFU_LL.h"
+#include "myFunc.h"
+#include "rfuDefine.h"
 
 extern void snd_play(u8 Num);
 extern void menu_drawGame(u16 Pos,rfuTgtData *Game);
 extern void menu_drawMessage(u8 Msg,u16 PlttNo);
 extern void mf_clearGame(int Pos);
-extern const struct MenuMsg *MenuMsg;
 
 extern struct sndStatic {
 	u16 *basePtr;
@@ -15,14 +16,8 @@ extern struct sndStatic {
 	u8 sfxNum;
 } sndStatic;
 
-struct MenuMsg {
-	const char *const *msg;
-	const u16 *pos;
-};
-
 extern rfuTgtData GameList[4];
 extern u8 GameListBitsNew;
-extern u8 GameName[14];
 extern u8 MenuBusy;
 extern u8 SearchMenuCursor;
 extern u8 SearchMenuErrorMsg;

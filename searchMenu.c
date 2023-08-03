@@ -1,7 +1,11 @@
 #include <Agb.h>
-#include "myFunc.h"
+
 #include "AgbRFU_LL.h"
 #include "AgbRFU_LL_private.h"
+
+#include "myFunc.h"
+#include "rfuDefine.h"
+#include "data.h"
 
 extern u16  STWI_send_LinkStatusREQ(void);
 extern u16  STWI_send_StopModeREQ(void);
@@ -107,10 +111,10 @@ __attribute__((nocommon)) u8 GameListBitsNew;
 u8 SearchMenuErrorTimer;
 u8 MenuBusy;
 u8 Lang;
-void *MenuMsg;
+const MSGDATA *MenuMsg;
 u8 my_state;
 u8 MainMenuFadeOut;
-char GameName[16];
+char GameName[14];
 
 void SEQ_search_init(void)
 {

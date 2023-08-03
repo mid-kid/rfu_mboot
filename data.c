@@ -1,15 +1,12 @@
 #include <Agb.h>
+
+#include "data.h"
 #include "myFunc.h"
 
 // global variables-----------------------------
 u16 Bg0Bak[32*20];
 void (*nowProcess)();
 KEY_DATA key;
-
-struct MenuMsg {
-	const char *const *msg;
-	const u16 *pos;
-};
 
 const u8 str_header_mboot[]="RFU-MBOOT";
 
@@ -107,7 +104,7 @@ static const u16 PosJapanese[]={
 	0x20a
 };
 
-const struct MenuMsg MenuMsgInitial[]={
+const MSGDATA MenuMsgInitial[]={
 	{MsgEnglish,PosEnglish},
 	{MsgJapanese,PosJapanese}
 };

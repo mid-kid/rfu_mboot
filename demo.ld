@@ -21,7 +21,7 @@ SECTIONS {
         my_state = .; . += 4;
         MainMenuFadeOut = .; . += 4;
         . = ALIGN(0x10);
-        GameName = .; . += 16;
+        GameName = .; . += 14;
 
         *(COMMON)
     }

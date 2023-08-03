@@ -1,11 +1,11 @@
 #include <Agb.h>
+
 #include "myFunc.h"
+#include "data.h"
 
 // define data----------------------------------
 
 // extern data----------------------------------
-extern u16 Bg0Bak[32*20];
-extern KEY_DATA key;
 
 // function's prototype-------------------------
 static void mf_clearBg2(void);
@@ -142,12 +142,12 @@ void mf_winInit(void)
 	*(vu16 *)REG_BLDALPHA=0x1f00;
 }
 
-void mf_winFade(u8 Dir)
+void mf_winFade(u8 dir)
 {
 	u16 i;
 	u16 val;
 	
-	if(Dir==0)
+	if(dir==0)
 		*(vu16 *)REG_DISPCNT&=0xfbff;
 	
 	i=0;
@@ -159,7 +159,7 @@ void mf_winFade(u8 Dir)
 			//val=0x10-i;
 			val=(~i & 0xf)+1;
 		}
-		if(Dir)
+		if(dir)
 			*(vu16 *)REG_BLDALPHA=val<<8 | i;
 		else
 			*(vu16 *)REG_BLDALPHA=val | i<<8;
